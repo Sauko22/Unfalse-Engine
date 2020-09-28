@@ -55,6 +55,7 @@ update_status ModuleSceneIntro::Update()
 	cube.SetPos(2.0f, 0.5f, 1.5f);
 	cube.SetRotation(30, vec3(0.0f, 1.0f, 0.0f));
 	cube.Render();
+
 	return UPDATE_CONTINUE;
 }
 
