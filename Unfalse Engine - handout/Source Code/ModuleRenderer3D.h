@@ -36,4 +36,8 @@ public:
 private:
 	// Window 3 variables
 	float f; 
+	char buf[20];
+
+	// Window 4 variables
+	float my_color[4];
 };

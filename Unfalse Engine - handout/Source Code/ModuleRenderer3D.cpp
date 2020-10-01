@@ -15,6 +15,13 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 {
 	// Window 3 variables
 	f = 0.5;
+	strncpy(buf, "Insert a text", 20);
+	
+	// Window 4 variables
+	my_color[0] = 1;
+	my_color[1] = 1;
+	my_color[2] = 1;
+	my_color[3] = 1;
 }
 
 // Destructor
@@ -165,8 +172,6 @@ update_status ModuleRenderer3D::PostUpdate()
 	ImGui::End();
 
 	// Window 3
-	char buf[25] = "Insert a text";
-	
 	ImGui::Begin("Test3", NULL);
 	ImGui::Text("Hello, world %d", 123);
 	if (ImGui::Button("Save"))
@@ -178,21 +183,31 @@ update_status ModuleRenderer3D::PostUpdate()
 	ImGui::End();
 
 	// Window 4
-	ImGui::Begin("My First Tool", NULL);
+	// If nullptr is a bool, a close icon in the window appears
+	ImGui::Begin("My First Tool", nullptr, ImGuiWindowFlags_MenuBar);
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-			//if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
+			if (ImGui::MenuItem("Open..")) 
+			{ 
+				/* Do stuff */ 
+			}
+			if (ImGui::MenuItem("Save", "Ctrl+S")) 
+			{
+				/* Do stuff */ 
+			}
+			if (ImGui::MenuItem("Close", "Ctrl+W")) 
+			{
+				/* Do stuff */
+			}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
 	}
 
-	// Edit a color (stored as ~4 floats)
-	//ImGui::ColorEdit4("Color", my_color);
+	// Edit a color (stored as 4 floats)
+	ImGui::ColorEdit4("Color", my_color);
 
 	// Plot some values
 	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
@@ -207,17 +222,21 @@ update_status ModuleRenderer3D::PostUpdate()
 	ImGui::End();
 
 	// Tool bar
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
+	if (ImGui::BeginMainMenuBar()) 
+	{
+		if (ImGui::BeginMenu("File")) 
+		{
 			
-			if (ImGui::MenuItem("New")) {
+			if (ImGui::MenuItem("New")) 
+			{
 			
 				// New file
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
 
-			if (ImGui::MenuItem("Quit")) {
+			if (ImGui::MenuItem("Quit")) 
+			{
 
 				// Exits the app
 				return UPDATE_STOP;
@@ -226,9 +245,12 @@ update_status ModuleRenderer3D::PostUpdate()
 			ImGui::PopStyleColor();
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Help")) {
+		if (ImGui::BeginMenu("Help")) 
+		{
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
-			if (ImGui::MenuItem("Our Github")) {
+
+			if (ImGui::MenuItem("Our Github")) 
+			{
 
 				// Github link:
 				ShellExecuteA(NULL, "open", "https://github.com/Sauko22/Unfalse-Engine", NULL, NULL, SW_SHOWNORMAL);
