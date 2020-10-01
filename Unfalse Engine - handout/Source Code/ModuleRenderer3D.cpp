@@ -13,6 +13,8 @@
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	// Window 3 variables
+	f = 0.5;
 }
 
 // Destructor
@@ -152,27 +154,75 @@ update_status ModuleRenderer3D::PostUpdate()
 	ImGui::NewFrame();
 	//
 
-	ImGui::Begin("Test", NULL);
-	ImGui::Text("Josep menja naps com no tomorrow");
+	// Window 1
+	ImGui::Begin("Test1", NULL);
+	ImGui::Text("Text window 1");
 	ImGui::End();
 
+	// Window 2
 	ImGui::Begin("Test2", NULL);
-	ImGui::Text("Josep menja naps com no tomorrow");
+	ImGui::Text("Text window 2");
 	ImGui::End();
 
+	// Window 3
+	char buf[25] = "Insert a text";
+	
+	ImGui::Begin("Test3", NULL);
+	ImGui::Text("Hello, world %d", 123);
+	if (ImGui::Button("Save"))
+	{
+		//MySaveFunction();
+	}
+	ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
+	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+	ImGui::End();
+
+	// Window 4
+	ImGui::Begin("My First Tool", NULL);
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			//if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	// Edit a color (stored as ~4 floats)
+	//ImGui::ColorEdit4("Color", my_color);
+
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
+
+	// Tool bar
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
+			
 			if (ImGui::MenuItem("New")) {
 			
 				// New file
 			}
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
 
 			if (ImGui::MenuItem("Quit")) {
 
 				// Exits the app
 				return UPDATE_STOP;
 			}
+
 			ImGui::PopStyleColor();
 			ImGui::EndMenu();
 		}
@@ -180,21 +230,20 @@ update_status ModuleRenderer3D::PostUpdate()
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
 			if (ImGui::MenuItem("Our Github")) {
 
-				// New file
+				// Github link:
+				ShellExecuteA(NULL, "open", "https://github.com/Sauko22/Unfalse-Engine", NULL, NULL, SW_SHOWNORMAL);
 			}
 
 			
 			ImGui::PopStyleColor();
 			ImGui::EndMenu();
 		}
-	
-	
-	
+
 		ImGui::EndMainMenuBar();
 	}
 
+	
 	//Rendering
-
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
