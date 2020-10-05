@@ -48,13 +48,13 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,6 +96,7 @@
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
     <ClInclude Include="Source Code\ModuleSceneIntro.h" />
+    <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\p2Defs.h" />
     <ClInclude Include="Source Code\Primitive.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="Source Code\ModuleInput.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
     <ClCompile Include="Source Code\ModuleSceneIntro.cpp" />
+    <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />

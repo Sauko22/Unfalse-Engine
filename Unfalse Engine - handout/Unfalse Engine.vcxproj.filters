@@ -90,6 +90,9 @@
     <ClInclude Include="Source Code\p2Defs.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModuleUI.h">
+      <Filter>Sources\Modules\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\Libs\Imgui\imgui_widgets.cpp">
       <Filter>libs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleUI.cpp">
+      <Filter>Sources\Modules\Game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

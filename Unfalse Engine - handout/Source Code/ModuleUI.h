@@ -1,0 +1,46 @@
+#pragma once
+#include "Module.h"
+#include "Globals.h"
+#include "glmath.h"
+
+//ImGui includes
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_internal.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+
+#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
+#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+
+class ModuleUI : public Module
+{
+public:
+	ModuleUI(Application* app, bool start_enabled = true);
+	~ModuleUI();
+
+	bool Init();
+	update_status Update();
+	bool CleanUp();
+
+public:
+	SDL_GLContext context;
+
+	// Toolbar
+	bool showDemo;
+	bool showAbout;
+	bool showConfig;
+
+	void showAboutWin(bool* p_open = NULL);
+	void showConfigWin(bool* p_open = NULL);
+
+	// WINDOW EXAMPLES
+	/*
+	// Window 3 variables
+	float f;
+	char buf[20];
+
+	// Window 4 variables
+	float my_color[4];
+	*/
+
+};
