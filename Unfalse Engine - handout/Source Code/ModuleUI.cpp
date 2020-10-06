@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleUI.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleRenderer3D.h"
 
 //ImGui
 #include "Glew\include\glew.h"
@@ -22,6 +23,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showDemo = false;
 	showAbout = false;
 	showConfig = false;
+	showConsole = false;
 	
 	// WINDOW EXAMPLES
 	/*
@@ -134,6 +136,11 @@ update_status ModuleUI::Update()
 
 		if (ImGui::BeginMenu("View"))
 		{
+			if (ImGui::MenuItem("Console"))
+			{
+				showConsole = !showConsole;
+			}
+
 			if (ImGui::MenuItem("Configuration"))
 			{
 				showConfig = !showConfig;
@@ -192,6 +199,8 @@ update_status ModuleUI::Update()
 	if (showAbout == true) { ModuleUI::showAboutWin(&showAbout); }
 	
 	if (showConfig == true) { ModuleUI::showConfigWin(&showConfig); }
+	
+	if (showConsole == true) { ModuleUI::showConsoleWin(&showConsole); }
 
 
 	// WINDOW EXAMPLES
@@ -275,7 +284,37 @@ update_status ModuleUI::Update()
 	return UPDATE_CONTINUE;
 }
 
+/*void ModuleUI::Log(void* userdata, int category, SDL_LogPriority priority, const char* message)
+{
+	printf("[Log] %s", message);
+}*/
+
 // Windows functions
+void ModuleUI::showConsoleWin(bool* p_open)
+{
+	if (!ImGui::Begin("Console", p_open))
+	{
+		ImGui::End();
+		return;
+	}
+
+	for (uint i = 0; i < items.size(); i++)
+	{
+		const char* item = items[i].c_str();
+
+		ImGui::Text(item);
+	}
+
+	ImGui::End();
+}
+
+void ModuleUI::putLog(const char* log)
+{
+	std::string item;
+	item = log;
+	items.push_back(item);
+}
+
 void ModuleUI::showConfigWin(bool* p_open)
 {
 	if (!ImGui::Begin("Configuration", p_open))
@@ -313,14 +352,23 @@ void ModuleUI::showConfigWin(bool* p_open)
 
 		static float bright = 1;
 		ImGui::SliderFloat("Brightness", &bright, 0.0f, 1.0f);
-		SDL_SetWindowBrightness(App->window->window, bright);	
+		if (ImGui::IsItemActive()) {	SDL_SetWindowBrightness(App->window->window, bright); }
 
 		static int width = App->window->screen_surface->w;
 		static int height = App->window->screen_surface->h;
 		ImGui::SliderInt("Width", &width, 640, 1920);
+		if (ImGui::IsItemActive())
+		{
+			SDL_SetWindowSize(App->window->window, width, height);
+			App->renderer3D->OnResize(width, height);
+		}
 		ImGui::SliderInt("Height", &height, 480, 1080);
-		SDL_SetWindowSize(App->window->window, width, height);
-
+		if (ImGui::IsItemActive()) 
+		{ 
+			SDL_SetWindowSize(App->window->window, width, height); 
+			App->renderer3D->OnResize(width, height);
+		}
+		
 		ImGui::Text("Refresh rate: %i", App->scene_intro->fps_current);
 
 		static bool fullscreen = false;
@@ -334,52 +382,64 @@ void ModuleUI::showConfigWin(bool* p_open)
 		static int l = 0;
 		
 		ImGui::Checkbox("Fullscreen", &fullscreen); ImGui::SameLine(150);
-		ImGui::Checkbox("Resizable", &resizable);
-		ImGui::Checkbox("Borderless", &borderless); ImGui::SameLine(150);
-		ImGui::Checkbox("Full Desktop", &desktop);
+		
 		
 		if (fullscreen == true && i == 0)
 		{
 			i = 1;
 			SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN); 
+			LOG("ISFULLSCREEN");
 		}
 		else if (fullscreen == false && i == 1)
 		{
 			i = 0;
 			SDL_SetWindowFullscreen(App->window->window, 0);
+			LOG("ISNOTFULLSCREEN");
 		}
 
-		if (resizable == false && j == 0)
+		ImGui::Checkbox("Resizable", &resizable);
+
+		if (resizable == true && j == 0)
 		{
 			j = 1;
-			SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+			SDL_SetWindowResizable(App->window->window, SDL_TRUE);
+			LOG("ISRESIZABLE");
 		}
-		else if (resizable == true && j == 1)
+		else if (resizable == false && j == 1)
 		{
 			j = 0;
-			SDL_SetWindowResizable(App->window->window, SDL_TRUE);
+			SDL_SetWindowResizable(App->window->window, SDL_FALSE);
+			LOG("ISNOTRESIZABLE");
 		}
+
+		ImGui::Checkbox("Borderless", &borderless); ImGui::SameLine(150);
 
 		if (borderless == true && k == 0)
 		{
 			k = 1;
 			SDL_SetWindowBordered(App->window->window, SDL_FALSE);
+			LOG("ISBORDERLESS");
 		}
 		else if (borderless == false && k == 1)
 		{
 			k = 0;
 			SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+			LOG("ISNOTBORDERLESS");
 		}
 
-		if (desktop == false && l == 0)
+		ImGui::Checkbox("Full Desktop", &desktop);
+
+		if (desktop == true && l == 0)
 		{
 			l = 1;
-			SDL_SetWindowFullscreen(App->window->window, 0);
+			SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			LOG("ISFULLDESKTOP");
 		}
-		else if (desktop == true && l == 1)
+		else if (desktop == false && l == 1)
 		{
 			l = 0;
-			SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			SDL_SetWindowFullscreen(App->window->window, 0);
+			LOG("ISNOTFULLDESKTOP");
 		}
 		
 	}
@@ -423,7 +483,7 @@ void ModuleUI::showConfigWin(bool* p_open)
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", renderer);
 		ImGui::Text("Version: "); ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%s", version);
-
+		
 		ImGui::Separator();
 
 		GLint total_mem_kb = 0;

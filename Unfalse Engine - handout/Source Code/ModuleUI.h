@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
+#include <string>
+#include <iostream>
 
 //ImGui includes
 #include "Imgui/imgui.h"
@@ -11,6 +13,8 @@
 
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+
+#include <vector>
 
 class ModuleUI : public Module
 {
@@ -29,9 +33,13 @@ public:
 	bool showDemo;
 	bool showAbout;
 	bool showConfig;
+	bool showConsole;
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
+	void showConsoleWin(bool* p_open = NULL);
+
+	//void AddLogText(std::string incoming_text);
 
 	// WINDOW EXAMPLES
 	/*
@@ -43,4 +51,7 @@ public:
 	float my_color[4];
 	*/
 
+	void putLog(const char*);
+
+	std::vector<std::string> items;
 };
