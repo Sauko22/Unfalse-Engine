@@ -39,6 +39,15 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	fps.Start();
+	frame++;
+	// Cap fps
+	if ((fps.Read() < 1000 / FRAMES_PER_SECOND))
+	{
+		SDL_Delay((1000 / FRAMES_PER_SECOND) - fps.Read());
+	}
+
+	// Read fps
 	fps_frames++;
 	if (fps_lasttime < SDL_GetTicks() - FPS_INTERVAL * 1000)
 	{

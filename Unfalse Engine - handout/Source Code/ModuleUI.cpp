@@ -343,6 +343,11 @@ void ModuleUI::showConfigWin(bool* p_open)
 		static int fps = 60;
 		ImGui::SliderInt("Max fps", &fps, 1, 144);
 
+		if (ImGui::IsItemActive())
+		{
+			App->scene_intro->FRAMES_PER_SECOND = fps;
+		}
+
 		ImGui::Text("Limit framerate: "); ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%d", fps);
 
