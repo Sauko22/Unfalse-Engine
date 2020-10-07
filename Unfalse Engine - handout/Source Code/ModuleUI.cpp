@@ -24,6 +24,12 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showAbout = false;
 	showConfig = false;
 	showConsole = false;
+
+
+	// Fps & ms logs
+
+	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	
 	// WINDOW EXAMPLES
 	/*
@@ -340,8 +346,16 @@ void ModuleUI::showConfigWin(bool* p_open)
 		ImGui::Text("Limit framerate: "); ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%d", fps);
 
-		//char title[25];
-		//sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+		fps_log.erase(fps_log.begin());
+		fps_log.push_back(App->scene_intro->fps_current);
+		ms_log.erase(ms_log.begin());
+		ms_log.push_back(App->scene_intro->fps_frames * 1000);
+
+		char title[25];
+		sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+		ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(300, 100));
+		sprintf_s(title, 25, "Milliseconds %.1f", ms_log[ms_log.size() - 1]);
+		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 20.0f, ImVec2(310, 100));
 	}
 
 	if (ImGui::CollapsingHeader("Window"))

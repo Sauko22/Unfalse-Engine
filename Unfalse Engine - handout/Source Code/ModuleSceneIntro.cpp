@@ -3,6 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 
+
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -22,6 +23,7 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(-3, 2, 1));
 	App->camera->LookAt(vec3(0.f, 0.f, 0.f));
 
+	
 
 	return ret;
 }
@@ -45,6 +47,7 @@ update_status ModuleSceneIntro::Update()
 		fps_frames = 0;
 	}
 
+	
 	// Create a plane
 	Plane plane(0.f, 1.f, 0.f, 1.f);
 	plane.Render();

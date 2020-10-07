@@ -54,4 +54,7 @@ public:
 	void putLog(const char*);
 
 	std::vector<std::string> items;
+
+	std::vector<float> fps_log;
+	std::vector<float> ms_log;
 };
