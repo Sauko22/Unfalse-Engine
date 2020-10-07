@@ -4,6 +4,7 @@
 #include "ModuleUI.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleWindow.h"
 
 //ImGui
 #include "Glew\include\glew.h"
@@ -340,6 +341,23 @@ void ModuleUI::showConfigWin(bool* p_open)
 
 	if (ImGui::CollapsingHeader("Application"))
 	{
+		static bool vsync = true;
+		static int a = 0;
+
+		if (vsync == true && a == 0)
+		{
+			a = 1;
+			SDL_HINT_RENDER_VSYNC "1";
+			LOG("VSYNC ACTIVATED");
+		}
+		else if (vsync == false && a == 1)
+		{
+			a = 0;
+			SDL_HINT_RENDER_VSYNC "0";
+			LOG("VSYNC NONONONONO");
+		}
+		ImGui::Checkbox("Vsync", &vsync);
+
 		static int fps = 60;
 		ImGui::SliderInt("Max fps", &fps, 1, 144);
 
@@ -354,21 +372,36 @@ void ModuleUI::showConfigWin(bool* p_open)
 		fps_log.erase(fps_log.begin());
 		fps_log.push_back(App->scene_intro->fps_current);
 		ms_log.erase(ms_log.begin());
-		ms_log.push_back(App->scene_intro->fps_frames * 1000);
+		ms_log.push_back(1000 / App->scene_intro->fps_current);
 
 		char title[25];
 		sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
 		ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(300, 100));
 		sprintf_s(title, 25, "Milliseconds %.1f", ms_log[ms_log.size() - 1]);
-		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 20.0f, ImVec2(310, 100));
+		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
+
+		static bool wireframe = false;
+		static int o = 0;
+		ImGui::Checkbox("Wireframe view", &wireframe);
+
+		if (wireframe == true && o == 0)
+		{
+			o = 1;
+			glPolygonMode(GL_FRONT, GL_LINE);
+			glPolygonMode(GL_BACK, GL_LINE);
+			LOG("ISWIREFRAME");
+		}
+		else if (wireframe == false && o == 1)
+		{
+			o = 0;
+			glPolygonMode(GL_FRONT, GL_FILL);
+			glPolygonMode(GL_BACK, GL_FILL);
+			LOG("ISNOTWIREFRAME");
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Window"))
 	{
-		static bool active = false;
-		ImGui::Checkbox("Active", &active);
-		if (active == true)	{	}
-
 		static float bright = 1;
 		ImGui::SliderFloat("Brightness", &bright, 0.0f, 1.0f);
 		if (ImGui::IsItemActive()) {	SDL_SetWindowBrightness(App->window->window, bright); }
@@ -463,6 +496,34 @@ void ModuleUI::showConfigWin(bool* p_open)
 		
 	}
 
+	if (ImGui::CollapsingHeader("Input"))
+	{
+		ImGui::Text("Mouse pos: %i, %i", App->input->mouse_x, App->input->mouse_y);
+		ImGui::Text("Mouse motion: %i, %i", App->input->mouse_x_motion, App->input->mouse_y_motion);
+		ImGui::Text("Mouse wheel: %i", App->input->mouse_z);
+
+		ImGui::Separator();
+
+		ImGui::Text("Mouse down:");     
+		ImGuiIO& io = ImGui::GetIO();
+		for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
+		{
+			if (io.MouseDownDuration[i] >= 0.0f)
+			{
+				ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
+			}
+		}
+
+		ImGui::Text("Keys down:");
+		for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
+		{
+			if (io.KeysDownDuration[i] >= 0.0f)
+			{
+				ImGui::SameLine(); ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]);
+			}
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
 		SDL_version compiled;
@@ -518,8 +579,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 		// Not working
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%dMb", cur_usage_mem_kb);
 		//
-		ImGui::Text("VRAM Available: "); ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%dMb", cur_avail_mem_kb / 1000);
 		ImGui::Text("VRAM Available: "); ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "%dMb", cur_avail_mem_kb / 1000);
 		ImGui::Text("VRAM Reserved: "); ImGui::SameLine();

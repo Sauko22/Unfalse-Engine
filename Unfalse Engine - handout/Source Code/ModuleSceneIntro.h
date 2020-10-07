@@ -28,7 +28,7 @@ public:
 	Uint32 fps_frames = 0; //frames passed since the last recorded fps
 	
 	//The frames per second
-	int FRAMES_PER_SECOND = 60;
+	int FRAMES_PER_SECOND = 120;
 	
 	//Keep track of the current frame
 	int frame = 0;

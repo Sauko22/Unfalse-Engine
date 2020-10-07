@@ -124,7 +124,7 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-	
+
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
@@ -151,4 +151,26 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void ModuleRenderer3D::Draw_Axis()
+{
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glScalef(1.5, 1.5, 1.5);
+	glLineWidth(3.0);
+
+	glBegin(GL_LINES);
+	glColor3f(1, 0, 0);   
+	glVertex3fv(init);
+	glVertex3fv(X);
+	glColor3f(0, 1, 0);   
+	glVertex3fv(init);
+	glVertex3fv(Y);
+	glColor3f(0, 0, 1);   
+	glVertex3fv(init);
+	glVertex3fv(Z);
+	glEnd();
+
+	glPopMatrix();
 }
