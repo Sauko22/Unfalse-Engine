@@ -29,9 +29,22 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	// Wireframe
 	wireframe = false;
 
+	// Depth
+	depth = false;
+	
+	// Cull face
+	cull = true;
+
+	// Lighting
+	lighting = true;
+
+	// Color
+	color = true;
+
+	// Texture
+	texture2d = false;
 
 	// Fps & ms logs
-
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	
@@ -344,23 +357,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 
 	if (ImGui::CollapsingHeader("Application"))
 	{
-		static bool vsync = true;
-		static int a = 0;
-
-		if (vsync == true && a == 0)
-		{
-			a = 1;
-			SDL_HINT_RENDER_VSYNC "1";
-			LOG("VSYNC ACTIVATED");
-		}
-		else if (vsync == false && a == 1)
-		{
-			a = 0;
-			SDL_HINT_RENDER_VSYNC "0";
-			LOG("VSYNC NONONONONO");
-		}
-		ImGui::Checkbox("Vsync", &vsync);
-
 		static int fps = 60;
 		ImGui::SliderInt("Max fps", &fps, 1, 144);
 
@@ -383,8 +379,25 @@ void ModuleUI::showConfigWin(bool* p_open)
 		sprintf_s(title, 25, "Milliseconds %.1f", ms_log[ms_log.size() - 1]);
 		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
 
+		static bool vsync = true;
+		static int a = 0;
+
+		if (vsync == true && a == 0)
+		{
+			a = 1;
+			SDL_HINT_RENDER_VSYNC "1";
+			LOG("VSYNC ACTIVATED");
+		}
+		else if (vsync == false && a == 1)
+		{
+			a = 0;
+			SDL_HINT_RENDER_VSYNC "0";
+			LOG("VSYNC NONONONONO");
+		}
+		ImGui::Checkbox("Vsync", &vsync); ImGui::SameLine();
+
 		static int o = 0;
-		ImGui::Checkbox("Wireframe view", &wireframe);
+		ImGui::Checkbox("Wireframe view", &wireframe); 
 
 		if (wireframe == true && o == 0)
 		{
@@ -397,6 +410,86 @@ void ModuleUI::showConfigWin(bool* p_open)
 			o = 0;
 			wireframe = false;
 			LOG("ISNOTWIREFRAME");
+		}
+
+		static int p = 0;
+		ImGui::Checkbox("Depth disable", &depth); ImGui::SameLine();
+
+		if (depth == true && p == 0)
+		{
+			p = 1;
+			depth = true;
+			LOG("ISDEPTH");
+		}
+		else if (depth == false && p == 1)
+		{
+			p = 0;
+			depth = false;
+			LOG("ISNOTDEPTH");
+		}
+
+		static int q = 0;
+		ImGui::Checkbox("Backface cull", &cull);
+
+		if (cull == true && q == 0)
+		{
+			q = 1;
+			cull = true;
+			LOG("ISCULL");
+		}
+		else if (cull == false && q == 1)
+		{
+			q = 0;
+			cull = false;
+			LOG("ISNOTCULL");
+		}
+
+		static int r = 0;
+		ImGui::Checkbox("Lighting", &lighting); ImGui::SameLine();
+
+		if (lighting == true && r == 0)
+		{
+			r = 1;
+			lighting = true;
+			LOG("ISLIGHTING");
+		}
+		else if (lighting == false && r == 1)
+		{
+			r = 0;
+			lighting = false;
+			LOG("ISNOTLIGHTING");
+		}
+
+		static int s = 0;
+		ImGui::Checkbox("Color", &color);
+
+		if (color == true && s == 0)
+		{
+			s = 1;
+			color = true;
+			LOG("ISCOLOR");
+		}
+		else if (color == false && s == 1)
+		{
+			s = 0;
+			color = false;
+			LOG("ISNOTCOLOR");
+		}
+
+		static int t = 0;
+		ImGui::Checkbox("Texture 2D", &texture2d);
+
+		if (texture2d == true && t == 0)
+		{
+			t = 1;
+			texture2d = true;
+			LOG("ISTEXTURE2D");
+		}
+		else if (texture2d == false && t == 1)
+		{
+			t = 0;
+			texture2d = false;
+			LOG("ISNOTTEXTURE2D");
 		}
 	}
 

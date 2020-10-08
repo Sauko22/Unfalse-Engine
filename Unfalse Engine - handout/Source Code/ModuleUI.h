@@ -59,4 +59,9 @@ public:
 	std::vector<float> ms_log;
 
 	bool wireframe;
+	bool depth;
+	bool cull;
+	bool lighting;
+	bool color;
+	bool texture2d;
 };
