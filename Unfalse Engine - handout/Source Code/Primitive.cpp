@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 #include "Primitive.h"
 #include "glut/glut.h"
+#include "Application.h"
 
 #pragma comment (lib, "glut/glut32.lib")
 
@@ -116,6 +117,15 @@ void Cube::InnerRender() const
 	float sy = size.y * 0.5f;
 	float sz = size.z * 0.5f;
 
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	glBegin(GL_QUADS);
 
 	glNormal3f(0.0f, 0.0f, 1.0f);
@@ -170,6 +180,15 @@ Sphere::Sphere(float radius) : Primitive(), radius(radius)
 
 void Sphere::InnerRender() const
 {
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	glutSolidSphere(radius, 25, 25);
 }
 
@@ -188,6 +207,15 @@ Cylinder::Cylinder(float radius, float height) : Primitive(), radius(radius), he
 void Cylinder::InnerRender() const
 {
 	int n = 30;
+
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
 	// Cylinder Bottom
 	glBegin(GL_POLYGON);
@@ -236,6 +264,15 @@ void Line::InnerRender() const
 {
 	glLineWidth(2.0f);
 
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	glBegin(GL_LINES);
 
 	glVertex3f(origin.x, origin.y, origin.z);
@@ -260,6 +297,15 @@ Plane::Plane(float x, float y, float z, float d) : Primitive(), normal(x, y, z),
 void Plane::InnerRender() const
 {
 	glLineWidth(1.0f);
+
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
 	glBegin(GL_LINES);
 

@@ -23,6 +23,14 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(-3, 2, 1));
 	App->camera->LookAt(vec3(0.f, 0.f, 0.f));
 
+	// Create primitives
+	App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
+	App->primitives->CreateSphere(3, 0, 0, 1, 1, 1);
+	App->primitives->CreatePlane(0, 0, 0);
+	App->primitives->CreateCylinder(-3, 0, 0, 1, 2);
+	App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
+	
+
 	return ret;
 }
 
@@ -54,17 +62,8 @@ update_status ModuleSceneIntro::Update()
 		fps_frames = 0;
 	}
 
-	// Create a plane
-	Plane plane(0.f, 1.f, 0.f, 1.f);
-	plane.Render();
-
 	// Create XYZ Axis
 	App->renderer3D->Draw_Axis();
-
-	// Create cube
-	Cube cube(1, 1, 1);
-	cube.SetPos(0, 0, 0);
-	cube.Render();
 
 	return UPDATE_CONTINUE;
 }

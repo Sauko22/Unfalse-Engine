@@ -2,6 +2,7 @@
 #pragma once
 #include "glmath.h"
 #include "Color.h"
+//#include "Application.h"
 
 enum PrimitiveTypes
 {

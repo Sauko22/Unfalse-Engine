@@ -10,6 +10,7 @@ Application::Application()
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	UI = new ModuleUI(this);
+	primitives = new ModulePrimitives(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -19,7 +20,9 @@ Application::Application()
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
-	
+
+	// Primitives creation
+	AddModule(primitives);
 	
 	// Scenes
 	AddModule(scene_intro);

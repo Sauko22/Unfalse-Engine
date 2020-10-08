@@ -93,6 +93,9 @@
     <ClInclude Include="Source Code\ModuleUI.h">
       <Filter>Sources\Modules\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModulePrimitives.h">
+      <Filter>Sources\Modules\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -153,6 +156,9 @@
       <Filter>libs</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\ModuleUI.cpp">
+      <Filter>Sources\Modules\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModulePrimitives.cpp">
       <Filter>Sources\Modules\Game</Filter>
     </ClCompile>
   </ItemGroup>

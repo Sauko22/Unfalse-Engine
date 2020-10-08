@@ -26,6 +26,9 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showConfig = false;
 	showConsole = false;
 
+	// Wireframe
+	wireframe = false;
+
 
 	// Fps & ms logs
 
@@ -380,22 +383,19 @@ void ModuleUI::showConfigWin(bool* p_open)
 		sprintf_s(title, 25, "Milliseconds %.1f", ms_log[ms_log.size() - 1]);
 		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
 
-		static bool wireframe = false;
 		static int o = 0;
 		ImGui::Checkbox("Wireframe view", &wireframe);
 
 		if (wireframe == true && o == 0)
 		{
 			o = 1;
-			glPolygonMode(GL_FRONT, GL_LINE);
-			glPolygonMode(GL_BACK, GL_LINE);
+			wireframe = true;
 			LOG("ISWIREFRAME");
 		}
 		else if (wireframe == false && o == 1)
 		{
 			o = 0;
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glPolygonMode(GL_BACK, GL_FILL);
+			wireframe = false;
 			LOG("ISNOTWIREFRAME");
 		}
 	}
