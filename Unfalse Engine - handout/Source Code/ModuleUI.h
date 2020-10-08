@@ -55,6 +55,8 @@ public:
 
 	std::vector<std::string> items;
 
+
+	
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 
@@ -64,4 +66,7 @@ public:
 	bool lighting;
 	bool color;
 	bool texture2d;
+
+
+	bool deletepri;
 };

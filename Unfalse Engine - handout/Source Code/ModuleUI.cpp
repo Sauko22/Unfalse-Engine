@@ -6,6 +6,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
 
+
 //ImGui
 #include "Glew\include\glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
@@ -43,6 +44,9 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 
 	// Texture
 	texture2d = false;
+
+	// Delete primitives
+	deletepri = false;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -168,6 +172,37 @@ update_status ModuleUI::Update()
 			{
 				showConfig = !showConfig;
 			}
+
+			ImGui::EndMenu();
+		}
+
+
+		if (ImGui::BeginMenu("GameObject"))
+		{
+			
+			if (ImGui::MenuItem("Cube"))
+			{
+				
+					App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
+			}
+			
+
+			if (ImGui::MenuItem("Sphere"))
+			{
+				App->primitives->CreateSphere(3, 0, 0, 1, 1, 1);
+			}
+
+			if (ImGui::MenuItem("Cylinder"))
+			{
+				App->primitives->CreateCylinder(-3, 0, 0, 1, 2);
+			}
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete all"))
+			{
+				/*deletepri = true;*/
+			}
+
 
 			ImGui::EndMenu();
 		}
@@ -591,7 +626,7 @@ void ModuleUI::showConfigWin(bool* p_open)
 
 	if (ImGui::CollapsingHeader("Input"))
 	{
-		ImGui::Text("Mouse pos: %i, %i", App->input->mouse_x, App->input->mouse_y);
+		ImGui::Text("Mouse pos: %i, %i ", App->input->mouse_x, App->input->mouse_y);
 		ImGui::Text("Mouse motion: %i, %i", App->input->mouse_x_motion, App->input->mouse_y_motion);
 		ImGui::Text("Mouse wheel: %i", App->input->mouse_z);
 

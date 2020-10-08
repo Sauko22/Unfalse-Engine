@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
+#include "p2Defs.h"
 #include "Glew/include/glew.h"
 
 
@@ -23,6 +24,10 @@ bool ModulePrimitives::Start()
 bool ModulePrimitives::CleanUp()
 {
 	LOG("Unloading ModulePrimitives");
+	for (uint i = 0; i < primitive_list.size(); i++)
+	{
+		RELEASE(primitive_list[i])
+	}
 
 	return true;
 }
@@ -77,6 +82,7 @@ update_status ModulePrimitives::Update()
 			}
 			primitive_list[i]->Render();
 		}
+		
 	}
 
 	return UPDATE_CONTINUE;
