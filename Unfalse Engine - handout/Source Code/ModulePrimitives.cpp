@@ -48,7 +48,7 @@ update_status ModulePrimitives::Update()
 			{
 				glEnable(GL_DEPTH_TEST);
 			}
-			if (App->UI->cull == true)
+			if (App->UI->cull == false)
 			{
 				glDisable(GL_CULL_FACE);
 			}

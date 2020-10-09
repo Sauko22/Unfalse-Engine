@@ -48,13 +48,13 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\marcpt5\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\marcpt5\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -126,7 +126,11 @@ void Cube::InnerRender() const
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	glBegin(GL_QUADS);
+	// Primitive color
+	glColor4ub(255, 0, 0, 0);
+
+	// Cube with quads
+	/*glBegin(GL_QUADS);
 
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-sx, -sy, sz);
@@ -164,6 +168,70 @@ void Cube::InnerRender() const
 	glVertex3f( sx, -sy,  sz);
 	glVertex3f(-sx, -sy,  sz);
 
+	glEnd();*/
+	
+	// Cube with triangles
+	glBegin(GL_TRIANGLES);
+	// Face 1
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-sx, -sy, sz);
+	glVertex3f(sx, -sy, sz);
+	glVertex3f(sx, sy, sz);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-sx, -sy, sz);
+	glVertex3f(sx, sy, sz);
+	glVertex3f(-sx, sy, sz);
+
+	// Face 2
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glVertex3f(sx, -sy, -sz);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(-sx, sy, -sz);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(sx, sy, -sz);
+	glVertex3f(sx, -sy, -sz);
+	glVertex3f(-sx, sy, -sz);
+
+	// Face 3
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(sx, -sy, sz);
+	glVertex3f(sx, -sy, -sz);
+	glVertex3f(sx, sy, -sz);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(sx, sy, sz);
+	glVertex3f(sx, -sy, sz);
+	glVertex3f(sx, sy, -sz);
+
+	// Face 4
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(-sx, -sy, sz);
+	glVertex3f(-sx, sy, sz);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(-sx, sy, -sz);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(-sx, sy, sz);
+
+	// Face 5
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-sx, sy, sz);
+	glVertex3f(sx, sy, sz);
+	glVertex3f(sx, sy, -sz);
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-sx, sy, -sz);
+	glVertex3f(-sx, sy, sz);
+	glVertex3f(sx, sy, -sz);
+
+	// Face 6
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(sx, -sy, -sz);
+	glVertex3f(sx, -sy, sz);
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(-sx, -sy, sz);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(sx, -sy, sz);
+
 	glEnd();
 }
 
@@ -188,6 +256,10 @@ void Sphere::InnerRender() const
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+	
+	// Primitive color
+	glColor4ub(0, 255, 0, 0);
+
 
 	glutSolidSphere(radius, 25, 25);
 }
@@ -216,6 +288,9 @@ void Cylinder::InnerRender() const
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+	// Primitive color
+	glColor4ub(0, 0, 255, 0);
 
 	// Cylinder Bottom
 	glBegin(GL_POLYGON);
@@ -272,6 +347,9 @@ void Line::InnerRender() const
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+	// Primitive color
+	glColor4ub(255, 255, 0, 0);
 
 	glBegin(GL_LINES);
 
