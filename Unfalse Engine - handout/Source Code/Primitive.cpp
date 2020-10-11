@@ -171,68 +171,126 @@ void Cube::InnerRender() const
 	glEnd();*/
 	
 	// Cube with triangles
-	glBegin(GL_TRIANGLES);
-	// Face 1
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(sx, sy, sz);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(sx, sy, sz);
-	glVertex3f(-sx, sy, sz);
+	//glBegin(GL_TRIANGLES);
+	//// Face 1
+	//glNormal3f(0.0f, 0.0f, 1.0f);
+	//glVertex3f(-sx, -sy, sz);
+	//glVertex3f(sx, -sy, sz);
+	//glVertex3f(sx, sy, sz);
+	//glNormal3f(0.0f, 0.0f, 1.0f);
+	//glVertex3f(-sx, -sy, sz);
+	//glVertex3f(sx, sy, sz);
+	//glVertex3f(-sx, sy, sz);
 
-	// Face 2
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, sy, -sz);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(sx, sy, -sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(-sx, sy, -sz);
+	//// Face 2
+	//glNormal3f(0.0f, 0.0f, -1.0f);
+	//glVertex3f(sx, -sy, -sz);
+	//glVertex3f(-sx, -sy, -sz);
+	//glVertex3f(-sx, sy, -sz);
+	//glNormal3f(0.0f, 0.0f, 1.0f);
+	//glVertex3f(sx, sy, -sz);
+	//glVertex3f(sx, -sy, -sz);
+	//glVertex3f(-sx, sy, -sz);
 
-	// Face 3
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(sx, sy, -sz);
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(sx, sy, sz);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(sx, sy, -sz);
+	//// Face 3
+	//glNormal3f(1.0f, 0.0f, 0.0f);
+	//glVertex3f(sx, -sy, sz);
+	//glVertex3f(sx, -sy, -sz);
+	//glVertex3f(sx, sy, -sz);
+	//glNormal3f(1.0f, 0.0f, 0.0f);
+	//glVertex3f(sx, sy, sz);
+	//glVertex3f(sx, -sy, sz);
+	//glVertex3f(sx, sy, -sz);
 
-	// Face 4
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(-sx, sy, sz);
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-sx, sy, -sz);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, sy, sz);
+	//// Face 4
+	//glNormal3f(-1.0f, 0.0f, 0.0f);
+	//glVertex3f(-sx, -sy, -sz);
+	//glVertex3f(-sx, -sy, sz);
+	//glVertex3f(-sx, sy, sz);
+	//glNormal3f(-1.0f, 0.0f, 0.0f);
+	//glVertex3f(-sx, sy, -sz);
+	//glVertex3f(-sx, -sy, -sz);
+	//glVertex3f(-sx, sy, sz);
 
-	// Face 5
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-sx, sy, sz);
-	glVertex3f(sx, sy, sz);
-	glVertex3f(sx, sy, -sz);
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-sx, sy, -sz);
-	glVertex3f(-sx, sy, sz);
-	glVertex3f(sx, sy, -sz);
+	//// Face 5
+	//glNormal3f(0.0f, 1.0f, 0.0f);
+	//glVertex3f(-sx, sy, sz);
+	//glVertex3f(sx, sy, sz);
+	//glVertex3f(sx, sy, -sz);
+	//glNormal3f(0.0f, 1.0f, 0.0f);
+	//glVertex3f(-sx, sy, -sz);
+	//glVertex3f(-sx, sy, sz);
+	//glVertex3f(sx, sy, -sz);
 
-	// Face 6
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(sx, -sy, sz);
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(sx, -sy, sz);
+	//// Face 6
+	//glNormal3f(0.0f, -1.0f, 0.0f);
+	//glVertex3f(-sx, -sy, -sz);
+	//glVertex3f(sx, -sy, -sz);
+	//glVertex3f(sx, -sy, sz);
+	//glNormal3f(0.0f, -1.0f, 0.0f);
+	//glVertex3f(-sx, -sy, sz);
+	//glVertex3f(-sx, -sy, -sz);
+	//glVertex3f(sx, -sy, sz);
 
-	glEnd();
+	//glEnd();
+
+	// Cube done with glDrawarrays
+	
+GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
+					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
+
+						1, 1, 1,   1,-1, 1,   1,-1,-1,      
+						1,-1,-1,   1, 1,-1,   1, 1, 1,      
+
+						1, 1, 1,   1, 1,-1,  -1, 1,-1,      
+					   -1, 1,-1,  -1, 1, 1,   1, 1, 1,     
+
+					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,      
+					   -1,-1,-1,  -1,-1, 1,  -1, 1, 1,      
+
+					   -1,-1,-1,   1,-1,-1,   1,-1, 1,      
+						1,-1, 1,  -1,-1, 1,  -1,-1,-1,      
+
+						1,-1,-1,  -1,-1,-1,  -1, 1,-1,      
+					   -1, 1,-1,   1, 1,-1,   1,-1,-1 };    
+
+
+
+glEnableClientState(GL_VERTEX_ARRAY);
+glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+glDrawArrays(GL_TRIANGLES, 0, 36);
+
+glDisableClientState(GL_VERTEX_ARRAY);
+
+
+
+
+	// Cube done with glDrawelements
+	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
+						1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,   
+						1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,   
+					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,  -1,-1, 1,   
+					   -1,-1,-1,   1,-1,-1,   1,-1, 1,  -1,-1, 1,   
+						1,-1,-1,  -1,-1,-1,  -1, 1,-1,   1, 1,-1 }; 
+
+	GLubyte indices[] = { 0, 1, 2,   2, 3, 0,      
+					   4, 5, 6,   6, 7, 4,      
+					   8, 9,10,  10,11, 8,      
+					  12,13,14,  14,15,12,      
+					  16,17,18,  18,19,16,      
+					  20,21,22,  22,23,20 };    
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+
+	
+	glDisableClientState(GL_VERTEX_ARRAY);*/
+
+	
+
 }
 
 // SPHERE ============================================
