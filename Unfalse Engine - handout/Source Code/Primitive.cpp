@@ -129,114 +129,9 @@ void Cube::InnerRender() const
 	// Primitive color
 	glColor4ub(255, 0, 0, 0);
 
-	// Cube with quads
-	/*glBegin(GL_QUADS);
-
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f( sx, -sy, sz);
-	glVertex3f( sx,  sy, sz);
-	glVertex3f(-sx,  sy, sz);
-
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f( sx, -sy, -sz);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx,  sy, -sz);
-	glVertex3f( sx,  sy, -sz);
-
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(sx, -sy,  sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(sx,  sy, -sz);
-	glVertex3f(sx,  sy,  sz);
-
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, -sy,  sz);
-	glVertex3f(-sx,  sy,  sz);
-	glVertex3f(-sx,  sy, -sz);
-
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-sx, sy,  sz);
-	glVertex3f( sx, sy,  sz);
-	glVertex3f( sx, sy, -sz);
-	glVertex3f(-sx, sy, -sz);
-
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f( sx, -sy, -sz);
-	glVertex3f( sx, -sy,  sz);
-	glVertex3f(-sx, -sy,  sz);
-
-	glEnd();*/
-	
-	// Cube with triangles
-	//glBegin(GL_TRIANGLES);
-	//// Face 1
-	//glNormal3f(0.0f, 0.0f, 1.0f);
-	//glVertex3f(-sx, -sy, sz);
-	//glVertex3f(sx, -sy, sz);
-	//glVertex3f(sx, sy, sz);
-	//glNormal3f(0.0f, 0.0f, 1.0f);
-	//glVertex3f(-sx, -sy, sz);
-	//glVertex3f(sx, sy, sz);
-	//glVertex3f(-sx, sy, sz);
-
-	//// Face 2
-	//glNormal3f(0.0f, 0.0f, -1.0f);
-	//glVertex3f(sx, -sy, -sz);
-	//glVertex3f(-sx, -sy, -sz);
-	//glVertex3f(-sx, sy, -sz);
-	//glNormal3f(0.0f, 0.0f, 1.0f);
-	//glVertex3f(sx, sy, -sz);
-	//glVertex3f(sx, -sy, -sz);
-	//glVertex3f(-sx, sy, -sz);
-
-	//// Face 3
-	//glNormal3f(1.0f, 0.0f, 0.0f);
-	//glVertex3f(sx, -sy, sz);
-	//glVertex3f(sx, -sy, -sz);
-	//glVertex3f(sx, sy, -sz);
-	//glNormal3f(1.0f, 0.0f, 0.0f);
-	//glVertex3f(sx, sy, sz);
-	//glVertex3f(sx, -sy, sz);
-	//glVertex3f(sx, sy, -sz);
-
-	//// Face 4
-	//glNormal3f(-1.0f, 0.0f, 0.0f);
-	//glVertex3f(-sx, -sy, -sz);
-	//glVertex3f(-sx, -sy, sz);
-	//glVertex3f(-sx, sy, sz);
-	//glNormal3f(-1.0f, 0.0f, 0.0f);
-	//glVertex3f(-sx, sy, -sz);
-	//glVertex3f(-sx, -sy, -sz);
-	//glVertex3f(-sx, sy, sz);
-
-	//// Face 5
-	//glNormal3f(0.0f, 1.0f, 0.0f);
-	//glVertex3f(-sx, sy, sz);
-	//glVertex3f(sx, sy, sz);
-	//glVertex3f(sx, sy, -sz);
-	//glNormal3f(0.0f, 1.0f, 0.0f);
-	//glVertex3f(-sx, sy, -sz);
-	//glVertex3f(-sx, sy, sz);
-	//glVertex3f(sx, sy, -sz);
-
-	//// Face 6
-	//glNormal3f(0.0f, -1.0f, 0.0f);
-	//glVertex3f(-sx, -sy, -sz);
-	//glVertex3f(sx, -sy, -sz);
-	//glVertex3f(sx, -sy, sz);
-	//glNormal3f(0.0f, -1.0f, 0.0f);
-	//glVertex3f(-sx, -sy, sz);
-	//glVertex3f(-sx, -sy, -sz);
-	//glVertex3f(sx, -sy, sz);
-
-	//glEnd();
-
 	// Cube done with glDrawarrays
 	
-GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
+	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
 					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
 
 						1, 1, 1,   1,-1, 1,   1,-1,-1,      
@@ -256,12 +151,12 @@ GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,
 
 
 
-glEnableClientState(GL_VERTEX_ARRAY);
-glVertexPointer(3, GL_FLOAT, 0, vertices);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
-glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 
 

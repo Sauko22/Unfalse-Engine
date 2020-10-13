@@ -38,51 +38,12 @@ update_status ModulePrimitives::Update()
 	{
 		int i = 0;
 
+		PrimitivesProp();
+
 		for (i; i < primitive_list.size(); i++)
 		{
-			if (App->UI->depth == true)
-			{
-				glDisable(GL_DEPTH_TEST);
-			}
-			else
-			{
-				glEnable(GL_DEPTH_TEST);
-			}
-			if (App->UI->cull == false)
-			{
-				glDisable(GL_CULL_FACE);
-			}
-			else
-			{
-				glEnable(GL_CULL_FACE);
-			}
-			if (App->UI->lighting == true)
-			{
-				glEnable(GL_LIGHTING);
-			}
-			else
-			{
-				glDisable(GL_LIGHTING);
-			}
-			if (App->UI->color == true)
-			{
-				glEnable(GL_COLOR_MATERIAL);
-			}
-			else
-			{
-				glDisable(GL_COLOR_MATERIAL);
-			}
-			if (App->UI->texture2d == true)
-			{
-				glEnable(GL_TEXTURE_2D);
-			}
-			else
-			{
-				glDisable(GL_TEXTURE_2D);
-			}
 			primitive_list[i]->Render();
 		}
-		
 	}
 
 	return UPDATE_CONTINUE;
@@ -126,4 +87,48 @@ void ModulePrimitives::CreateLine(float orgnx, float orgny, float orgnz, float d
 	line->origin = vec3(orgnx, orgny, orgnz);
 	line->destination = vec3(destx, desty, destz);
 	primitive_list.push_back((Primitive*)line);
+}
+
+void ModulePrimitives::PrimitivesProp()
+{
+	if (App->UI->depth == true)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	else
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	if (App->UI->cull == false)
+	{
+		glDisable(GL_CULL_FACE);
+	}
+	else
+	{
+		glEnable(GL_CULL_FACE);
+	}
+	if (App->UI->lighting == true)
+	{
+		glEnable(GL_LIGHTING);
+	}
+	else
+	{
+		glDisable(GL_LIGHTING);
+	}
+	if (App->UI->color == true)
+	{
+		glEnable(GL_COLOR_MATERIAL);
+	}
+	else
+	{
+		glDisable(GL_COLOR_MATERIAL);
+	}
+	if (App->UI->texture2d == true)
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+	}
 }

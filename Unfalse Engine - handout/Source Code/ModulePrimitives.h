@@ -24,6 +24,9 @@ public:
 	void CreateSphere(float posx, float posy, float posz, float sizex, float sizey, float sizez);
 	void CreateCylinder(float posx, float posy, float posz, float rad, float height);
 
+	// Primitives properties
+	void PrimitivesProp();
+
 	// Primitives list
 	std::vector<Primitive*> primitive_list;
 };

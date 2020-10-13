@@ -196,11 +196,16 @@ update_status ModuleUI::Update()
 			{
 				App->primitives->CreateCylinder(-3, 0, 0, 1, 2);
 			}
+
+			if (ImGui::MenuItem("Line"))
+			{
+				App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
+			}
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete all"))
 			{
-				/*deletepri = true;*/
+				App->primitives->primitive_list.clear();
 			}
 
 
