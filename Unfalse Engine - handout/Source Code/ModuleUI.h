@@ -66,7 +66,7 @@ public:
 	bool lighting;
 	bool color;
 	bool texture2d;
-
+	void print_commits_info(const char* username, const char* repo);
 
 	bool deletepri;
 };
