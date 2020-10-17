@@ -1,6 +1,10 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+
+#include "Glew\include\glew.h"
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -97,15 +101,15 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 	}
 
-	// Projection matrix for
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
 	return ret;
 }
 
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate()
 {
+	// Projection matrix for
+	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -124,8 +128,11 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-
 	SDL_GL_SwapWindow(App->window->window);
+
+	/*glDeleteFramebuffers(1, &frameBuffer);
+	glDeleteBuffers(1, &frameBuffer);*/
+
 	return UPDATE_CONTINUE;
 }
 
@@ -151,6 +158,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	GenerateSceneBuffers();
 }
 
 void ModuleRenderer3D::Draw_Axis()
@@ -173,4 +181,51 @@ void ModuleRenderer3D::Draw_Axis()
 	glEnd();
 
 	glPopMatrix();
+}
+
+void ModuleRenderer3D::GenerateSceneBuffers()
+{
+	//Generating buffers for scene render
+	glGenFramebuffers(1, &frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+	//Generating texture to render to
+	glGenTextures(1, &renderTexture);
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->screen_surface->w, App->window->screen_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Generating the depth buffer
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->screen_surface->w, App->window->screen_surface->h);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	//Configuring frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		LOG("Error creating screen buffer");
+	}
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRenderer3D::Draw()
+{
+	// Window 1
+	ImGui::Begin("Test1", NULL);
+	
+	/*ImVec2 winSize = ImGui::GetWindowSize();
+	if (winSize.x != App->window->screen_surface->w || winSize.y != App->window->screen_surface->h)
+		OnResize(winSize.x, winSize.y);*/
+
+	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(App->window->screen_surface->w, App->window->screen_surface->h), ImVec2(0, 1), ImVec2(1, 0));
+
+	ImGui::End();
 }
