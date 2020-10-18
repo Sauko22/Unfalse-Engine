@@ -39,5 +39,5 @@ public:
 
 public:
 
-	Mesh impmesh;
+	Mesh* impmesh;
 };

@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleFBXLoad.h"
 
 #include "Glew/include/glew.h"
 
@@ -30,7 +31,7 @@ bool ModuleInput::Init()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-
+	SDL_EventState(SDL_DROPFILE,SDL_ENABLE);
 	return ret;
 }
 
@@ -110,6 +111,12 @@ update_status ModuleInput::PreUpdate()
 			case SDL_QUIT:
 			quit = true;
 			break;
+
+			case SDL_DROPFILE:
+				dropped_filedir = e.drop.file;
+				App->fbxload->Import(dropped_filedir);
+				SDL_free(dropped_filedir);
+				break;
 
 			case SDL_WINDOWEVENT:
 			{

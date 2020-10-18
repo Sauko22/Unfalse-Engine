@@ -133,8 +133,7 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-	
-		Draw_Mesh();
+    Draw_Mesh();
 	
 	SDL_GL_SwapWindow(App->window->window);
 
@@ -218,7 +217,7 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 	{
 		LOG("Error creating screen buffer");
 	}
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 }
 
 void ModuleRenderer3D::Draw()
@@ -261,17 +260,17 @@ void ModuleRenderer3D::FitWinScene(Vec2 newSize)
 void ModuleRenderer3D::Draw_Mesh() {
 
 	// Our mesh
-	mesh = &App->fbxload->impmesh;
+	mesh = App->fbxload->impmesh;
 
 	//Vertex of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_vertex);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex, mesh->vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, mesh->vertex, GL_STATIC_DRAW);
 
 	//Normal faces of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_normal);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_normal);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->num_normal, mesh->normal, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_normal, mesh->normal, GL_STATIC_DRAW);
 
 	//Indices of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_index);
@@ -282,18 +281,15 @@ void ModuleRenderer3D::Draw_Mesh() {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh.id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh.id_normal);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
 	glNormalPointer(GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh.id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
 
-	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh.num_index, GL_UNSIGNED_INT, NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

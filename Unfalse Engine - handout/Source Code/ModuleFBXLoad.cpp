@@ -17,7 +17,7 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	impmesh = new Mesh();
 }
 
 // Destructor
@@ -35,7 +35,7 @@ bool ModuleFBXLoad::Init()
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
 
-	Import("warrior.FBX");
+	
 	
 	return ret;
 }
@@ -67,29 +67,30 @@ void ModuleFBXLoad::Import(char* file_path)
 			aiMesh* ourMesh = scene->mMeshes[i];
 
 			// copy vertices
-			impmesh.num_vertex = ourMesh->mNumVertices;
-			impmesh.vertex = new float[impmesh.num_vertex * 3];
-			memcpy(impmesh.vertex, ourMesh->mVertices, sizeof(float) * impmesh.num_vertex * 3);
-			LOG("New mesh with %d vertices", impmesh.num_vertex);
+			impmesh->num_vertex = ourMesh->mNumVertices;
+			impmesh->vertex = new float[impmesh->num_vertex * 3];
+			memcpy(impmesh->vertex, ourMesh->mVertices, sizeof(float) * impmesh->num_vertex * 3);
+			LOG("New mesh with %d vertices", impmesh->num_vertex);
 
 			// copy faces
 			if (ourMesh->HasFaces())
 			{
-				impmesh.num_index = ourMesh->mNumFaces * 3;
-				impmesh.index = new uint[impmesh.num_index]; // assume each face is a triangle
+				impmesh->num_index = ourMesh->mNumFaces * 3;
+				impmesh->index = new uint[impmesh->num_index]; // assume each face is a triangle
 				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
 				{
 					if (ourMesh->mFaces[i].mNumIndices != 3) { LOG("WARNING, geometry face with != 3 indices!"); }
 
-					else { memcpy(&impmesh.index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); }
+					else { memcpy(&impmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); }
 				}
 			}
 			if (ourMesh->HasNormals()) {
 			
-				impmesh.num_normal = ourMesh->mNumVertices;
-				impmesh.normal = new float[impmesh.num_normal * 3];
-				memcpy(impmesh.vertex, ourMesh->mNormals, sizeof(float) * impmesh.num_normal * 3);
-				LOG("New mesh with %d normal", impmesh.num_normal);
+				impmesh->num_normal = ourMesh->mNumVertices;
+				impmesh->normal = new float[impmesh->num_normal * 3];
+				memcpy(impmesh->vertex, ourMesh->mNormals, sizeof(float) * impmesh->num_normal * 3);
+				LOG("New mesh with %d normal", impmesh->num_normal);
+				LOG("New mesh with %d idnormal", impmesh->id_normal);
 			
 			}
 		}
