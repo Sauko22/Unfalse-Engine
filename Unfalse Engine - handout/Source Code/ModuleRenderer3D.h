@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "ModuleFBXLoad.h"
 #include "glmath.h"
 #include "Light.h"
 #include "Vec2.h"
@@ -27,6 +28,7 @@ public:
 	void Draw();
 
 	void Draw_Axis();
+	void Draw_Mesh();
 
 public:
 
@@ -51,4 +53,6 @@ public:
 	Vec2 cornerPos;
 	Vec2 win_size;
 	Vec2 img_offset;
+
+	Mesh* mesh;
 };

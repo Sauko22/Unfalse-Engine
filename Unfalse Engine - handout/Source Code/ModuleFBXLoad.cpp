@@ -84,6 +84,14 @@ void ModuleFBXLoad::Import(char* file_path)
 					else { memcpy(&impmesh.index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); }
 				}
 			}
+			if (ourMesh->HasNormals()) {
+			
+				impmesh.num_normal = ourMesh->mNumVertices;
+				impmesh.normal = new float[impmesh.num_normal * 3];
+				memcpy(impmesh.vertex, ourMesh->mNormals, sizeof(float) * impmesh.num_normal * 3);
+				LOG("New mesh with %d normal", impmesh.num_normal);
+			
+			}
 		}
 		LOG("%s Loaded", file_path);
 		aiReleaseImport(scene);

@@ -47,7 +47,8 @@ update_status ModulePrimitives::PostUpdate()
 		int i = 0;
 
 		PrimitivesProp();
-
+		
+		
 		for (i; i < primitive_list.size(); i++)
 		{
 			primitive_list[i]->Render();
