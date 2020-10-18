@@ -5,7 +5,7 @@
 #include "Primitive.h"
 #include "glut/glut.h"
 #include "Application.h"
-
+#include "glew/include/glew.h"
 #pragma comment (lib, "glut/glut32.lib")
 
 // ------------------------------------------------------------
@@ -131,7 +131,7 @@ void Cube::InnerRender() const
 
 	// Cube done with glDrawarrays
 	
-	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
+	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
 					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
 
 						1, 1, 1,   1,-1, 1,   1,-1,-1,      
@@ -156,33 +156,39 @@ void Cube::InnerRender() const
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);*/
 
 
 
 
 	// Cube done with glDrawelements
-	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
+	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
 						1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,   
 						1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,   
 					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,  -1,-1, 1,   
 					   -1,-1,-1,   1,-1,-1,   1,-1, 1,  -1,-1, 1,   
 						1,-1,-1,  -1,-1,-1,  -1, 1,-1,   1, 1,-1 }; 
 
-	GLubyte indices[] = { 0, 1, 2,   2, 3, 0,      
+	uint indices[] = { 0, 1, 2,   2, 3, 0,      
 					   4, 5, 6,   6, 7, 4,      
 					   8, 9,10,  10,11, 8,      
 					  12,13,14,  14,15,12,      
 					  16,17,18,  18,19,16,      
-					  20,21,22,  22,23,20 };    
+					  20,21,22,  22,23,20 };
+
+	uint my_indices = 0;
+	glGenBuffers(1, (GLuint*) & (my_indices));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
 
 	
-	glDisableClientState(GL_VERTEX_ARRAY);*/
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	
 
