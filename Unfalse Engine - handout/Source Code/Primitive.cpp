@@ -1,11 +1,16 @@
-
 #include "Globals.h"
+#include "Application.h"
+#include "Primitive.h"
+
+#include "Glew\include\glew.h"
+#pragma comment (lib, "glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
+#include "glut/glut.h"
+
+#include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
-#include "Primitive.h"
-#include "glut/glut.h"
-#include "Application.h"
-#include "glew/include/glew.h"
+
 #pragma comment (lib, "glut/glut32.lib")
 
 // ------------------------------------------------------------
@@ -177,21 +182,18 @@ void Cube::InnerRender() const
 					  20,21,22,  22,23,20 };
 
 	uint my_indices = 0;
-	glGenBuffers(1, (GLuint*) & (my_indices));
+	glGenBuffers(1, (GLuint*) &(my_indices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
-	
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	
-
 }
 
 // SPHERE ============================================
