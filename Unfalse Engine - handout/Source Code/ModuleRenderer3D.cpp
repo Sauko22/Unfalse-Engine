@@ -14,7 +14,7 @@
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	
+
 }
 
 // Destructor
@@ -218,12 +218,34 @@ void ModuleRenderer3D::Draw()
 {
 	// Window 1
 	ImGui::Begin("Test1", NULL);
-	
-	/*ImVec2 winSize = ImGui::GetWindowSize();
-	if (winSize.x != App->window->screen_surface->w || winSize.y != App->window->screen_surface->h)
-		OnResize(winSize.x, winSize.y);*/
+		
+	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(win_size.x, win_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(App->window->screen_surface->w, App->window->screen_surface->h), ImVec2(0, 1), ImVec2(1, 0));
+	ImVec2 winSize = ImGui::GetWindowSize();
+	if (winSize.x != App->window->windowSize.x || winSize.y != App->window->windowSize.y)
+		FitWinScene(Vec2(winSize.x, winSize.y));
+
+	ImGui::SetCursorPos(/*ImGui::GetCursorPos() +*/ ImVec2(img_offset.x, img_offset.y));
+	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
+	img_corner.y = App->window->screen_surface->h - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
 
 	ImGui::End();
+}
+
+void ModuleRenderer3D::FitWinScene(Vec2 newSize)
+{
+	//Getting window size - some margins - separator (7)
+	win_size = newSize;
+
+	//Calculating the image size according to the window size.
+	img_size = App->window->windowSize;// -Vec2(0.0f, 25.0f); //Removing the tab area
+	if (img_size.x > win_size.x - 10.0f)
+	{
+		img_size /= (img_size.x / (win_size.x - 10.0f));
+	}
+	if (img_size.y > win_size.y - 10.0f)
+	{
+		img_size /= (img_size.y / (win_size.y - 10.0f));
+	}
+	img_offset = Vec2(win_size.x - 5.0f - img_size.x, win_size.y - 5.0f - img_size.y) / 2;
 }

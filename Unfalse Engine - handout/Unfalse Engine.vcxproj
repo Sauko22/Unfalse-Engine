@@ -104,6 +104,7 @@
     <ClInclude Include="Source Code\p2Defs.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Timer.h" />
+    <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
+    <ClCompile Include="Source Code\Vec2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

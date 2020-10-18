@@ -37,7 +37,6 @@ bool ModuleFBXLoad::Init()
 
 	Import("warrior.FBX");
 	
-
 	return ret;
 }
 
@@ -86,12 +85,11 @@ void ModuleFBXLoad::Import(char* file_path)
 				}
 			}
 		}
-
+		LOG("%s Loaded", file_path);
 		aiReleaseImport(scene);
 	}
-
 	else
+	{
 		LOG("Error loading scene % s", file_path);
-	
+	}
 }
-
