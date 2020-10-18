@@ -30,34 +30,68 @@ bool ModuleFBXLoad::Init()
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 
+	// Stream log messages to Debug window
+	struct aiLogStream stream;
+	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
+	aiAttachLogStream(&stream);
+
+	Import("warrior.FBX");
 	
 
 	return ret;
 }
 
-// PreUpdate: clear buffer
-update_status ModuleFBXLoad::PreUpdate()
-{
-	
 
-	return UPDATE_CONTINUE;
-}
 
-// PostUpdate present buffer to screen
-update_status ModuleFBXLoad::PostUpdate()
-{
 
-	return UPDATE_CONTINUE;
-}
 
 // Called before quitting
 bool ModuleFBXLoad::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
-	
+	aiDetachAllLogStreams();
 
 	return true;
 }
 
+// PostUpdate present buffer to screen
+void ModuleFBXLoad::Import(char* file_path)
+{
+	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+
+	if (scene != nullptr && scene->HasMeshes())
+	{
+		// Use scene->mNumMeshes to iterate on scene->mMeshes array
+		for (int i = 0; i < scene->mNumMeshes; i++)
+		{
+			aiMesh* ourMesh = scene->mMeshes[i];
+
+			// copy vertices
+			impmesh.num_vertex = ourMesh->mNumVertices;
+			impmesh.vertex = new float[impmesh.num_vertex * 3];
+			memcpy(impmesh.vertex, ourMesh->mVertices, sizeof(float) * impmesh.num_vertex * 3);
+			LOG("New mesh with %d vertices", impmesh.num_vertex);
+
+			// copy faces
+			if (ourMesh->HasFaces())
+			{
+				impmesh.num_index = ourMesh->mNumFaces * 3;
+				impmesh.index = new uint[impmesh.num_index]; // assume each face is a triangle
+				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
+				{
+					if (ourMesh->mFaces[i].mNumIndices != 3) { LOG("WARNING, geometry face with != 3 indices!"); }
+
+					else { memcpy(&impmesh.index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); }
+				}
+			}
+		}
+
+		aiReleaseImport(scene);
+	}
+
+	else
+		LOG("Error loading scene % s", file_path);
+	
+}
 

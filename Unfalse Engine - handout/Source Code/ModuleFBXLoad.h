@@ -6,6 +6,20 @@
 #include <iostream>
 
 
+struct Mesh {
+
+	uint id_index = 0; // index in VRAM
+	uint num_index = 0;
+	uint* index = nullptr;
+	
+	
+	uint id_vertex = 0; // unique vertex in VRAM
+	uint num_vertex = 0;
+	float* vertex = nullptr;
+
+
+
+};
 
 class ModuleFBXLoad : public Module
 {
@@ -14,13 +28,15 @@ public:
 	~ModuleFBXLoad();
 
 	bool Init();
-	update_status PreUpdate();
-	update_status PostUpdate();
+	
+
 	bool CleanUp();
 
+	void Import(char* file_path);
 	
 
 public:
 
+	Mesh impmesh;
 	
 };
