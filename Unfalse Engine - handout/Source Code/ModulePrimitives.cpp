@@ -34,6 +34,14 @@ bool ModulePrimitives::CleanUp()
 
 update_status ModulePrimitives::Update()
 {
+	
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModulePrimitives::PostUpdate()
+{
+	// Render all created primitives
 	if (primitive_list.empty() == false)
 	{
 		int i = 0;

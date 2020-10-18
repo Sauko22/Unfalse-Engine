@@ -135,8 +135,6 @@ bool ModuleUI::CleanUp()
 
 update_status ModuleUI::Update()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	// Start
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
@@ -337,6 +335,13 @@ update_status ModuleUI::Update()
 	ImGui::EndChild();
 	ImGui::End();
 	*/
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleUI::PostUpdate()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Rendering
 	ImGui::Render();

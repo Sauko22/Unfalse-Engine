@@ -101,15 +101,16 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 	}
 
+	// Projection matrix for
+	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	return ret;
 }
 
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate()
 {
-	// Projection matrix for
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -129,9 +130,6 @@ update_status ModuleRenderer3D::PreUpdate()
 update_status ModuleRenderer3D::PostUpdate()
 {
 	SDL_GL_SwapWindow(App->window->window);
-
-	/*glDeleteFramebuffers(1, &frameBuffer);
-	glDeleteBuffers(1, &frameBuffer);*/
 
 	return UPDATE_CONTINUE;
 }
@@ -204,7 +202,7 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->screen_surface->w, App->window->screen_surface->h);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	//Configuring frame buffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
