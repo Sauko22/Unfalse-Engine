@@ -127,7 +127,7 @@ void Cube::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(255, 0, 0, 0);
+	glColor4ub(255, 0, 0, 255);
 
 	// Cube done with glDrawarrays
 	
@@ -211,8 +211,7 @@ void Sphere::InnerRender() const
 	}
 	
 	// Primitive color
-	glColor4ub(0, 255, 0, 0);
-
+	glColor4ub(0, 255, 0, 255);
 
 	glutSolidSphere(radius, 25, 25);
 }
@@ -243,7 +242,7 @@ void Cylinder::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(0, 0, 255, 0);
+	glColor4ub(0, 0, 255, 255);
 
 	// Cylinder Bottom
 	glBegin(GL_POLYGON);
@@ -302,7 +301,7 @@ void Line::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(255, 255, 0, 0);
+	glColor4ub(255, 255, 0, 255);
 
 	glBegin(GL_LINES);
 
