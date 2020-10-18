@@ -94,6 +94,7 @@
     <ClInclude Include="Source Code\Light.h" />
     <ClInclude Include="Source Code\Module.h" />
     <ClInclude Include="Source Code\ModuleCamera3D.h" />
+    <ClInclude Include="Source Code\ModuleFBXLoad.h" />
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModulePrimitives.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\ModuleCamera3D.cpp" />
+    <ClCompile Include="Source Code\ModuleFBXLoad.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
     <ClCompile Include="Source Code\ModulePrimitives.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />

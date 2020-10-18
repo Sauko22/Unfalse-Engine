@@ -99,6 +99,9 @@
     <ClInclude Include="Source Code\Libs\JSON\parson.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModuleFBXLoad.h">
+      <Filter>Sources\Modules\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\Libs\JSON\parson.c">
       <Filter>libs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleFBXLoad.cpp">
+      <Filter>Sources\Modules\Game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

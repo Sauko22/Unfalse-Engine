@@ -11,6 +11,7 @@ Application::Application()
 	camera = new ModuleCamera3D(this);
 	UI = new ModuleUI(this);
 	primitives = new ModulePrimitives(this);
+	fbxload = new ModuleFBXLoad(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -24,6 +25,10 @@ Application::Application()
 	// Primitives creation
 	AddModule(primitives);
 	
+	// Load FBX
+	
+	AddModule(fbxload);
+
 	// Scenes
 	AddModule(scene_intro);
 
