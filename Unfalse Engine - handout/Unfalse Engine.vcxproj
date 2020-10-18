@@ -94,6 +94,7 @@
     <ClInclude Include="Source Code\Light.h" />
     <ClInclude Include="Source Code\Module.h" />
     <ClInclude Include="Source Code\ModuleCamera3D.h" />
+    <ClInclude Include="Source Code\ModuleFBXLoad.h" />
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModulePrimitives.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
@@ -103,6 +104,7 @@
     <ClInclude Include="Source Code\p2Defs.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Timer.h" />
+    <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />
@@ -119,6 +121,7 @@
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\ModuleCamera3D.cpp" />
+    <ClCompile Include="Source Code\ModuleFBXLoad.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
     <ClCompile Include="Source Code\ModulePrimitives.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
@@ -127,6 +130,7 @@
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
+    <ClCompile Include="Source Code\Vec2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

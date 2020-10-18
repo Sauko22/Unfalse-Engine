@@ -1,6 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleFBXLoad.h"
+
+#include "Glew/include/glew.h"
 
 #define MAX_KEYS 300
 
@@ -28,13 +31,16 @@ bool ModuleInput::Init()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-
+	SDL_EventState(SDL_DROPFILE,SDL_ENABLE);
 	return ret;
 }
 
 // Called every draw update
 update_status ModuleInput::PreUpdate()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, App->renderer3D->frameBuffer);
+
 	SDL_PumpEvents();
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -105,6 +111,12 @@ update_status ModuleInput::PreUpdate()
 			case SDL_QUIT:
 			quit = true;
 			break;
+
+			case SDL_DROPFILE:
+				dropped_filedir = e.drop.file;
+				App->fbxload->Import(dropped_filedir);
+				SDL_free(dropped_filedir);
+				break;
 
 			case SDL_WINDOWEVENT:
 			{

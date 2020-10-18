@@ -12,6 +12,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleUI.h"
 #include "ModulePrimitives.h"
+#include "ModuleFBXLoad.h"
 
 #include <string>
 #include <vector>
@@ -28,6 +29,7 @@ public:
 	ModuleCamera3D* camera;
 	ModuleUI* UI;
 	ModulePrimitives* primitives;
+	ModuleFBXLoad* fbxload;
 
 private:
 

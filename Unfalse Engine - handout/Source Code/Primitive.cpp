@@ -1,10 +1,15 @@
-
 #include "Globals.h"
+#include "Application.h"
+#include "Primitive.h"
+
+#include "Glew\include\glew.h"
+#pragma comment (lib, "glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
+#include "glut/glut.h"
+
+#include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
-#include "Primitive.h"
-#include "glut/glut.h"
-#include "Application.h"
 
 #pragma comment (lib, "glut/glut32.lib")
 
@@ -127,11 +132,11 @@ void Cube::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(255, 0, 0, 0);
+	glColor4ub(255, 0, 0, 255);
 
 	// Cube done with glDrawarrays
 	
-	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
+	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
 					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
 
 						1, 1, 1,   1,-1, 1,   1,-1,-1,      
@@ -156,36 +161,39 @@ void Cube::InnerRender() const
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);*/
 
 
 
 
 	// Cube done with glDrawelements
-	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
+	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
 						1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,   
 						1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,   
 					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,  -1,-1, 1,   
 					   -1,-1,-1,   1,-1,-1,   1,-1, 1,  -1,-1, 1,   
 						1,-1,-1,  -1,-1,-1,  -1, 1,-1,   1, 1,-1 }; 
 
-	GLubyte indices[] = { 0, 1, 2,   2, 3, 0,      
+	uint indices[] = { 0, 1, 2,   2, 3, 0,      
 					   4, 5, 6,   6, 7, 4,      
 					   8, 9,10,  10,11, 8,      
 					  12,13,14,  14,15,12,      
 					  16,17,18,  18,19,16,      
-					  20,21,22,  22,23,20 };    
+					  20,21,22,  22,23,20 };
+
+	uint my_indices = 0;
+	glGenBuffers(1, (GLuint*) &(my_indices));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
-	
-	glDisableClientState(GL_VERTEX_ARRAY);*/
-
-	
-
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 // SPHERE ============================================
@@ -211,8 +219,7 @@ void Sphere::InnerRender() const
 	}
 	
 	// Primitive color
-	glColor4ub(0, 255, 0, 0);
-
+	glColor4ub(0, 255, 0, 255);
 
 	glutSolidSphere(radius, 25, 25);
 }
@@ -243,7 +250,7 @@ void Cylinder::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(0, 0, 255, 0);
+	glColor4ub(0, 0, 255, 255);
 
 	// Cylinder Bottom
 	glBegin(GL_POLYGON);
@@ -302,7 +309,7 @@ void Line::InnerRender() const
 	}
 
 	// Primitive color
-	glColor4ub(255, 255, 0, 0);
+	glColor4ub(255, 255, 0, 255);
 
 	glBegin(GL_LINES);
 

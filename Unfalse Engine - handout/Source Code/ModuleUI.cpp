@@ -127,8 +127,8 @@ bool ModuleUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
-
 	print_commits_info("Sauko22", "Racing-Car");
+
 	return ret;
 }
 
@@ -143,11 +143,11 @@ bool ModuleUI::CleanUp()
 
 update_status ModuleUI::Update()
 {
-
 	// Start
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+
 
 
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
@@ -159,6 +159,9 @@ update_status ModuleUI::Update()
 
 		showDockSpace(&showDock);
 	}
+
+	App->renderer3D->Draw();
+
 
 	// All windows, toolbars and options of ImGui
 	// Toolbar
@@ -353,6 +356,13 @@ update_status ModuleUI::Update()
 	ImGui::EndChild();
 	ImGui::End();
 	*/
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleUI::PostUpdate()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Rendering
 	ImGui::Render();
