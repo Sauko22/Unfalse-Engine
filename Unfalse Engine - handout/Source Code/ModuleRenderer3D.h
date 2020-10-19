@@ -30,6 +30,8 @@ public:
 	void Draw_Axis();
 	void Draw_Mesh();
 
+	void Load_Mesh();
+
 public:
 
 	Light lights[MAX_LIGHTS];

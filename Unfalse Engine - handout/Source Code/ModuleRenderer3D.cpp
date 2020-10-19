@@ -15,7 +15,7 @@
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	mesh = nullptr;
 }
 
 // Destructor
@@ -105,9 +105,6 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	
-
-
 	return ret;
 }
 
@@ -133,8 +130,6 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-    Draw_Mesh();
-	
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
@@ -235,6 +230,9 @@ void ModuleRenderer3D::Draw()
 	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
 	img_corner.y = App->window->screen_surface->h - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
 
+	// Draw any Meshes loaded into scene
+	App->renderer3D->Draw_Mesh();
+
 	ImGui::End();
 }
 
@@ -257,8 +255,28 @@ void ModuleRenderer3D::FitWinScene(Vec2 newSize)
 }
 
 
-void ModuleRenderer3D::Draw_Mesh() {
+void ModuleRenderer3D::Draw_Mesh() 
+{
+	//Draw Mesh
+	glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
 
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	/*glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
+	glNormalPointer(GL_FLOAT, 0, NULL);*/
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
+
+	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
+
+	//glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void ModuleRenderer3D::Load_Mesh()
+{
 	// Our mesh
 	mesh = App->fbxload->impmesh;
 
@@ -268,31 +286,12 @@ void ModuleRenderer3D::Draw_Mesh() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, mesh->vertex, GL_STATIC_DRAW);
 
 	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_normal);
+	/*glGenBuffers(1, (GLuint*)&mesh->id_normal);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_normal);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_normal, mesh->normal, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_normal, mesh->normal, GL_STATIC_DRAW);*/
 
 	//Indices of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
-
-	//Draw Mesh
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
-	glNormalPointer(GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
-
-	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
-
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-
 }

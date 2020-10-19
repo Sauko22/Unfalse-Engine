@@ -16,9 +16,9 @@ struct Mesh {
 	uint num_vertex = 0;
 	float* vertex = nullptr;
 
-	uint id_normal = 0; // unique vertex in VRAM
+	/*uint id_normal = 0; // unique vertex in VRAM
 	uint num_normal = 0;
-	float* normal = nullptr;
+	float* normal = nullptr;*/
 
 
 
