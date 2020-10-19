@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "Module.h"
 #include "Globals.h"
 #include "ModuleFBXLoad.h"

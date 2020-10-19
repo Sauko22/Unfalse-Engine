@@ -80,23 +80,23 @@ void ModuleFBXLoad::Import(char* file_path)
 				{
 					if (ourMesh->mFaces[i].mNumIndices != 3)
 					{
-						LOG("WARNING, geometry face with != 3 indices!"); 
+						LOG("WARNING, geometry face with != 3 indices!");
 					}
-					else 
-					{ 
-						memcpy(&impmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); 
+					else
+					{
+						memcpy(&impmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
 					}
 				}
 			}
-			/*if (ourMesh->HasNormals()) {
-			
-				impmesh->num_normal = ourMesh->mNumVertices;
-				impmesh->normal = new float[impmesh->num_normal * 3];
-				memcpy(impmesh->vertex, ourMesh->mNormals, sizeof(float) * impmesh->num_normal * 3);
-				LOG("New mesh with %d normal", impmesh->num_normal);
-				LOG("New mesh with %d idnormal", impmesh->id_normal);
-			
-			}*/
+			if (ourMesh->HasNormals()) {
+
+				impmesh->num_normals = ourMesh->mNumVertices;
+				impmesh->normals = new float[impmesh->num_normals * 3];
+				memcpy(impmesh->normals, ourMesh->mNormals, sizeof(float) * impmesh->num_normals * 3);
+				LOG("New mesh with %d normal", impmesh->num_normals);
+				LOG("New mesh with %d idnormal", impmesh->id_normals);
+
+			}
 		}
 		aiReleaseImport(scene);
 		App->renderer3D->Load_Mesh();

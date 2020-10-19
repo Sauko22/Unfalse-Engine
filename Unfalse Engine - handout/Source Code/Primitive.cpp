@@ -167,29 +167,40 @@ void Cube::InnerRender() const
 
 
 	// Cube done with glDrawelements
-	GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  
-						1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,   
-						1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,   
-					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,  -1,-1, 1,   
-					   -1,-1,-1,   1,-1,-1,   1,-1, 1,  -1,-1, 1,   
-						1,-1,-1,  -1,-1,-1,  -1, 1,-1,   1, 1,-1 }; 
+	GLfloat vertices[24] = { 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+			0.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f,
+			1.0f, 1.0f, 1.0f, };
 
-	uint indices[] = { 0, 1, 2,   2, 3, 0,      
-					   4, 5, 6,   6, 7, 4,      
-					   8, 9,10,  10,11, 8,      
-					  12,13,14,  14,15,12,      
-					  16,17,18,  18,19,16,      
-					  20,21,22,  22,23,20 };
+	uint indices[36] = {
+		0, 1, 2, 2, 3, 0,
+		1, 5, 7, 7, 2, 1,
+		4, 0, 3, 3, 6, 4,
+		5, 4, 6, 6, 7, 5,
+		3, 2, 7, 7, 6, 3,
+		1, 0, 4, 4, 5, 1 };
 
-	uint my_indices = 0;
-	glGenBuffers(1, (GLuint*) &(my_indices));
+
+	glGenBuffers(1, (GLuint*) & (my_indices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
 
+	glGenBuffers(1, (GLuint*) & (my_vertices));
+	glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, vertices, GL_STATIC_DRAW);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
+
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 

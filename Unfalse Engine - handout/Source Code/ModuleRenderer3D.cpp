@@ -27,19 +27,19 @@ bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
-	
+
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
-	if(context == NULL)
+	if (context == NULL)
 	{
 		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
-	if(ret == true)
+	if (ret == true)
 	{
 		//Use Vsync
-		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
@@ -48,7 +48,7 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		GLenum error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
@@ -60,41 +60,41 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-		
+
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glClearDepth(1.0f);
-		
+
 		//Initialize clear color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 
 		//Check for error
 		error = glGetError();
-		if(error != GL_NO_ERROR)
+		if (error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-		
-		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+		GLfloat LightModelAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-		
+
 		lights[0].ref = GL_LIGHT0;
 		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[0].SetPos(0.0f, 0.0f, 2.5f);
 		lights[0].Init();
-		
-		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
-		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+		GLfloat MaterialDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
-		
+
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		lights[0].Active(true);
@@ -119,9 +119,9 @@ update_status ModuleRenderer3D::PreUpdate()
 	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	lights[0].SetPos(5, 5, 5);
 
-	for(uint i = 0; i < MAX_LIGHTS; ++i)
+	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
 	return UPDATE_CONTINUE;
@@ -168,16 +168,18 @@ void ModuleRenderer3D::Draw_Axis()
 	glLineWidth(3.0);
 
 	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);   
+	glColor3f(1, 0, 0);
 	glVertex3fv(init);
 	glVertex3fv(X);
-	glColor3f(0, 1, 0);   
+	glColor3f(0, 1, 0);
 	glVertex3fv(init);
 	glVertex3fv(Y);
-	glColor3f(0, 0, 1);   
+	glColor3f(0, 0, 1);
 	glVertex3fv(init);
 	glVertex3fv(Z);
 	glEnd();
+
+	glColor3f(1.f, 1.f, 1.f);
 
 	glPopMatrix();
 }
@@ -219,7 +221,7 @@ void ModuleRenderer3D::Draw()
 {
 	// Window 1
 	ImGui::Begin("Test1", NULL);
-		
+
 	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(win_size.x, win_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImVec2 winSize = ImGui::GetWindowSize();
@@ -255,14 +257,22 @@ void ModuleRenderer3D::FitWinScene(Vec2 newSize)
 }
 
 
-void ModuleRenderer3D::Draw_Mesh() 
+void ModuleRenderer3D::Draw_Mesh()
 {
+	//glScaled(0.1f, 0.1f, 0.1f);
+	//glRotated(-90, 1, 0, 0);
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
+	/*glEnableClientState(GL_NORMAL_ARRAY);*/
 
 	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	//Normals
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normals);
+	glNormalPointer(GL_FLOAT, 0, NULL);
+
 
 	/*glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
 	glNormalPointer(GL_FLOAT, 0, NULL);*/
@@ -272,7 +282,11 @@ void ModuleRenderer3D::Draw_Mesh()
 	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
 
 	//glDisableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 void ModuleRenderer3D::Load_Mesh()
@@ -283,15 +297,16 @@ void ModuleRenderer3D::Load_Mesh()
 	//Vertex of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_vertex);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, mesh->vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, &mesh->vertex[0], GL_STATIC_DRAW);
 
 	//Normal faces of the mesh
-	/*glGenBuffers(1, (GLuint*)&mesh->id_normal);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_normal);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_normal, mesh->normal, GL_STATIC_DRAW);*/
+	glGenBuffers(1, (GLuint*)&mesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_normals * 3, &mesh->normals[0], GL_STATIC_DRAW);
 
 	//Indices of the mesh
 	glGenBuffers(1, (GLuint*)&mesh->id_index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
 }
+
