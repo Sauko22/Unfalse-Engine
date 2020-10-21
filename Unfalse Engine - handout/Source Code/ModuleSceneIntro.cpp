@@ -6,6 +6,11 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	fps_lasttime = SDL_GetTicks();
+	fps_current = 0;
+	fps_frames = 0;
+	FRAMES_PER_SECOND = 120;
+	frame = 0;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()

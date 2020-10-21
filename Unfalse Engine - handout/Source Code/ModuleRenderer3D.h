@@ -36,9 +36,8 @@ public:
 public:
 
 	Light lights[MAX_LIGHTS];
-	SDL_GLContext context;
-	mat3x3 NormalMatrix;
-	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	//mat3x3 NormalMatrix;
+	mat4x4 /*ModelMatrix, ViewMatrix,*/ ProjectionMatrix;
 
 	// Draw axis
 	float init[3] = { 0,0,0 };
@@ -47,9 +46,9 @@ public:
 	float Z[3] = { 0,0,1 };
 
 	// Render texture
-	uint frameBuffer = 0;
-	uint depthBuffer = 0;
-	uint renderTexture = 0;
+	uint frameBuffer;
+	uint depthBuffer;
+	uint renderTexture;
 
 	Vec2 img_corner;
 	Vec2 img_size;

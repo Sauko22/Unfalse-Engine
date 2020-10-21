@@ -48,9 +48,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	// Texture
 	texture2d = false;
 
-	// Delete primitives
-	deletepri = false;
-
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -116,7 +113,7 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 	ImGui_ImplOpenGL3_Init();
 
 	print_commits_info("Sauko22", "Racing-Car");

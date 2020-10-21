@@ -6,13 +6,13 @@ ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, s
 {
 	window = NULL;
 	screen_surface = NULL;
+	windowSize = { 0,0 };
+	windowSize = Vec2(SCREEN_WIDTH * SCREEN_SIZE, SCREEN_HEIGHT * SCREEN_SIZE);
 }
 
 // Destructor
 ModuleWindow::~ModuleWindow()
 {
-	windowSize = { 0,0 };
-	windowSize = Vec2(SCREEN_WIDTH * SCREEN_SIZE, SCREEN_HEIGHT * SCREEN_SIZE);
 }
 
 // Called before render is available

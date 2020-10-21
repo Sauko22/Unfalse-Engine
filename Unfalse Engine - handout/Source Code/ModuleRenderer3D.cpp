@@ -16,6 +16,16 @@
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	mesh = nullptr;
+
+	frameBuffer = 0;
+	depthBuffer = 0;
+	renderTexture = 0;
+
+	img_corner = { 0,0 };
+	img_size = { 0,0 };;
+	cornerPos = { 0,0 };;
+	win_size = { 0,0 };;
+	img_offset = { 0,0 };;
 }
 
 // Destructor
@@ -27,14 +37,6 @@ bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
-
-	//Create context
-	context = SDL_GL_CreateContext(App->window->window);
-	if (context == NULL)
-	{
-		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
-	}
 
 	if (ret == true)
 	{
@@ -139,8 +141,6 @@ update_status ModuleRenderer3D::PostUpdate()
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
-
-	SDL_GL_DeleteContext(context);
 
 	return true;
 }

@@ -26,7 +26,6 @@ Application::Application()
 	AddModule(primitives);
 	
 	// Load FBX
-	
 	AddModule(fbxload);
 
 	// Scenes

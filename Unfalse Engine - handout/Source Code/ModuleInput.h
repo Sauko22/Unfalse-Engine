@@ -70,5 +70,4 @@ public:
 	int mouse_y_motion;
 	SDL_Event event;
 	char* dropped_filedir;
-	//int mouse_z_motion;
 };
