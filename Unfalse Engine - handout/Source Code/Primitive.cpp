@@ -200,8 +200,6 @@ void Cube::InnerRender() const
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 
-
-
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);

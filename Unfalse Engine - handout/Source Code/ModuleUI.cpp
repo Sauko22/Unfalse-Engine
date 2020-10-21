@@ -559,13 +559,11 @@ void ModuleUI::showConfigWin(bool* p_open)
 		if (ImGui::IsItemActive())
 		{
 			SDL_SetWindowSize(App->window->window, width, height);
-			App->renderer3D->OnResize(width, height);
 		}
 		ImGui::SliderInt("Height", &height, 480, 1080);
 		if (ImGui::IsItemActive()) 
 		{ 
 			SDL_SetWindowSize(App->window->window, width, height); 
-			App->renderer3D->OnResize(width, height);
 		}
 		
 		ImGui::Text("Refresh rate: %i", App->scene_intro->fps_current);
