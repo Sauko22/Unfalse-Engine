@@ -48,13 +48,13 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\marcpt5\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>C:\Users\marcpt5\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,7 +66,7 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,7 +74,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -90,21 +90,18 @@
     <ClInclude Include="Source Code\Libs\Imgui\imstb_rectpack.h" />
     <ClInclude Include="Source Code\Libs\Imgui\imstb_textedit.h" />
     <ClInclude Include="Source Code\Libs\Imgui\imstb_truetype.h" />
-    <ClInclude Include="Source Code\Libs\JSON\parson.h" />
     <ClInclude Include="Source Code\Light.h" />
     <ClInclude Include="Source Code\Module.h" />
     <ClInclude Include="Source Code\ModuleCamera3D.h" />
-    <ClInclude Include="Source Code\ModuleFBXLoad.h" />
     <ClInclude Include="Source Code\ModuleInput.h" />
-    <ClInclude Include="Source Code\ModulePrimitives.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
     <ClInclude Include="Source Code\ModuleSceneIntro.h" />
-    <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
-    <ClInclude Include="Source Code\p2Defs.h" />
+    <ClInclude Include="Source Code\p2DynArray.h" />
+    <ClInclude Include="Source Code\p2List.h" />
+    <ClInclude Include="Source Code\p2Point.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Timer.h" />
-    <ClInclude Include="Source Code\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />
@@ -116,21 +113,16 @@
     <ClCompile Include="Source Code\Libs\Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Source Code\Libs\Imgui\imgui_impl_sdl.cpp" />
     <ClCompile Include="Source Code\Libs\Imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Source Code\Libs\JSON\parson.c" />
     <ClCompile Include="Source Code\Light.cpp" />
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\ModuleCamera3D.cpp" />
-    <ClCompile Include="Source Code\ModuleFBXLoad.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
-    <ClCompile Include="Source Code\ModulePrimitives.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
     <ClCompile Include="Source Code\ModuleSceneIntro.cpp" />
-    <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
-    <ClCompile Include="Source Code\Vec2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

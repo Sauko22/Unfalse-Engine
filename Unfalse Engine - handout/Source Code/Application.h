@@ -10,13 +10,6 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
-#include "ModuleUI.h"
-#include "ModulePrimitives.h"
-#include "ModuleFBXLoad.h"
-
-#include <string>
-#include <vector>
-#include <list>
 
 class Application
 {
@@ -27,13 +20,10 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
-	ModuleUI* UI;
-	ModulePrimitives* primitives;
-	ModuleFBXLoad* fbxload;
 
 private:
 
-	std::vector<Module*> list_modules;
+	p2List<Module*> list_modules;
 
 public:
 
@@ -50,5 +40,3 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 };
-
-extern Application* App;

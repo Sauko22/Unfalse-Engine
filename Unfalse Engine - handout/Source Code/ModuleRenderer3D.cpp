@@ -1,31 +1,27 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
-#include "ModuleFBXLoad.h"
-
 #include "Glew\include\glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
-
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	mesh = nullptr;
-
-	frameBuffer = 0;
-	depthBuffer = 0;
-	renderTexture = 0;
-
-	img_corner = { 0,0 };
-	img_size = { 0,0 };;
-	cornerPos = { 0,0 };;
-	win_size = { 0,0 };;
-	img_offset = { 0,0 };;
+	// Window 3 variables
+	f = 0.5;
+	strncpy(buf, "Insert a text", 20);
+	
+	// Window 4 variables
+	my_color[0] = 1;
+	my_color[1] = 1;
+	my_color[2] = 1;
+	my_color[3] = 1;
 }
 
 // Destructor
@@ -37,11 +33,30 @@ bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
+	
+	//Create context
+	context = SDL_GL_CreateContext(App->window->window);
+	if(context == NULL)
+	{
+		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+		ret = false;
+	}
+	
+	GLenum error = glewInit();
+	if (error != GL_NO_ERROR)
+	{
+		LOG("Error initializing glew library ! %s", SDL_GetError());
+		ret = false;
+	}
+	else
+	{
+		LOG("using Glew %s", glewGetString(GLEW_VERSION));
+	}
 
-	if (ret == true)
+	if(ret == true)
 	{
 		//Use Vsync
-		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
@@ -50,7 +65,7 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		GLenum error = glGetError();
-		if (error != GL_NO_ERROR)
+		if(error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
@@ -62,41 +77,41 @@ bool ModuleRenderer3D::Init()
 
 		//Check for error
 		error = glGetError();
-		if (error != GL_NO_ERROR)
+		if(error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-
+		
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glClearDepth(1.0f);
-
+		
 		//Initialize clear color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 
 		//Check for error
 		error = glGetError();
-		if (error != GL_NO_ERROR)
+		if(error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-
-		GLfloat LightModelAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		
+		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-
+		
 		lights[0].ref = GL_LIGHT0;
 		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[0].SetPos(0.0f, 0.0f, 2.5f);
 		lights[0].Init();
-
-		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		
+		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
-		GLfloat MaterialDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
-
+		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		lights[0].Active(true);
@@ -107,13 +122,22 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window,App->renderer3D->context);
+	ImGui_ImplOpenGL3_Init();
+
 	return ret;
 }
 
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate()
 {
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -121,9 +145,9 @@ update_status ModuleRenderer3D::PreUpdate()
 	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	// light 0 on cam pos
-	lights[0].SetPos(5, 5, 5);
+	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 
-	for (uint i = 0; i < MAX_LIGHTS; ++i)
+	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
 	return UPDATE_CONTINUE;
@@ -132,8 +156,130 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-	SDL_GL_SwapWindow(App->window->window);
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui::NewFrame();
+	//
 
+	// Window 1
+	ImGui::Begin("Test1", NULL);
+	ImGui::Text("Text window 1");
+	ImGui::End();
+
+	// Window 2
+	ImGui::Begin("Test2", NULL);
+	ImGui::Text("Text window 2");
+	ImGui::End();
+
+	// Window 3
+	ImGui::Begin("Test3", NULL);
+	ImGui::Text("Hello, world %d", 123);
+	if (ImGui::Button("Save"))
+	{
+		//MySaveFunction();
+	}
+	ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
+	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+	ImGui::End();
+
+	// Window 4
+	// If nullptr is a bool, a close icon in the window appears
+	ImGui::Begin("My First Tool", nullptr, ImGuiWindowFlags_MenuBar);
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..")) 
+			{ 
+				/* Do stuff */ 
+			}
+			if (ImGui::MenuItem("Save", "Ctrl+S")) 
+			{
+				/* Do stuff */ 
+			}
+			if (ImGui::MenuItem("Close", "Ctrl+W")) 
+			{
+				/* Do stuff */
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	// Edit a color (stored as 4 floats)
+	ImGui::ColorEdit4("Color", my_color);
+
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
+
+	// Tool bar
+	if (ImGui::BeginMainMenuBar()) 
+	{
+		if (ImGui::BeginMenu("File")) 
+		{
+			
+			if (ImGui::MenuItem("New")) 
+			{
+			
+				// New file
+			}
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
+
+			if (ImGui::MenuItem("Quit")) 
+			{
+
+				// Exits the app
+				return UPDATE_STOP;
+			}
+
+			ImGui::PopStyleColor();
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help")) 
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
+
+			if (ImGui::MenuItem("Our Github")) 
+			{
+
+				// Github link:
+				ShellExecuteA(NULL, "open", "https://github.com/Sauko22/Unfalse-Engine", NULL, NULL, SW_SHOWNORMAL);
+			}
+
+			
+			ImGui::PopStyleColor();
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
+	
+	//Rendering
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+
+	}
+	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
 
@@ -141,6 +287,8 @@ update_status ModuleRenderer3D::PostUpdate()
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
+
+	SDL_GL_DeleteContext(context);
 
 	return true;
 }
@@ -157,156 +305,4 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	GenerateSceneBuffers();
 }
-
-void ModuleRenderer3D::Draw_Axis()
-{
-	glPushMatrix();
-	glTranslatef(0, 0, 0);
-	glScalef(1.5, 1.5, 1.5);
-	glLineWidth(3.0);
-
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3fv(init);
-	glVertex3fv(X);
-	glColor3f(0, 1, 0);
-	glVertex3fv(init);
-	glVertex3fv(Y);
-	glColor3f(0, 0, 1);
-	glVertex3fv(init);
-	glVertex3fv(Z);
-	glEnd();
-
-	glColor3f(1.f, 1.f, 1.f);
-
-	glPopMatrix();
-}
-
-void ModuleRenderer3D::GenerateSceneBuffers()
-{
-	//Generating buffers for scene render
-	glGenFramebuffers(1, &frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-
-	//Generating texture to render to
-	glGenTextures(1, &renderTexture);
-	glBindTexture(GL_TEXTURE_2D, renderTexture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->screen_surface->w, App->window->screen_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	//Generating the depth buffer
-	glGenRenderbuffers(1, &depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->screen_surface->w, App->window->screen_surface->h);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
-	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	//Configuring frame buffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		LOG("Error creating screen buffer");
-	}
-	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
-}
-
-void ModuleRenderer3D::Draw()
-{
-	// Window 1
-	ImGui::Begin("Test1", NULL);
-
-	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(win_size.x, win_size.y), ImVec2(0, 1), ImVec2(1, 0));
-
-	ImVec2 winSize = ImGui::GetWindowSize();
-	if (winSize.x != App->window->windowSize.x || winSize.y != App->window->windowSize.y)
-		FitWinScene(Vec2(winSize.x, winSize.y));
-
-	ImGui::SetCursorPos(/*ImGui::GetCursorPos() +*/ ImVec2(img_offset.x, img_offset.y));
-	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
-	img_corner.y = App->window->screen_surface->h - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
-
-	// Draw any Meshes loaded into scene
-	App->renderer3D->Draw_Mesh();
-
-	ImGui::End();
-}
-
-void ModuleRenderer3D::FitWinScene(Vec2 newSize)
-{
-	//Getting window size - some margins - separator (7)
-	win_size = newSize;
-
-	//Calculating the image size according to the window size.
-	img_size = App->window->windowSize;// -Vec2(0.0f, 25.0f); //Removing the tab area
-	if (img_size.x > win_size.x - 10.0f)
-	{
-		img_size /= (img_size.x / (win_size.x - 10.0f));
-	}
-	if (img_size.y > win_size.y - 10.0f)
-	{
-		img_size /= (img_size.y / (win_size.y - 10.0f));
-	}
-	img_offset = Vec2(win_size.x - 5.0f - img_size.x, win_size.y - 5.0f - img_size.y) / 2;
-}
-
-
-void ModuleRenderer3D::Draw_Mesh()
-{
-	//glScaled(0.1f, 0.1f, 0.1f);
-	//glRotated(-90, 1, 0, 0);
-	//Draw Mesh
-	glEnableClientState(GL_VERTEX_ARRAY);
-	/*glEnableClientState(GL_NORMAL_ARRAY);*/
-
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	//Normals
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normals);
-	glNormalPointer(GL_FLOAT, 0, NULL);
-
-
-	/*glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
-	glNormalPointer(GL_FLOAT, 0, NULL);*/
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
-
-	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
-
-	//glDisableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-}
-
-void ModuleRenderer3D::Load_Mesh()
-{
-	// Our mesh
-	mesh = App->fbxload->impmesh;
-
-	//Vertex of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, &mesh->vertex[0], GL_STATIC_DRAW);
-
-	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_normals);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_normals * 3, &mesh->normals[0], GL_STATIC_DRAW);
-
-	//Indices of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_index);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
-}
-

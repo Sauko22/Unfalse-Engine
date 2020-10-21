@@ -2,7 +2,6 @@
 #pragma once
 #include "glmath.h"
 #include "Color.h"
-//#include "Application.h"
 
 enum PrimitiveTypes
 {
@@ -46,8 +45,6 @@ public :
 	void InnerRender() const;
 public:
 	vec3 size;
-	uint my_indices;
-	uint my_vertices;
 };
 
 // ============================================

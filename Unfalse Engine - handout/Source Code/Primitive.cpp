@@ -1,15 +1,9 @@
+
 #include "Globals.h"
-#include "Application.h"
-#include "Primitive.h"
-
-#include "Glew\include\glew.h"
-#pragma comment (lib, "glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
-
-#include "glut/glut.h"
-
-#include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include "Primitive.h"
+#include "glut/glut.h"
 
 #pragma comment (lib, "glut/glut32.lib")
 
@@ -122,87 +116,45 @@ void Cube::InnerRender() const
 	float sy = size.y * 0.5f;
 	float sz = size.z * 0.5f;
 
-	if (App->UI->wireframe == true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+	glBegin(GL_QUADS);
 
-	// Primitive color
-	glColor4ub(255, 0, 0, 255);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-sx, -sy, sz);
+	glVertex3f( sx, -sy, sz);
+	glVertex3f( sx,  sy, sz);
+	glVertex3f(-sx,  sy, sz);
 
-	// Cube done with glDrawarrays
-	
-	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
-					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glVertex3f( sx, -sy, -sz);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(-sx,  sy, -sz);
+	glVertex3f( sx,  sy, -sz);
 
-						1, 1, 1,   1,-1, 1,   1,-1,-1,      
-						1,-1,-1,   1, 1,-1,   1, 1, 1,      
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(sx, -sy,  sz);
+	glVertex3f(sx, -sy, -sz);
+	glVertex3f(sx,  sy, -sz);
+	glVertex3f(sx,  sy,  sz);
 
-						1, 1, 1,   1, 1,-1,  -1, 1,-1,      
-					   -1, 1,-1,  -1, 1, 1,   1, 1, 1,     
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f(-sx, -sy,  sz);
+	glVertex3f(-sx,  sy,  sz);
+	glVertex3f(-sx,  sy, -sz);
 
-					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,      
-					   -1,-1,-1,  -1,-1, 1,  -1, 1, 1,      
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-sx, sy,  sz);
+	glVertex3f( sx, sy,  sz);
+	glVertex3f( sx, sy, -sz);
+	glVertex3f(-sx, sy, -sz);
 
-					   -1,-1,-1,   1,-1,-1,   1,-1, 1,      
-						1,-1, 1,  -1,-1, 1,  -1,-1,-1,      
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);
+	glVertex3f( sx, -sy, -sz);
+	glVertex3f( sx, -sy,  sz);
+	glVertex3f(-sx, -sy,  sz);
 
-						1,-1,-1,  -1,-1,-1,  -1, 1,-1,      
-					   -1, 1,-1,   1, 1,-1,   1,-1,-1 };    
-
-
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glDisableClientState(GL_VERTEX_ARRAY);*/
-
-
-
-
-	// Cube done with glDrawelements
-	GLfloat vertices[24] = { 0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 1.0f, };
-
-	uint indices[36] = {
-		0, 1, 2, 2, 3, 0,
-		1, 5, 7, 7, 2, 1,
-		4, 0, 3, 3, 6, 4,
-		5, 4, 6, 6, 7, 5,
-		3, 2, 7, 7, 6, 3,
-		1, 0, 4, 4, 5, 1 };
-
-
-	glGenBuffers(1, (GLuint*) & (my_indices));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (GLuint*) & (my_vertices));
-	glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, vertices, GL_STATIC_DRAW);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glEnd();
 }
 
 // SPHERE ============================================
@@ -218,18 +170,6 @@ Sphere::Sphere(float radius) : Primitive(), radius(radius)
 
 void Sphere::InnerRender() const
 {
-	if (App->UI->wireframe == true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	
-	// Primitive color
-	glColor4ub(0, 255, 0, 255);
-
 	glutSolidSphere(radius, 25, 25);
 }
 
@@ -248,18 +188,6 @@ Cylinder::Cylinder(float radius, float height) : Primitive(), radius(radius), he
 void Cylinder::InnerRender() const
 {
 	int n = 30;
-
-	if (App->UI->wireframe == true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-
-	// Primitive color
-	glColor4ub(0, 0, 255, 255);
 
 	// Cylinder Bottom
 	glBegin(GL_POLYGON);
@@ -308,18 +236,6 @@ void Line::InnerRender() const
 {
 	glLineWidth(2.0f);
 
-	if (App->UI->wireframe == true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-
-	// Primitive color
-	glColor4ub(255, 255, 0, 255);
-
 	glBegin(GL_LINES);
 
 	glVertex3f(origin.x, origin.y, origin.z);
@@ -344,15 +260,6 @@ Plane::Plane(float x, float y, float z, float d) : Primitive(), normal(x, y, z),
 void Plane::InnerRender() const
 {
 	glLineWidth(1.0f);
-
-	if (App->UI->wireframe == true)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
 
 	glBegin(GL_LINES);
 

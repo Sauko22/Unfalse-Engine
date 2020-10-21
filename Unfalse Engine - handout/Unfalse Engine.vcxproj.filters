@@ -24,10 +24,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source Code\p2Point.h">
+      <Filter>Sources\Containers</Filter>
+    </ClInclude>
     <ClInclude Include="Source Code\Color.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\glmath.h">
+      <Filter>Sources\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\p2DynArray.h">
+      <Filter>Sources\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\p2List.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Primitive.h">
@@ -87,24 +96,6 @@
     <ClInclude Include="Source Code\Libs\Imgui\imstb_truetype.h">
       <Filter>libs</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\p2Defs.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\ModuleUI.h">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\ModulePrimitives.h">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Libs\JSON\parson.h">
-      <Filter>libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\ModuleFBXLoad.h">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Vec2.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -163,21 +154,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\Libs\Imgui\imgui_widgets.cpp">
       <Filter>libs</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\ModuleUI.cpp">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\ModulePrimitives.cpp">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\Libs\JSON\parson.c">
-      <Filter>libs</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\ModuleFBXLoad.cpp">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\Vec2.cpp">
-      <Filter>Sources\Containers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

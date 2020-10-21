@@ -15,20 +15,6 @@ public:
 
 	virtual ~Module()
 	{}
-	bool IsActive() const
-	{
-		return enabled;
-	}
-
-	bool SetActive(bool enabled)
-	{
-		if (this->enabled != enabled)
-		{
-			this->enabled = enabled;
-			return enabled ? Start() : CleanUp();
-		}
-		return false;
-	}
 
 	virtual bool Init() 
 	{

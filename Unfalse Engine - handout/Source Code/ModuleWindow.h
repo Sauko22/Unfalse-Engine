@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "SDL/include/SDL.h"
-#include "Vec2.h"
 
 class Application;
 
@@ -27,9 +26,6 @@ public:
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
-
-	// Window size
-	Vec2 windowSize;
 };
 
 #endif // __ModuleWindow_H__

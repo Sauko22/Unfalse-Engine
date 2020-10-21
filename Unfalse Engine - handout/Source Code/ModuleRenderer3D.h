@@ -1,11 +1,15 @@
 #pragma once
-#pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "ModuleFBXLoad.h"
 #include "glmath.h"
 #include "Light.h"
-#include "Vec2.h"
+
+
+//ImGui includes
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_internal.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
 
 #define MAX_LIGHTS 8
 
@@ -22,39 +26,18 @@ public:
 
 	void OnResize(int width, int height);
 
-	void FitWinScene(Vec2 newSize);
-
-	void GenerateSceneBuffers();
-
-	void Draw();
-
-	void Draw_Axis();
-	void Draw_Mesh();
-
-	void Load_Mesh();
-
 public:
 
 	Light lights[MAX_LIGHTS];
-	//mat3x3 NormalMatrix;
-	mat4x4 /*ModelMatrix, ViewMatrix,*/ ProjectionMatrix;
+	SDL_GLContext context;
+	mat3x3 NormalMatrix;
+	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	// Draw axis
-	float init[3] = { 0,0,0 };
-	float X[3] = { 1,0,0 };
-	float Y[3] = { 0,1,0 };
-	float Z[3] = { 0,0,1 };
+private:
+	// Window 3 variables
+	float f; 
+	char buf[20];
 
-	// Render texture
-	uint frameBuffer;
-	uint depthBuffer;
-	uint renderTexture;
-
-	Vec2 img_corner;
-	Vec2 img_size;
-	Vec2 cornerPos;
-	Vec2 win_size;
-	Vec2 img_offset;
-
-	Mesh* mesh;
+	// Window 4 variables
+	float my_color[4];
 };
