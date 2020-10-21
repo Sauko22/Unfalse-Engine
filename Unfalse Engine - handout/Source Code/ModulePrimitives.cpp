@@ -8,6 +8,7 @@
 
 ModulePrimitives::ModulePrimitives(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	
 }
 
 ModulePrimitives::~ModulePrimitives()
@@ -41,13 +42,13 @@ update_status ModulePrimitives::Update()
 
 update_status ModulePrimitives::PostUpdate()
 {
+	// Check primitives properties
+	PrimitivesProp();
+
 	// Render all created primitives
 	if (primitive_list.empty() == false)
 	{
 		int i = 0;
-
-		PrimitivesProp();
-		
 		
 		for (i; i < primitive_list.size(); i++)
 		{

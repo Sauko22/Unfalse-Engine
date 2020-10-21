@@ -11,6 +11,13 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
+
+	mouse_x = 0;
+	mouse_y = 0;
+	mouse_z = 0;
+	mouse_x_motion = 0;
+	mouse_y_motion = 0;
+	dropped_filedir = nullptr;
 }
 
 // Destructor

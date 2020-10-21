@@ -55,11 +55,10 @@ public:
 	*/
 
 	void putLog(const char*);
+	void print_commits_info(const char* username, const char* repo);
 
 	std::vector<std::string> items;
 
-
-	
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 
@@ -69,7 +68,4 @@ public:
 	bool lighting;
 	bool color;
 	bool texture2d;
-	void print_commits_info(const char* username, const char* repo);
-
-	bool deletepri;
 };

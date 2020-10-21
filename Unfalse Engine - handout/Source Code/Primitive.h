@@ -46,6 +46,8 @@ public :
 	void InnerRender() const;
 public:
 	vec3 size;
+	uint my_indices;
+	uint my_vertices;
 };
 
 // ============================================

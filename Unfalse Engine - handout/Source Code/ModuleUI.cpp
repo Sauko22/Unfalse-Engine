@@ -53,9 +53,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	// Texture
 	texture2d = false;
 
-	// Delete primitives
-	deletepri = false;
-
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -121,10 +118,10 @@ bool ModuleUI::Init()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-	
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
 	print_commits_info("Sauko22", "Racing-Car");
@@ -580,13 +577,11 @@ void ModuleUI::showConfigWin(bool* p_open)
 		if (ImGui::IsItemActive())
 		{
 			SDL_SetWindowSize(App->window->window, width, height);
-			App->renderer3D->OnResize(width, height);
 		}
 		ImGui::SliderInt("Height", &height, 480, 1080);
 		if (ImGui::IsItemActive()) 
 		{ 
 			SDL_SetWindowSize(App->window->window, width, height); 
-			App->renderer3D->OnResize(width, height);
 		}
 		
 		ImGui::Text("Refresh rate: %i", App->scene_intro->fps_current);

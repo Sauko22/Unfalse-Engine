@@ -35,8 +35,6 @@ bool ModuleFBXLoad::Init()
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
 
-	
-	
 	return ret;
 }
 
@@ -49,6 +47,7 @@ bool ModuleFBXLoad::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
+	// detach log stream
 	aiDetachAllLogStreams();
 
 	return true;
@@ -79,23 +78,30 @@ void ModuleFBXLoad::Import(char* file_path)
 				impmesh->index = new uint[impmesh->num_index]; // assume each face is a triangle
 				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
 				{
-					if (ourMesh->mFaces[i].mNumIndices != 3) { LOG("WARNING, geometry face with != 3 indices!"); }
-
-					else { memcpy(&impmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint)); }
+					if (ourMesh->mFaces[i].mNumIndices != 3)
+					{
+						LOG("WARNING, geometry face with != 3 indices!");
+					}
+					else
+					{
+						memcpy(&impmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
+					}
 				}
 			}
 			if (ourMesh->HasNormals()) {
-			
-				impmesh->num_normal = ourMesh->mNumVertices;
-				impmesh->normal = new float[impmesh->num_normal * 3];
-				memcpy(impmesh->vertex, ourMesh->mNormals, sizeof(float) * impmesh->num_normal * 3);
-				LOG("New mesh with %d normal", impmesh->num_normal);
-				LOG("New mesh with %d idnormal", impmesh->id_normal);
-			
+
+				impmesh->num_normals = ourMesh->mNumVertices;
+				impmesh->normals = new float[impmesh->num_normals * 3];
+				memcpy(impmesh->normals, ourMesh->mNormals, sizeof(float) * impmesh->num_normals * 3);
+				LOG("New mesh with %d normal", impmesh->num_normals);
+				LOG("New mesh with %d idnormal", impmesh->id_normals);
+
 			}
 		}
-		LOG("%s Loaded", file_path);
 		aiReleaseImport(scene);
+		App->renderer3D->Load_Mesh();
+
+		LOG("%s Loaded", file_path);
 	}
 	else
 	{
