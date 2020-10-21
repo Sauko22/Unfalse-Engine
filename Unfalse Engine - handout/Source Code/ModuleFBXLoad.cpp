@@ -7,11 +7,22 @@
 #include "ModuleWindow.h"
 #include "ModuleFBXLoad.h"
 
+#include "Glew\include\glew.h"
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
+#include "SDL\include\SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
+
+
 
 
 
@@ -21,8 +32,19 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 }
 
 // Destructor
-ModuleFBXLoad::~ModuleFBXLoad()
-{}
+ModuleFBXLoad::~ModuleFBXLoad(){
+	glDeleteBuffers(1, &impmesh->id_index);
+	glDeleteBuffers(1, &impmesh->id_vertex);
+	glDeleteBuffers(1, &impmesh->id_normals);
+	glDeleteBuffers(1, &impmesh->id_uvs);
+
+	delete[] impmesh->index;
+	delete[] impmesh->normals;
+	delete[] impmesh->vertex;
+	delete[] impmesh->uvs;
+
+
+}
 
 // Called before render is available
 bool ModuleFBXLoad::Init()
