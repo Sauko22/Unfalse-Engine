@@ -11,6 +11,7 @@
 #define CHECKERS_HEIGHT 64
 #define CHECKERS_WIDTH 64
 
+typedef unsigned char GLubyte;
 
 class ModuleRenderer3D : public Module
 {
@@ -61,7 +62,7 @@ public:
 
 	Mesh* mesh;
 
-	/*GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];*/
+	
 
 	uint textureID;
 };

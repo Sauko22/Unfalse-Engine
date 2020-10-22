@@ -36,12 +36,12 @@ ModuleFBXLoad::~ModuleFBXLoad(){
 	glDeleteBuffers(1, &impmesh->id_index);
 	glDeleteBuffers(1, &impmesh->id_vertex);
 	glDeleteBuffers(1, &impmesh->id_normals);
-	glDeleteBuffers(1, &impmesh->id_uvs);
+	glDeleteBuffers(1, &impmesh->id_tex);
 
 	delete[] impmesh->index;
 	delete[] impmesh->normals;
 	delete[] impmesh->vertex;
-	delete[] impmesh->uvs;
+	delete[] impmesh->tex;
 
 
 }
@@ -76,7 +76,7 @@ bool ModuleFBXLoad::CleanUp()
 }
 
 // PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path)
+void ModuleFBXLoad::Import(char* file_path, int texID)
 {
 	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
@@ -119,6 +119,23 @@ void ModuleFBXLoad::Import(char* file_path)
 				LOG("New mesh with %d idnormal", impmesh->id_normals);
 
 			}
+			if (ourMesh->HasTextureCoords(0)) {
+				impmesh->num_tex = ourMesh->mNumVertices;
+				impmesh->tex = new float[ourMesh->mNumVertices * 2];
+
+				for (unsigned int i= 0; i < impmesh->num_tex; i++)
+				{
+					impmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
+					impmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
+
+				}
+				impmesh->imgID = texID;
+				LOG("New mesh with %d uvs", impmesh->num_tex);
+
+
+
+			}
+
 		}
 		aiReleaseImport(scene);
 		App->renderer3D->Load_Mesh();

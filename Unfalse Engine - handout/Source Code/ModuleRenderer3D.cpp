@@ -107,25 +107,28 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
- //  // Checker Texture
-	//for (int i = 0; i < CHECKERS_HEIGHT; i++) {
-	//	for (int j = 0; j < CHECKERS_WIDTH; j++) {
-	//		int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
-	//		checkerImage[i][j][0] = (GLubyte)c;
-	//		checkerImage[i][j][1] = (GLubyte)c;
-	//		checkerImage[i][j][2] = (GLubyte)c;
-	//		checkerImage[i][j][3] = (GLubyte)255;
-	//	}
-	//}
+	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
 
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	//glGenTextures(1, &textureID);
-	//glBindTexture(GL_TEXTURE_2D, textureID);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+   // Checker Texture
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	return ret;
 }
@@ -281,6 +284,11 @@ void ModuleRenderer3D::Draw_Mesh()
 {
 	//glScaled(0.1f, 0.1f, 0.1f);
 	//glRotated(-90, 1, 0, 0);
+	
+	glEnable(GL_TEXTURE_2D);
+	
+	
+	glBindTexture(GL_TEXTURE_2D, App->fbxload->impmesh->imgID);
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
@@ -296,7 +304,7 @@ void ModuleRenderer3D::Draw_Mesh()
 
 	//Uvs
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_uvs);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_tex);
 	glTexCoordPointer(2,GL_FLOAT, 0, NULL);
 
 
@@ -314,6 +322,7 @@ void ModuleRenderer3D::Draw_Mesh()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleRenderer3D::Load_Mesh()
@@ -337,9 +346,9 @@ void ModuleRenderer3D::Load_Mesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
 
 	//Uvs of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_uvs);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_uvs);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_uvs * 3, &mesh->uvs[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&mesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_tex * 2, &mesh->tex[0], GL_STATIC_DRAW);
 
 
 

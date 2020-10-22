@@ -20,11 +20,11 @@ struct Mesh {
 	uint num_normals = 0;
 	float* normals = nullptr;
 
-	uint id_uvs = 0; // unique vertex in VRAM
-	uint num_uvs = 0;
-	float* uvs = nullptr;
+	uint id_tex = 0; // unique vertex in VRAM
+	uint num_tex = 0;
+	float* tex = nullptr;
 
-
+	uint imgID = 0;
 
 };
 
@@ -38,7 +38,7 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path);
+	void Import(char* file_path,int texID);
 
 
 public:

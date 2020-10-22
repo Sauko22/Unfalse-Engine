@@ -121,7 +121,7 @@ update_status ModuleInput::PreUpdate()
 
 			case SDL_DROPFILE:
 				dropped_filedir = e.drop.file;
-				App->fbxload->Import(dropped_filedir);
+				App->fbxload->Import(dropped_filedir, App->renderer3D->textureID);
 				SDL_free(dropped_filedir);
 				break;
 
