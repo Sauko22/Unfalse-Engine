@@ -36,7 +36,7 @@ public:
 	void Draw_Mesh();
 
 	void Load_Mesh();
-
+	void DrawNormalLines(bool* p_open = NULL);
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -48,6 +48,10 @@ public:
 	float X[3] = { 1,0,0 };
 	float Y[3] = { 0,1,0 };
 	float Z[3] = { 0,0,1 };
+
+	// Show normal lines
+	bool showlines;
+
 
 	// Render texture
 	uint frameBuffer;

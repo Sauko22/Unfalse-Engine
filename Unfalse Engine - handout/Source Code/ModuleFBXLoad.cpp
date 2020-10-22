@@ -139,6 +139,7 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 		}
 		aiReleaseImport(scene);
 		App->renderer3D->Load_Mesh();
+		
 
 		LOG("%s Loaded", file_path);
 	}

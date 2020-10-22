@@ -27,6 +27,8 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	frameBuffer = 0;
 	depthBuffer = 0;
 	renderTexture = 0;
+	
+	showlines = false;
 
 	img_corner = { 0,0 };
 	img_size = { 0,0 };;
@@ -160,6 +162,7 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
+	
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
@@ -263,6 +266,12 @@ void ModuleRenderer3D::Draw()
 	// Draw any Meshes loaded into scene
 	App->renderer3D->Draw_Mesh();
 
+	// Draw lines on all the normal faces of the mesh
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) showlines = !showlines;
+	if (showlines)DrawNormalLines(&showlines);
+	
+
+
 	ImGui::End();
 }
 
@@ -353,6 +362,39 @@ void ModuleRenderer3D::Load_Mesh()
 	glGenBuffers(1, (GLuint*)&mesh->id_tex);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_tex * 2, &mesh->tex[0], GL_STATIC_DRAW);
+
+
+
+}
+
+
+
+void ModuleRenderer3D::DrawNormalLines(bool* p_open) {
+
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	for (size_t i = 0; i < App->fbxload->impmesh->num_vertex * 3; i += 3)
+	{
+		float v_x = App->fbxload->impmesh->vertex[i];
+		float v_y = App->fbxload->impmesh->vertex[i + 1];
+		float v_z = App->fbxload->impmesh->vertex[i + 2];
+
+		float n_x = App->fbxload->impmesh->normals[i];
+		float n_y = App->fbxload->impmesh->normals[i + 1];
+		float n_z = App->fbxload->impmesh->normals[i + 2];
+
+		glVertex3f(v_x, v_y, v_z);
+		glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
+	}
+
+	glEnd();
+
+
+
+
+
+
 
 
 
