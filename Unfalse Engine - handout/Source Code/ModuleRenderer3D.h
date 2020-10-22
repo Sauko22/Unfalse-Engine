@@ -11,7 +11,7 @@
 #define CHECKERS_HEIGHT 64
 #define CHECKERS_WIDTH 64
 
-typedef unsigned char GLubyte;
+typedef unsigned int GLuint;
 
 class ModuleRenderer3D : public Module
 {
@@ -64,5 +64,5 @@ public:
 
 	
 
-	uint textureID;
+	GLuint textureID;
 };

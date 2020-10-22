@@ -13,6 +13,13 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	mesh = nullptr;
@@ -108,8 +115,6 @@ bool ModuleRenderer3D::Init()
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
-
-   // Checker Texture
 	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
 		for (int j = 0; j < CHECKERS_WIDTH; j++) {
 			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
@@ -127,8 +132,8 @@ bool ModuleRenderer3D::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 
 	return ret;
 }
@@ -287,7 +292,6 @@ void ModuleRenderer3D::Draw_Mesh()
 	
 	glEnable(GL_TEXTURE_2D);
 	
-	
 	glBindTexture(GL_TEXTURE_2D, App->fbxload->impmesh->imgID);
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -318,7 +322,7 @@ void ModuleRenderer3D::Draw_Mesh()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
