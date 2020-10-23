@@ -8,8 +8,8 @@
 
 #define MAX_LIGHTS 8
 
-#define CHECKERS_HEIGHT 64
-#define CHECKERS_WIDTH 64
+#define CHECKERS_HEIGHT 128
+#define CHECKERS_WIDTH 128
 
 typedef unsigned int GLuint;
 

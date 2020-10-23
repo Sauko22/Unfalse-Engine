@@ -5,7 +5,8 @@
 #include <string>
 #include <iostream>
 
-
+typedef unsigned int GLuint;
+typedef unsigned int ILuint;
 struct Mesh {
 
 	uint id_index = 0; // index in VRAM
@@ -40,8 +41,12 @@ public:
 
 	void Import(char* file_path,int texID);
 
+	void LoadTexture(char* file_path);
 
 public:
 
 	Mesh* impmesh;
+
+	ILuint textIL;
+	GLuint textgl;
 };

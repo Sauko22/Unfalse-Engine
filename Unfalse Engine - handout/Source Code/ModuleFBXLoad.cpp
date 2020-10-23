@@ -22,6 +22,12 @@
 #include "Assimp/include/postprocess.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 
 
@@ -56,6 +62,12 @@ bool ModuleFBXLoad::Init()
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
+
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+
 
 	return ret;
 }
@@ -147,4 +159,23 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 	{
 		LOG("Error loading scene % s", file_path);
 	}
+}
+
+void ModuleFBXLoad::LoadTexture(char* file_path) {
+
+	
+
+	ilGenImages(1, &textIL);
+	ilBindImage(textIL);
+
+	ilLoadImage(file_path);
+
+	textgl = ilutGLBindTexImage();
+
+	ilDeleteImages(1, &textIL);
+
+
+
+
+
 }

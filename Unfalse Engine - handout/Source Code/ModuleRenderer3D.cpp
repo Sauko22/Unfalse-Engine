@@ -116,7 +116,7 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	/*GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
 	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
 		for (int j = 0; j < CHECKERS_WIDTH; j++) {
 			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
@@ -135,7 +135,7 @@ bool ModuleRenderer3D::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);*/
 
 	return ret;
 }
@@ -300,8 +300,10 @@ void ModuleRenderer3D::Draw_Mesh()
 	//glRotated(-90, 1, 0, 0);
 	
 	glEnable(GL_TEXTURE_2D);
-	
-	glBindTexture(GL_TEXTURE_2D, App->fbxload->impmesh->imgID);
+	// Texture from Devil
+	glBindTexture(GL_TEXTURE_2D, App->fbxload->textgl);
+
+	/*glBindTexture(GL_TEXTURE_2D, App->fbxload->impmesh->imgID);*/
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
@@ -325,6 +327,8 @@ void ModuleRenderer3D::Draw_Mesh()
 	
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
+
+	
 
 	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
 
