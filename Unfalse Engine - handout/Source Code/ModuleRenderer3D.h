@@ -33,9 +33,7 @@ public:
 	void Draw();
 
 	void Draw_Axis();
-	void Draw_Mesh();
 
-	void Load_Mesh();
 	void DrawNormalLines(bool* p_open = NULL);
 public:
 
@@ -52,7 +50,6 @@ public:
 	// Show normal lines
 	bool showlines;
 
-
 	// Render texture
 	uint frameBuffer;
 	uint depthBuffer;
@@ -63,10 +60,6 @@ public:
 	Vec2 cornerPos;
 	Vec2 win_size;
 	Vec2 img_offset;
-
-	Mesh* mesh;
-
-	
 
 	GLuint textureID;
 };

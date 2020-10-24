@@ -35,10 +35,12 @@
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	impmesh = new Mesh();
+	mesh = nullptr;
 }
 
 // Destructor
-ModuleFBXLoad::~ModuleFBXLoad(){
+ModuleFBXLoad::~ModuleFBXLoad()
+{
 	glDeleteBuffers(1, &impmesh->id_index);
 	glDeleteBuffers(1, &impmesh->id_vertex);
 	glDeleteBuffers(1, &impmesh->id_normals);
@@ -48,8 +50,6 @@ ModuleFBXLoad::~ModuleFBXLoad(){
 	delete[] impmesh->normals;
 	delete[] impmesh->vertex;
 	delete[] impmesh->tex;
-
-
 }
 
 // Called before render is available
@@ -71,10 +71,6 @@ bool ModuleFBXLoad::Init()
 
 	return ret;
 }
-
-
-
-
 
 // Called before quitting
 bool ModuleFBXLoad::CleanUp()
@@ -143,16 +139,11 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 				}
 				impmesh->imgID = texID;
 				LOG("New mesh with %d uvs", impmesh->num_tex);
-
-
-
 			}
-
 		}
 		aiReleaseImport(scene);
-		App->renderer3D->Load_Mesh();
+		Load_Mesh();
 		
-
 		LOG("%s Loaded", file_path);
 	}
 	else
@@ -161,10 +152,71 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 	}
 }
 
-void ModuleFBXLoad::LoadTexture(char* file_path) {
+void ModuleFBXLoad::Load_Mesh()
+{
+	// Our mesh
+	mesh = impmesh;
 
-	
+	//Vertex of the mesh
+	glGenBuffers(1, (GLuint*)&mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_vertex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, &mesh->vertex[0], GL_STATIC_DRAW);
 
+	//Normal faces of the mesh
+	glGenBuffers(1, (GLuint*)&mesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_normals * 3, &mesh->normals[0], GL_STATIC_DRAW);
+
+	//Indices of the mesh
+	glGenBuffers(1, (GLuint*)&mesh->id_index);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
+
+	//Uvs of the mesh
+	glGenBuffers(1, (GLuint*)&mesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_tex * 2, &mesh->tex[0], GL_STATIC_DRAW);
+}
+
+void ModuleFBXLoad::Draw_Mesh()
+{
+	glEnable(GL_TEXTURE_2D);
+	// Texture from Devil
+	glBindTexture(GL_TEXTURE_2D, textgl);
+
+	//Draw Mesh
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_vertex);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	//Normals
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_normals);
+	glNormalPointer(GL_FLOAT, 0, NULL);
+
+	//Uvs
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_tex);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_normals);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, impmesh->id_index);
+
+	glDrawElements(GL_TRIANGLES, impmesh->num_index, GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
+}
+
+void ModuleFBXLoad::LoadTexture(char* file_path) 
+{
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
@@ -173,9 +225,4 @@ void ModuleFBXLoad::LoadTexture(char* file_path) {
 	textgl = ilutGLBindTexImage();
 
 	ilDeleteImages(1, &textIL);
-
-
-
-
-
 }
