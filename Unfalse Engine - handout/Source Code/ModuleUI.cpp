@@ -142,6 +142,7 @@ update_status ModuleUI::Update()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+	
 
 	App->renderer3D->Draw();
 
@@ -182,6 +183,20 @@ update_status ModuleUI::Update()
 			{
 				showConfig = !showConfig;
 			}
+			if (ImGui::BeginMenu("Change Theme"))
+			{
+				if (ImGui::MenuItem("Classic"))
+				{
+					ImGui::StyleColorsClassic();
+				}
+				else if(ImGui::MenuItem("Black"))
+				{
+					ImGui::StyleColorsDark();
+				}
+
+				ImGui::EndMenu();
+			}
+
 
 			ImGui::EndMenu();
 		}
@@ -264,6 +279,11 @@ update_status ModuleUI::Update()
 		}
 
 		ImGui::EndMainMenuBar();
+	}
+
+	if (ImGui::Begin("Inspector",NULL)) {
+	
+		ImGui::End();
 	}
 
 	// Open windows
