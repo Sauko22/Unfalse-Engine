@@ -35,7 +35,11 @@ public:
 	bool showAbout;
 	bool showConfig;
 	bool showConsole;
-	bool showDock ;
+	bool* showDock;
+
+	bool inspdock;
+	bool sildock;
+	bool consdock;
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);

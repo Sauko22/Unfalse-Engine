@@ -36,10 +36,14 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showConfig = false;
 	showConsole = false;
 	
+	// Silvino tonto
 
+	inspdock = true;
+	sildock = true;
+	consdock = true;
 
 	// Docking
-	showDock = false;
+
 
 	// Wireframe
 	wireframe = false;
@@ -132,6 +136,8 @@ bool ModuleUI::Init()
 
 	print_commits_info("Sauko22", "Racing-Car");
 
+	
+
 	return ret;
 }
 
@@ -151,18 +157,8 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 	
-
-
-
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
-
-		showDock = !showDock;
-
-	}
-	if (showDock) {
-
-		showDockSpace(&showDock);
-	}
+	showDockSpace(showDock);
+	
 
 	App->renderer3D->Draw();
 
@@ -302,10 +298,22 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	if (ImGui::Begin("Inspector",NULL)) {
+	if (ImGui::Begin("Inspector",&inspdock)) {
 	
 		ImGui::End();
 	}
+	if (ImGui::Begin("Sivino", &sildock)) {
+
+		ImGui::End();
+	}
+	if (ImGui::Begin("Console", &consdock)) {
+
+		ImGui::End();
+	}
+
+	
+	
+
 
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }

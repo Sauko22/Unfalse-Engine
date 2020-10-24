@@ -180,8 +180,10 @@ void ModuleFBXLoad::Load_Mesh()
 
 void ModuleFBXLoad::Draw_Mesh()
 {
+	
 	glEnable(GL_TEXTURE_2D);
 	// Texture from Devil
+	
 	glBindTexture(GL_TEXTURE_2D, textgl);
 
 	//Draw Mesh
