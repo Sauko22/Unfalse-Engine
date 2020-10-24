@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Module.h"
 #include "Globals.h"
 #include "ModuleFBXLoad.h"
@@ -8,6 +7,11 @@
 #include "Vec2.h"
 
 #define MAX_LIGHTS 8
+
+#define CHECKERS_HEIGHT 128
+#define CHECKERS_WIDTH 128
+
+typedef unsigned int GLuint;
 
 class ModuleRenderer3D : public Module
 {
@@ -32,7 +36,7 @@ public:
 	void Draw_Mesh();
 
 	void Load_Mesh();
-
+	void DrawNormalLines(bool* p_open = NULL);
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -44,6 +48,10 @@ public:
 	float X[3] = { 1,0,0 };
 	float Y[3] = { 0,1,0 };
 	float Z[3] = { 0,0,1 };
+
+	// Show normal lines
+	bool showlines;
+
 
 	// Render texture
 	uint frameBuffer;
@@ -57,4 +65,8 @@ public:
 	Vec2 img_offset;
 
 	Mesh* mesh;
+
+	
+
+	GLuint textureID;
 };

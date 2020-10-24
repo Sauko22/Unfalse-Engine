@@ -5,7 +5,8 @@
 #include <string>
 #include <iostream>
 
-
+typedef unsigned int GLuint;
+typedef unsigned int ILuint;
 struct Mesh {
 
 	uint id_index = 0; // index in VRAM
@@ -20,11 +21,11 @@ struct Mesh {
 	uint num_normals = 0;
 	float* normals = nullptr;
 
-	/*uint id_normal = 0; // unique vertex in VRAM
-	uint num_normal = 0;
-	float* normal = nullptr;*/
+	uint id_tex = 0; // unique vertex in VRAM
+	uint num_tex = 0;
+	float* tex = nullptr;
 
-
+	uint imgID = 0;
 
 };
 
@@ -38,10 +39,14 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path);
+	void Import(char* file_path,int texID);
 
+	void LoadTexture(char* file_path);
 
 public:
 
 	Mesh* impmesh;
+
+	ILuint textIL;
+	GLuint textgl;
 };

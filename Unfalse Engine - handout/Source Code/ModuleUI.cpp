@@ -7,20 +7,26 @@
 #include "ModuleWindow.h"
 
 
-//ImGui
+
 #include "Glew\include\glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+
+
+//ImGui
+
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+
 
 // JSON Header 
 #include "JSON\parson.h" 
 
 //#include "MathGeoLib/include/MathGeoLib.h"
 
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -144,6 +150,7 @@ update_status ModuleUI::Update()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+	
 
 
 
@@ -197,6 +204,20 @@ update_status ModuleUI::Update()
 			{
 				showConfig = !showConfig;
 			}
+			if (ImGui::BeginMenu("Change Theme"))
+			{
+				if (ImGui::MenuItem("Classic"))
+				{
+					ImGui::StyleColorsClassic();
+				}
+				else if(ImGui::MenuItem("Black"))
+				{
+					ImGui::StyleColorsDark();
+				}
+
+				ImGui::EndMenu();
+			}
+
 
 			ImGui::EndMenu();
 		}
@@ -279,6 +300,11 @@ update_status ModuleUI::Update()
 		}
 
 		ImGui::EndMainMenuBar();
+	}
+
+	if (ImGui::Begin("Inspector",NULL)) {
+	
+		ImGui::End();
 	}
 
 	// Open windows

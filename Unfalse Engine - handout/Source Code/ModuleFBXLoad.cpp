@@ -7,11 +7,28 @@
 #include "ModuleWindow.h"
 #include "ModuleFBXLoad.h"
 
+#include "Glew\include\glew.h"
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
+
+#include "SDL\include\SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
+
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
 
 
 
@@ -21,8 +38,19 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 }
 
 // Destructor
-ModuleFBXLoad::~ModuleFBXLoad()
-{}
+ModuleFBXLoad::~ModuleFBXLoad(){
+	glDeleteBuffers(1, &impmesh->id_index);
+	glDeleteBuffers(1, &impmesh->id_vertex);
+	glDeleteBuffers(1, &impmesh->id_normals);
+	glDeleteBuffers(1, &impmesh->id_tex);
+
+	delete[] impmesh->index;
+	delete[] impmesh->normals;
+	delete[] impmesh->vertex;
+	delete[] impmesh->tex;
+
+
+}
 
 // Called before render is available
 bool ModuleFBXLoad::Init()
@@ -34,6 +62,12 @@ bool ModuleFBXLoad::Init()
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
+
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+
 
 	return ret;
 }
@@ -54,7 +88,7 @@ bool ModuleFBXLoad::CleanUp()
 }
 
 // PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path)
+void ModuleFBXLoad::Import(char* file_path, int texID)
 {
 	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
@@ -97,9 +131,27 @@ void ModuleFBXLoad::Import(char* file_path)
 				LOG("New mesh with %d idnormal", impmesh->id_normals);
 
 			}
+			if (ourMesh->HasTextureCoords(0)) {
+				impmesh->num_tex = ourMesh->mNumVertices;
+				impmesh->tex = new float[ourMesh->mNumVertices * 2];
+
+				for (unsigned int i= 0; i < impmesh->num_tex; i++)
+				{
+					impmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
+					impmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
+
+				}
+				impmesh->imgID = texID;
+				LOG("New mesh with %d uvs", impmesh->num_tex);
+
+
+
+			}
+
 		}
 		aiReleaseImport(scene);
 		App->renderer3D->Load_Mesh();
+		
 
 		LOG("%s Loaded", file_path);
 	}
@@ -107,4 +159,23 @@ void ModuleFBXLoad::Import(char* file_path)
 	{
 		LOG("Error loading scene % s", file_path);
 	}
+}
+
+void ModuleFBXLoad::LoadTexture(char* file_path) {
+
+	
+
+	ilGenImages(1, &textIL);
+	ilBindImage(textIL);
+
+	ilLoadImage(file_path);
+
+	textgl = ilutGLBindTexImage();
+
+	ilDeleteImages(1, &textIL);
+
+
+
+
+
 }

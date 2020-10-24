@@ -120,9 +120,22 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 			case SDL_DROPFILE:
+			{
 				dropped_filedir = e.drop.file;
-				App->fbxload->Import(dropped_filedir);
+				std::string Dir(e.drop.file);
+				Dir.substr(Dir.find("."));
+
+				
+
+				if (Dir.substr(Dir.find(".")) == (".fbx") || Dir.substr(Dir.find(".")) == (".FBX"))
+					App->fbxload->Import(dropped_filedir, App->renderer3D->textureID);
+				else
+					App->fbxload->LoadTexture(dropped_filedir);
+
 				SDL_free(dropped_filedir);
+			
+			}
+				
 				break;
 
 			case SDL_WINDOWEVENT:

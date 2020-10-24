@@ -13,6 +13,13 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
+#include "Devil\include\ilu.h"
+#include "Devil\include\ilut.h"
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	mesh = nullptr;
@@ -20,6 +27,8 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	frameBuffer = 0;
 	depthBuffer = 0;
 	renderTexture = 0;
+	
+	showlines = false;
 
 	img_corner = { 0,0 };
 	img_size = { 0,0 };;
@@ -107,6 +116,27 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	/*GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);*/
+
 	return ret;
 }
 
@@ -132,6 +162,7 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
+	
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
@@ -214,7 +245,7 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 	{
 		LOG("Error creating screen buffer");
 	}
-	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ModuleRenderer3D::Draw()
@@ -234,6 +265,12 @@ void ModuleRenderer3D::Draw()
 
 	// Draw any Meshes loaded into scene
 	App->renderer3D->Draw_Mesh();
+
+	// Draw lines on all the normal faces of the mesh
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) showlines = !showlines;
+	if (showlines)DrawNormalLines(&showlines);
+	
+
 
 	ImGui::End();
 }
@@ -261,9 +298,15 @@ void ModuleRenderer3D::Draw_Mesh()
 {
 	//glScaled(0.1f, 0.1f, 0.1f);
 	//glRotated(-90, 1, 0, 0);
+	
+	glEnable(GL_TEXTURE_2D);
+	// Texture from Devil
+	glBindTexture(GL_TEXTURE_2D, App->fbxload->textgl);
+
+	/*glBindTexture(GL_TEXTURE_2D, App->fbxload->impmesh->imgID);*/
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
-	/*glEnableClientState(GL_NORMAL_ARRAY);*/
+	
 
 	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -274,19 +317,29 @@ void ModuleRenderer3D::Draw_Mesh()
 	glNormalPointer(GL_FLOAT, 0, NULL);
 
 
-	/*glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normal);
-	glNormalPointer(GL_FLOAT, 0, NULL);*/
+	//Uvs
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_tex);
+	glTexCoordPointer(2,GL_FLOAT, 0, NULL);
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->impmesh->id_normals);
+	
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->impmesh->id_index);
 
+	
+
 	glDrawElements(GL_TRIANGLES, App->fbxload->impmesh->num_index, GL_UNSIGNED_INT, NULL);
 
-	//glDisableClientState(GL_NORMAL_ARRAY);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleRenderer3D::Load_Mesh()
@@ -308,5 +361,46 @@ void ModuleRenderer3D::Load_Mesh()
 	glGenBuffers(1, (GLuint*)&mesh->id_index);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_index);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
+
+	//Uvs of the mesh
+	glGenBuffers(1, (GLuint*)&mesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_tex * 2, &mesh->tex[0], GL_STATIC_DRAW);
+
+
+
+}
+
+
+
+void ModuleRenderer3D::DrawNormalLines(bool* p_open) {
+
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	for (size_t i = 0; i < App->fbxload->impmesh->num_vertex * 3; i += 3)
+	{
+		float v_x = App->fbxload->impmesh->vertex[i];
+		float v_y = App->fbxload->impmesh->vertex[i + 1];
+		float v_z = App->fbxload->impmesh->vertex[i + 2];
+
+		float n_x = App->fbxload->impmesh->normals[i];
+		float n_y = App->fbxload->impmesh->normals[i + 1];
+		float n_z = App->fbxload->impmesh->normals[i + 2];
+
+		glVertex3f(v_x, v_y, v_z);
+		glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
+	}
+
+	glEnd();
+
+
+
+
+
+
+
+
+
 }
 

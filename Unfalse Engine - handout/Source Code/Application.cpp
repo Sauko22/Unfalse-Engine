@@ -49,31 +49,35 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	for (uint i = 0; i < list_modules.size(); i++)
-	{
-		if (list_modules[i]->IsActive())
-			ret = list_modules[i]->Init();
+	Module* it;
+
+	for (int i = 0; i < list_modules.size() && ret == true; i++) {
+
+		it = list_modules[i];
+		ret = it->Init();
 	}
 
 	// After all Init calls we call Start() in all modules
-	LOG("-------------- Application Start --------------");
-	for (uint i = 0; i < list_modules.size(); i++)
-	{
-		if (list_modules[i]->IsActive())
-			ret = list_modules[i]->Start();
+	LOG("Application Start --------------");
+	for (int i = 0; i < list_modules.size() && ret == true; i++) {
+
+		it = list_modules[i];
+		ret = it->Start();
 	}
+
 	return ret;
 }
-
 
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+
 }
 
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -81,22 +85,26 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
-	
-	
-	
-	for (uint i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++)
-	{
-		ret = list_modules[i]->PreUpdate();
+
+
+	Module* it;
+
+	for (int i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++) {
+
+		it = list_modules[i];
+		ret = it->PreUpdate();
 	}
 
-	for (uint i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++)
-	{
-		ret = list_modules[i]->Update();
+	for (int i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++) {
+
+		it = list_modules[i];
+		ret = it->Update();
 	}
 
-	for (uint i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++)
-	{
-		ret = list_modules[i]->PostUpdate();
+	for (int i = 0; i < list_modules.size() && ret == UPDATE_CONTINUE; i++) {
+
+		it = list_modules[i];
+		ret = it->PostUpdate();
 	}
 
 	FinishUpdate();
