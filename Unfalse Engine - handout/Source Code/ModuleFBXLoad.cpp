@@ -35,6 +35,7 @@
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	impmesh = new Mesh;
+	ResizeFBX = false;
 }
 
 // Destructor
@@ -92,6 +93,7 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
+			impmesh = new Mesh;
 			aiMesh* ourMesh = scene->mMeshes[i];
 
 			// copy vertices
@@ -142,17 +144,8 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
 
-			LOG("%i VERTEX NUMBER LOADED", impmesh->num_vertex);
-			LOG("%i FACES NUMBER LOADED", impmesh->num_index);
-
 			Load_Mesh();
-			mesh_list.push_back((Mesh*)impmesh);
-
-			LOG("%i VERTEX NUMBER LOADED OBJECT 1", App->fbxload->mesh_list[0]->num_vertex);
-			LOG("%i FACES NUMBER LOADED OBJECT 1", App->fbxload->mesh_list[0]->num_index);
-			/*LOG("%i VERTEX NUMBER LOADED OBJECT 2", App->fbxload->mesh_list[1]->num_vertex);
-			LOG("%i FACES NUMBER LOADED OBJECT 2", App->fbxload->mesh_list[1]->num_index);*/
-			
+			mesh_list.push_back(impmesh);
 			LOG("%i", mesh_list.size());
 		}
 		aiReleaseImport(scene);
@@ -189,11 +182,14 @@ void ModuleFBXLoad::Load_Mesh()
 
 void Mesh::RenderMesh(int i) const
 {
-	LOG("%i NUMBER", i);
-	LOG("%i VERTEX NUMBER", App->fbxload->mesh_list[i]->num_vertex);
-	LOG("%i FACES NUMBER", App->fbxload->mesh_list[i]->num_index);
-	//glEnable(GL_TEXTURE_2D);
-	
+	if (App->fbxload->ResizeFBX == true)
+	{
+		glScaled(0.05f, 0.05f, 0.05f);
+	}
+	else
+	{
+		glScaled(1, 1, 1);
+	}
 	// Texture from Devil
 	glBindTexture(GL_TEXTURE_2D, App->fbxload->textgl);
 
@@ -224,7 +220,6 @@ void Mesh::RenderMesh(int i) const
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleFBXLoad::LoadTexture(char* file_path) 

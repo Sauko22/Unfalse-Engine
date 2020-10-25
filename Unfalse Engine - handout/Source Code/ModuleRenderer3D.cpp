@@ -148,6 +148,12 @@ update_status ModuleRenderer3D::PreUpdate()
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		App->fbxload->ResizeFBX = !App->fbxload->ResizeFBX;
+		LOG("RESIZED");
+	}
+
 	return UPDATE_CONTINUE;
 }
 

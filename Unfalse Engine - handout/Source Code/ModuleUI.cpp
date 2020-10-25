@@ -275,11 +275,13 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	if (ImGui::Begin("Inspector", NULL)) {
+	if (ImGui::Begin("Inspector", NULL)) 
+	{
 	
 		ImGui::End();
 	}
-	if (ImGui::Begin("Hierarchy", NULL)) {
+	if (ImGui::Begin("Hierarchy", NULL)) 
+	{
 
 		ImGui::End();
 	}

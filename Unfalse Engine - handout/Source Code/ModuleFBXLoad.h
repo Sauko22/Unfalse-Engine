@@ -42,7 +42,6 @@ public:
 	void Import(char* file_path,int texID);
 
 	void Load_Mesh();
-	//void Draw_Mesh();
 
 	void LoadTexture(char* file_path);
 
@@ -56,4 +55,6 @@ public:
 
 	// Show all fbx loaded on screen
 	std::vector<Mesh*> mesh_list;
+
+	bool ResizeFBX;
 };
