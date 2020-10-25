@@ -35,7 +35,6 @@ bool ModuleSceneIntro::Start()
 	/*App->primitives->CreateCylinder(-3, 0, 0, 1, 2);*/
 	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
 	
-
 	return ret;
 }
 

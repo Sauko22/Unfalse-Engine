@@ -34,7 +34,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showDemo = false;
 	showAbout = false;
 	showConfig = false;
-	showConsole = false;
 
 	// Docking
 	showDock = false;
@@ -63,19 +62,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	
-	// WINDOW EXAMPLES
-	/*
-	// Window 3 variables
-	f = 0.5;
-	strncpy(buf, "Insert a text", 20);
-
-	// Window 4 variables
-	my_color[0] = 1;
-	my_color[1] = 1;
-	my_color[2] = 1;
-	my_color[3] = 1;
-	*/
 }
 
 ModuleUI::~ModuleUI()
@@ -133,6 +119,8 @@ bool ModuleUI::Init()
 
 	print_commits_info("Sauko22", "Racing-Car");
 
+	
+
 	return ret;
 }
 
@@ -151,7 +139,7 @@ update_status ModuleUI::Update()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-	
+
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
 		showDock = !showDock;
@@ -161,6 +149,7 @@ update_status ModuleUI::Update()
 
 		showDockSpace(&showDock);
 	}
+	showDockSpace(&showDock);
 
 	App->renderer3D->Draw();
 
@@ -181,7 +170,6 @@ update_status ModuleUI::Update()
 
 			if (ImGui::MenuItem("Quit"))
 			{
-
 				// Exits the app
 				return UPDATE_STOP;
 			}
@@ -192,11 +180,6 @@ update_status ModuleUI::Update()
 
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Console"))
-			{
-				showConsole = !showConsole;
-			}
-
 			if (ImGui::MenuItem("Configuration"))
 			{
 				showConfig = !showConfig;
@@ -215,21 +198,17 @@ update_status ModuleUI::Update()
 				ImGui::EndMenu();
 			}
 
-
 			ImGui::EndMenu();
 		}
-
 
 		if (ImGui::BeginMenu("GameObject"))
 		{
 			
 			if (ImGui::MenuItem("Cube"))
 			{
-				
 					App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
 			}
 			
-
 			if (ImGui::MenuItem("Sphere"))
 			{
 				App->primitives->CreateSphere(3, 0, 0, 1, 1, 1);
@@ -250,7 +229,6 @@ update_status ModuleUI::Update()
 			{
 				App->primitives->primitive_list.clear();
 			}
-
 
 			ImGui::EndMenu();
 		}
@@ -290,8 +268,6 @@ update_status ModuleUI::Update()
 				// Github link:
 				ShellExecuteA(NULL, "open", "https://github.com/Sauko22/Unfalse-Engine", NULL, NULL, SW_SHOWNORMAL);
 			}
-
-
 			ImGui::PopStyleColor();
 			ImGui::EndMenu();
 		}
@@ -299,83 +275,27 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	if (ImGui::Begin("Inspector",NULL)) {
+	if (ImGui::Begin("Inspector", NULL)) {
 	
+		ImGui::End();
+	}
+	if (ImGui::Begin("Hierarchy", NULL)) {
+
+		ImGui::End();
+	}
+	if (ImGui::Begin("Console", NULL)) 
+	{
+		showConsoleWin();
+
 		ImGui::End();
 	}
 
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
 	
-	if (showAbout == true) { ModuleUI::showAboutWin(&showAbout); }
+	if (showAbout == true) { showAboutWin(&showAbout); }
 	
-	if (showConfig == true) { ModuleUI::showConfigWin(&showConfig); }
-	
-	if (showConsole == true) { ModuleUI::showConsoleWin(&showConsole); }
-
-
-	// WINDOW EXAMPLES
-	/*
-	// Window 1
-	ImGui::Begin("Test1", NULL);
-	ImGui::Text("Text window 1");
-	ImGui::End();
-	
-	// Window 2
-	ImGui::Begin("Test2", NULL);
-	ImGui::Text("Text window 2");
-	ImGui::End();
-
-	// Window 3
-	ImGui::Begin("Test3", NULL);
-	ImGui::Text("Hello, world %d", 123);
-	if (ImGui::Button("Save"))
-	{
-		//MySaveFunction();
-	}
-	ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-	ImGui::End();
-
-	// Window 4
-	// If nullptr is a bool, a close icon in the window appears
-	ImGui::Begin("My First Tool", nullptr, ImGuiWindowFlags_MenuBar);
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open.."))
-			{
-				// Do stuff
-			}
-			if (ImGui::MenuItem("Save", "Ctrl+S"))
-			{
-				// Do stuff
-			}
-			if (ImGui::MenuItem("Close", "Ctrl+W"))
-			{
-				// Do stuff
-			}
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-	// Edit a color (stored as 4 floats)
-	ImGui::ColorEdit4("Color", my_color);
-
-	// Plot some values
-	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
-
-	// Display contents in a scrolling region
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
-	ImGui::End();
-	*/
+	if (showConfig == true) { showConfigWin(&showConfig); }
 
 	return UPDATE_CONTINUE;
 }
@@ -402,28 +322,15 @@ update_status ModuleUI::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
-/*void ModuleUI::Log(void* userdata, int category, SDL_LogPriority priority, const char* message)
-{
-	printf("[Log] %s", message);
-}*/
-
 // Windows functions
-void ModuleUI::showConsoleWin(bool* p_open)
+void ModuleUI::showConsoleWin()
 {
-	if (!ImGui::Begin("Console", p_open))
-	{
-		ImGui::End();
-		return;
-	}
-
 	for (uint i = 0; i < items.size(); i++)
 	{
 		const char* item = items[i].c_str();
 
 		ImGui::Text(item);
 	}
-
-	ImGui::End();
 }
 
 void ModuleUI::putLog(const char* log)

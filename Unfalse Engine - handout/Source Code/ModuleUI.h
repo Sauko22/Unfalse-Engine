@@ -34,12 +34,13 @@ public:
 	bool showDemo;
 	bool showAbout;
 	bool showConfig;
-	bool showConsole;
+
+	// Docking
 	bool showDock;
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
-	void showConsoleWin(bool* p_open = NULL);
+	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
 
 	//void AddLogText(std::string incoming_text);
