@@ -140,11 +140,11 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
+	/*if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
 		showDock = !showDock;
 
-	}
+	}*/
 	if (showDock) {
 
 		showDockSpace(&showDock);
