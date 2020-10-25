@@ -34,8 +34,7 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	impmesh = new Mesh();
-	mesh = nullptr;
+	impmesh = new Mesh;
 }
 
 // Destructor
@@ -118,7 +117,8 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 					}
 				}
 			}
-			if (ourMesh->HasNormals()) {
+			if (ourMesh->HasNormals()) 
+			{
 
 				impmesh->num_normals = ourMesh->mNumVertices;
 				impmesh->normals = new float[impmesh->num_normals * 3];
@@ -127,7 +127,8 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 				LOG("New mesh with %d idnormal", impmesh->id_normals);
 
 			}
-			if (ourMesh->HasTextureCoords(0)) {
+			if (ourMesh->HasTextureCoords(0)) 
+			{
 				impmesh->num_tex = ourMesh->mNumVertices;
 				impmesh->tex = new float[ourMesh->mNumVertices * 2];
 
@@ -140,10 +141,21 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 				impmesh->imgID = texID;
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
+
+			LOG("%i VERTEX NUMBER LOADED", impmesh->num_vertex);
+			LOG("%i FACES NUMBER LOADED", impmesh->num_index);
+
+			Load_Mesh();
+			mesh_list.push_back((Mesh*)impmesh);
+
+			LOG("%i VERTEX NUMBER LOADED OBJECT 1", App->fbxload->mesh_list[0]->num_vertex);
+			LOG("%i FACES NUMBER LOADED OBJECT 1", App->fbxload->mesh_list[0]->num_index);
+			/*LOG("%i VERTEX NUMBER LOADED OBJECT 2", App->fbxload->mesh_list[1]->num_vertex);
+			LOG("%i FACES NUMBER LOADED OBJECT 2", App->fbxload->mesh_list[1]->num_index);*/
+			
+			LOG("%i", mesh_list.size());
 		}
 		aiReleaseImport(scene);
-		Load_Mesh();
-		
 		LOG("%s Loaded", file_path);
 	}
 	else
@@ -154,57 +166,57 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 
 void ModuleFBXLoad::Load_Mesh()
 {
-	// Our mesh
-	mesh = impmesh;
-
 	//Vertex of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, &mesh->vertex[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&impmesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, impmesh->id_vertex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * impmesh->num_vertex * 3, &impmesh->vertex[0], GL_STATIC_DRAW);
 
 	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_normals);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_normals * 3, &mesh->normals[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&impmesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * impmesh->num_normals * 3, &impmesh->normals[0], GL_STATIC_DRAW);
 
 	//Indices of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_index);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, &mesh->index[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&impmesh->id_index);
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * impmesh->num_index, &impmesh->index[0], GL_STATIC_DRAW);
 
 	//Uvs of the mesh
-	glGenBuffers(1, (GLuint*)&mesh->id_tex);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_tex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_tex * 2, &mesh->tex[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&impmesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * impmesh->num_tex * 2, &impmesh->tex[0], GL_STATIC_DRAW);
 }
 
-void ModuleFBXLoad::Draw_Mesh()
+void Mesh::RenderMesh(int i) const
 {
-	glEnable(GL_TEXTURE_2D);
+	LOG("%i NUMBER", i);
+	LOG("%i VERTEX NUMBER", App->fbxload->mesh_list[i]->num_vertex);
+	LOG("%i FACES NUMBER", App->fbxload->mesh_list[i]->num_index);
+	//glEnable(GL_TEXTURE_2D);
+	
 	// Texture from Devil
-	glBindTexture(GL_TEXTURE_2D, textgl);
+	glBindTexture(GL_TEXTURE_2D, App->fbxload->textgl);
 
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	//Normals
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_normals);
 	glNormalPointer(GL_FLOAT, 0, NULL);
 
 	//Uvs
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_tex);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, impmesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_normals);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, impmesh->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_index);
 
-	glDrawElements(GL_TRIANGLES, impmesh->num_index, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, App->fbxload->mesh_list[i]->num_index, GL_UNSIGNED_INT, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -212,7 +224,7 @@ void ModuleFBXLoad::Draw_Mesh()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleFBXLoad::LoadTexture(char* file_path) 

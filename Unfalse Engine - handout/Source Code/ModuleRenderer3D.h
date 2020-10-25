@@ -5,6 +5,7 @@
 #include "glmath.h"
 #include "Light.h"
 #include "Vec2.h"
+#include "ModuleFBXLoad.h"
 
 #define MAX_LIGHTS 8
 
@@ -26,7 +27,7 @@ public:
 
 	void OnResize(int width, int height);
 
-	void FitWinScene(Vec2 newSize);
+	void WinResize(Vec2 newSize);
 
 	void GenerateSceneBuffers();
 
@@ -54,12 +55,6 @@ public:
 	uint frameBuffer;
 	uint depthBuffer;
 	uint renderTexture;
-
-	Vec2 img_corner;
 	Vec2 img_size;
-	Vec2 cornerPos;
 	Vec2 win_size;
-	Vec2 img_offset;
-
-	GLuint textureID;
 };

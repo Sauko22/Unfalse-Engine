@@ -1,13 +1,14 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "glmath.h"
-#include <string>
-#include <iostream>
+#include "Vector.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
-struct Mesh {
+
+struct Mesh
+{
+	virtual void RenderMesh(int i) const;
 
 	uint id_index = 0; // index in VRAM
 	uint num_index = 0;
@@ -26,7 +27,6 @@ struct Mesh {
 	float* tex = nullptr;
 
 	uint imgID = 0;
-
 };
 
 class ModuleFBXLoad : public Module
@@ -42,7 +42,7 @@ public:
 	void Import(char* file_path,int texID);
 
 	void Load_Mesh();
-	void Draw_Mesh();
+	//void Draw_Mesh();
 
 	void LoadTexture(char* file_path);
 
@@ -52,6 +52,8 @@ public:
 
 	ILuint textIL;
 	GLuint textgl;
+	GLuint textureID;
 
-	Mesh* mesh;
+	// Show all fbx loaded on screen
+	std::vector<Mesh*> mesh_list;
 };

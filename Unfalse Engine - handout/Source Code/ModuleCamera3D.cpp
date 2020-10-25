@@ -12,6 +12,8 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	Position = vec3(10.0f, 2.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
+
+	camera_speed = 0;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -37,46 +39,48 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update()
 {
-
-	float camera_speed = 0.05f;
-	// OnKeys WASD keys -----------------------------------
-
-	// TODO 3: Make the camera go up/down when pressing R (up) F(down)
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) {
-		Position.y += camera_speed;
-		Reference.y += camera_speed;
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+	{
+		camera_speed = 0.15;
+	}
+	else
+	{
+		camera_speed = 0.05f;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) {
-		Position.y -= camera_speed;
-		Reference.y -= camera_speed;
+	// Camera zoom
+	if (App->input->mouse_z > 0) 
+	{
+		Position -= Z * 0.2f;
+		Reference -= Z * 0.2f;
 	}
-	// TODO 4: Make the camera go forward (w) and backward with (s)
-	// Note that the vectors X/Y/Z contain the current axis of the camera
-	// you can read them to modify Position
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		Position -= Z * 0.125f;
-		Reference -= Z * 0.125f;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		Position += Z * 0.125f;
-		Reference += Z * 0.125f;
+	if (App->input->mouse_z < 0)
+	{
+		Position += Z * 0.2f;
+		Reference += Z * 0.2f;
 	}
 
-
-	// TODO 5: Make the camera go left (a) and right with (d)
-	// Note that the vectors X/Y/Z contain the current axis of the camera
-	// you can read them to modify Position
+	// Camera 2D movement
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		Position -= X * 0.125f;
-		Reference -= X * 0.125f;
+		Position -= X * camera_speed;
+		Reference -= X * camera_speed;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		Position += X * 0.125f;
-		Reference += X * 0.125f;
+		Position += X * camera_speed;
+		Reference += X * camera_speed;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	{
+		Position.y += camera_speed;
+		Reference.y += camera_speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	{
+		Position.y -= camera_speed;
+		Reference.y -= camera_speed;
+	}
+
 	// Mouse motion ----------------
 	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{

@@ -35,7 +35,7 @@ public:
 	bool showAbout;
 	bool showConfig;
 	bool showConsole;
-	bool showDock ;
+	bool showDock;
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
@@ -68,4 +68,5 @@ public:
 	bool lighting;
 	bool color;
 	bool texture2d;
+	bool vsync;
 };

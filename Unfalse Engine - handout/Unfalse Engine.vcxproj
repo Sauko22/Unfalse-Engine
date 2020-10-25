@@ -105,6 +105,7 @@
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\Vec2.h" />
+    <ClInclude Include="Source Code\Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />

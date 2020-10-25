@@ -125,10 +125,8 @@ update_status ModuleInput::PreUpdate()
 				std::string Dir(e.drop.file);
 				Dir.substr(Dir.find("."));
 
-				
-
 				if (Dir.substr(Dir.find(".")) == (".fbx") || Dir.substr(Dir.find(".")) == (".FBX"))
-					App->fbxload->Import(dropped_filedir, App->renderer3D->textureID);
+					App->fbxload->Import(dropped_filedir, App->fbxload->textureID);
 				else
 					App->fbxload->LoadTexture(dropped_filedir);
 

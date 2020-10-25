@@ -48,9 +48,7 @@ update_status ModulePrimitives::PostUpdate()
 	// Render all created primitives
 	if (primitive_list.empty() == false)
 	{
-		int i = 0;
-		
-		for (i; i < primitive_list.size(); i++)
+		for (int i = 0; i < primitive_list.size(); i++)
 		{
 			primitive_list[i]->Render();
 		}

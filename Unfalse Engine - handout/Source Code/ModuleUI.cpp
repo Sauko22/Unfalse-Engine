@@ -35,14 +35,15 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showAbout = false;
 	showConfig = false;
 	showConsole = false;
-	
-
 
 	// Docking
 	showDock = false;
 
 	// Wireframe
 	wireframe = false;
+
+	// VSync
+	vsync = true;
 
 	// Depth
 	depth = false;
@@ -57,7 +58,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	color = true;
 
 	// Texture
-	texture2d = false;
+	texture2d = true;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -151,9 +152,6 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 	
-
-
-
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
 
 		showDock = !showDock;
@@ -165,7 +163,6 @@ update_status ModuleUI::Update()
 	}
 
 	App->renderer3D->Draw();
-
 
 	// All windows, toolbars and options of ImGui
 	// Toolbar
@@ -477,20 +474,19 @@ void ModuleUI::showConfigWin(bool* p_open)
 		sprintf_s(title, 25, "Milliseconds %.1f", ms_log[ms_log.size() - 1]);
 		ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
 
-		static bool vsync = true;
 		static int a = 0;
 
 		if (vsync == true && a == 0)
 		{
 			a = 1;
-			SDL_HINT_RENDER_VSYNC "1";
+			SDL_GL_SetSwapInterval(1);
 			LOG("VSYNC ACTIVATED");
 		}
 		else if (vsync == false && a == 1)
 		{
 			a = 0;
-			SDL_HINT_RENDER_VSYNC "0";
-			LOG("VSYNC NONONONONO");
+			SDL_GL_SetSwapInterval(0);
+			LOG("VSYNC DESACTIVATED");
 		}
 		ImGui::Checkbox("Vsync", &vsync); ImGui::SameLine();
 

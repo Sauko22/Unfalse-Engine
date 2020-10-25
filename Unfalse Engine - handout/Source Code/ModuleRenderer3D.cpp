@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleFBXLoad.h"
+#include "p2Defs.h"
 
 #include "Glew\include\glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
@@ -28,11 +29,8 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	
 	showlines = false;
 
-	img_corner = { 0,0 };
 	img_size = { 0,0 };;
-	cornerPos = { 0,0 };;
 	win_size = { 0,0 };;
-	img_offset = { 0,0 };;
 }
 
 // Destructor
@@ -47,10 +45,6 @@ bool ModuleRenderer3D::Init()
 
 	if (ret == true)
 	{
-		//Use Vsync
-		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
-			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -160,7 +154,6 @@ update_status ModuleRenderer3D::PreUpdate()
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate()
 {
-	
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
@@ -170,6 +163,11 @@ update_status ModuleRenderer3D::PostUpdate()
 bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
+
+	for (uint i = 0; i < App->fbxload->mesh_list.size(); i++)
+	{
+		RELEASE(App->fbxload->mesh_list[i])
+	}
 
 	return true;
 }
@@ -249,20 +247,25 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 void ModuleRenderer3D::Draw()
 {
 	// Window 1
-	ImGui::Begin("Test1", NULL);
+	ImGui::Begin("Scene", NULL);
+	
+	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(win_size.x, win_size.y), ImVec2(0, 1), ImVec2(1, 0));
+	ImVec2 WinSize = ImGui::GetWindowSize();
 
-	ImVec2 winSize = ImGui::GetWindowSize();
-	if (winSize.x != App->window->windowSize.x || winSize.y != App->window->windowSize.y)
-		FitWinScene(Vec2(winSize.x, winSize.y));
-
-	ImGui::SetCursorPos(/*ImGui::GetCursorPos() +*/ ImVec2(img_offset.x, img_offset.y));
-	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
-	img_corner.y = App->window->screen_surface->h - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
+	if (WinSize.x != App->window->windowSize.x || WinSize.y != App->window->windowSize.y)
+	{
+		WinResize(Vec2(WinSize.x, WinSize.y));
+	}
 
 	// Draw any Meshes loaded into scene
-	App->fbxload->Draw_Mesh();
+	if (App->fbxload->mesh_list.empty() == false)
+	{
+		for (int i = 0; i < App->fbxload->mesh_list.size(); i++)
+		{
+			App->fbxload->mesh_list[i]->RenderMesh(i);
+		}
+	}
 
 	// Draw lines on all the normal faces of the mesh
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) showlines = !showlines;
@@ -271,22 +274,20 @@ void ModuleRenderer3D::Draw()
 	ImGui::End();
 }
 
-void ModuleRenderer3D::FitWinScene(Vec2 newSize)
+void ModuleRenderer3D::WinResize(Vec2 newSize)
 {
-	//Getting window size - some margins - separator (7)
 	win_size = newSize;
 
-	//Calculating the image size according to the window size.
-	img_size = App->window->windowSize;// -Vec2(0.0f, 25.0f); //Removing the tab area
-	if (img_size.x > win_size.x - 10.0f)
+	img_size = App->window->windowSize;
+
+	if (img_size.x > win_size.x)
 	{
-		img_size /= (img_size.x / (win_size.x - 10.0f));
+		img_size /= (img_size.x / (win_size.x));
 	}
-	if (img_size.y > win_size.y - 10.0f)
+	if (img_size.y > win_size.y)
 	{
-		img_size /= (img_size.y / (win_size.y - 10.0f));
+		img_size /= (img_size.y / (win_size.y));
 	}
-	img_offset = Vec2(win_size.x - 5.0f - img_size.x, win_size.y - 5.0f - img_size.y) / 2;
 }
 
 void ModuleRenderer3D::DrawNormalLines(bool* p_open) {
