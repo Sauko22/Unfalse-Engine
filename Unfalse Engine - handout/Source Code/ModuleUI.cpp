@@ -6,8 +6,6 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
 
-
-
 #include "Glew\include\glew.h"
 
 #include "SDL\include\SDL_opengl.h"
@@ -34,6 +32,11 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showDemo = false;
 	showAbout = false;
 	showConfig = false;
+
+	// Inspector
+	objactive = true;
+	texactive = true;
+	meshactive = true;
 
 	// Docking
 	showDock = false;
@@ -118,8 +121,6 @@ bool ModuleUI::Init()
 	ImGui_ImplOpenGL3_Init();
 
 	print_commits_info("Sauko22", "Racing-Car");
-
-	
 
 	return ret;
 }
@@ -277,7 +278,8 @@ update_status ModuleUI::Update()
 
 	if (ImGui::Begin("Inspector", NULL)) 
 	{
-	
+		showInspectorWin();
+
 		ImGui::End();
 	}
 	if (ImGui::Begin("Hierarchy", NULL)) 
@@ -340,6 +342,37 @@ void ModuleUI::putLog(const char* log)
 	std::string item;
 	item = log;
 	items.push_back(item);
+}
+
+void ModuleUI::showInspectorWin()
+{
+	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+	ImGui::Checkbox("ActiveObj", &objactive); ImGui::SameLine();
+	static char str0[128] = "Hello, world!";
+	ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+	}
+	if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		static float pos[3] = { 0.0f, 0.0f, 0.0f };
+		ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
+		static float angle[3] = { 0.0f, 0.0f, 0.0f };
+		ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
+		static float scale[3] = { 1.0f, 1.0f, 1.0f };
+		ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
+	}
+	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("ActiveMesh", &meshactive);
+		ImGui::Text("fbx name");
+	}
+	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("ActiveMat", &texactive);
+		ImGui::Text("texture name");
+		
+		//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+	}
 }
 
 void ModuleUI::showConfigWin(bool* p_open)
@@ -833,4 +866,9 @@ void ModuleUI::showDockSpace(bool* p_open)
 	}
 	
 	ImGui::End();
+}
+
+void ModuleUI::showTextureImage()
+{
+	
 }

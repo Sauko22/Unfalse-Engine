@@ -14,7 +14,13 @@
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
 
+#define CHECKERS_HEIGHT 128
+#define CHECKERS_WIDTH 128
+
 #include <vector>
+
+typedef unsigned int GLuint;
+typedef unsigned char GLubyte;
 
 class ModuleUI : public Module
 {
@@ -35,13 +41,20 @@ public:
 	bool showAbout;
 	bool showConfig;
 
+	// Inspector
+	bool objactive;
+	bool meshactive;
+	bool texactive;
+
 	// Docking
 	bool showDock;
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
 	void showConsoleWin();
+	void showInspectorWin();
 	void showDockSpace(bool* p_open = NULL);
+	void showTextureImage();
 
 	//void AddLogText(std::string incoming_text);
 

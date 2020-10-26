@@ -266,26 +266,3 @@ void ModuleFBXLoad::LoadTexture(char* file_path)
 	ilDeleteImages(1, &textIL);
 }
 
-std::string  ModuleFBXLoad::SubtractString(std::string str, const char* chars_to_find, bool reading_backwards, bool subtract_until_char, bool include_char)    //IMPROVE: Make it into a helper/tool file
-{
-	std::string ret = "error substracting string";
-	std::size_t found;
-	if (reading_backwards) //Reading from END to BEGINNING
-		found = str.find_last_of(chars_to_find);
-	else  //Reading from BEGINNING to END
-		found = str.find_first_of(chars_to_find);
-
-	if (subtract_until_char) // subtract from beginning to char
-		if (include_char)
-			ret = str.substr(0, found + 1);
-		else
-			ret = str.substr(0, found);
-	else                    // subtract from char to beginning
-		if (include_char)
-			ret = str.substr(found, str.size());
-		else
-			ret = str.substr(found + 1, str.size());
-
-	return ret;
-}
-

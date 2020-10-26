@@ -24,8 +24,6 @@ public:
 
 	void LoadTexture(char* file_path);
 
-	std::string SubtractString(std::string str, const char* chars_to_find, bool reading_backwards, bool subtract_until_char, bool include_char);
-
 public:
 	Component* impmesh;
 	GameObject* gameobject;

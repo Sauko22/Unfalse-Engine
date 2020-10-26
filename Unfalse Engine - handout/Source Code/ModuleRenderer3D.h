@@ -10,11 +10,6 @@
 
 #define MAX_LIGHTS 8
 
-#define CHECKERS_HEIGHT 128
-#define CHECKERS_WIDTH 128
-
-typedef unsigned int GLuint;
-
 class ModuleRenderer3D : public Module
 {
 public:
