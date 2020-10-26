@@ -32,5 +32,7 @@ public:
 
 	ILuint textIL;
 
+	uint j;
+
 	bool ResizeFBX;
 };

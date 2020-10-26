@@ -37,6 +37,7 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 	impmesh = new Component;
 	gameobject = new GameObject;
 	ResizeFBX = false;
+	j = 0;
 }
 
 // Destructor
@@ -145,8 +146,9 @@ void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
 				}
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
-			impmesh->name = ("Component %i", i);
-
+			std::string com = std::to_string(gameobject->components);
+			impmesh->name = ("Component %s", com);
+			LOG("Component %s", impmesh->name.c_str());
 			Load_Mesh();
 			
 			if (App->renderer3D->j == 0)
@@ -167,7 +169,10 @@ void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
 			App->gameobject->temp_comp_list.push_back(impmesh);
 			gameobject->components++;
 		}
-		gameobject->name = file_path;
+		j++;
+		std::string obj = std::to_string(j);
+		gameobject->name = ("Objecto %s", obj);
+		LOG("Object %s", gameobject->name.c_str());
 		gameobject->CreateGameObject();
 		
 		App->gameobject->temp_comp_list.clear();
