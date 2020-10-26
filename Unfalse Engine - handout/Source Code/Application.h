@@ -13,6 +13,8 @@
 #include "ModuleUI.h"
 #include "ModulePrimitives.h"
 #include "ModuleFBXLoad.h"
+#include "ModuleGameObject.h"
+#include "ModuleFileSystem.h"
 
 #include <string>
 #include <vector>
@@ -30,6 +32,8 @@ public:
 	ModuleUI* UI;
 	ModulePrimitives* primitives;
 	ModuleFBXLoad* fbxload;
+	ModuleGameObject* gameobject;
+	//ModuleFileSystem* filesystem;
 
 private:
 

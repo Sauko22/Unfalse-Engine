@@ -34,7 +34,8 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	impmesh = new Mesh;
+	impmesh = new Component;
+	gameobject = new GameObject;
 	ResizeFBX = false;
 }
 
@@ -84,16 +85,18 @@ bool ModuleFBXLoad::CleanUp()
 }
 
 // PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path, int texID)
+void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
 {
 	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
+		gameobject = new GameObject;
+
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
-			impmesh = new Mesh;
+			impmesh = new Component;
 			aiMesh* ourMesh = scene->mMeshes[i];
 
 			// copy vertices
@@ -140,14 +143,38 @@ void ModuleFBXLoad::Import(char* file_path, int texID)
 					impmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
 
 				}
-				impmesh->imgID = texID;
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
+			impmesh->name = ("Component %i", i);
 
 			Load_Mesh();
-			mesh_list.push_back(impmesh);
-			LOG("%i", mesh_list.size());
+			
+			if (App->renderer3D->j == 0)
+			{
+				impmesh->meshTexture = App->gameobject->texture1;
+			}
+			else if (App->renderer3D->j == 1)
+			{
+				impmesh->meshTexture = App->gameobject->texture2;
+			}
+			// Load texture
+			if (impmesh->meshTexture != nullptr)
+			{
+				LoadTexture(impmesh->meshTexture);
+				LOG("%s Loaded", impmesh->meshTexture);
+			}
+
+			App->gameobject->component_list.push_back(impmesh);
+			App->gameobject->temp_comp_list.push_back(impmesh);
+			
+			gameobject->components++;
+			LOG("%i", App->gameobject->component_list.size());
 		}
+		gameobject->name = file_path;
+		gameobject->CreateGameObject();
+		
+		App->gameobject->temp_comp_list.clear();
+
 		aiReleaseImport(scene);
 		LOG("%s Loaded", file_path);
 	}
@@ -180,7 +207,7 @@ void ModuleFBXLoad::Load_Mesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * impmesh->num_tex * 2, &impmesh->tex[0], GL_STATIC_DRAW);
 }
 
-void Mesh::RenderMesh(int i) const
+void Component::RenderComponent(int i) const
 {
 	if (App->fbxload->ResizeFBX == true)
 	{
@@ -190,29 +217,30 @@ void Mesh::RenderMesh(int i) const
 	{
 		glScaled(1, 1, 1);
 	}
+
 	// Texture from Devil
-	glBindTexture(GL_TEXTURE_2D, App->fbxload->textgl);
+	glBindTexture(GL_TEXTURE_2D, App->gameobject->component_list[i]->textgl);
 
 	//Draw Mesh
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_vertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	//Normals
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_normals);
 	glNormalPointer(GL_FLOAT, 0, NULL);
 
 	//Uvs
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_tex);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_normals);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->fbxload->mesh_list[i]->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->gameobject->component_list[i]->id_index);
 
-	glDrawElements(GL_TRIANGLES, App->fbxload->mesh_list[i]->num_index, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, App->gameobject->component_list[i]->num_index, GL_UNSIGNED_INT, NULL);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -224,12 +252,36 @@ void Mesh::RenderMesh(int i) const
 
 void ModuleFBXLoad::LoadTexture(char* file_path) 
 {
-	ilGenImages(1, &textIL);
+	ilGenImages(2, &textIL);
 	ilBindImage(textIL);
 
 	ilLoadImage(file_path);
 
-	textgl = ilutGLBindTexImage();
+	impmesh->textgl = ilutGLBindTexImage();
 
-	ilDeleteImages(1, &textIL);
+	ilDeleteImages(2, &textIL);
 }
+
+std::string  ModuleFBXLoad::SubtractString(std::string str, const char* chars_to_find, bool reading_backwards, bool subtract_until_char, bool include_char)    //IMPROVE: Make it into a helper/tool file
+{
+	std::string ret = "error substracting string";
+	std::size_t found;
+	if (reading_backwards) //Reading from END to BEGINNING
+		found = str.find_last_of(chars_to_find);
+	else  //Reading from BEGINNING to END
+		found = str.find_first_of(chars_to_find);
+
+	if (subtract_until_char) // subtract from beginning to char
+		if (include_char)
+			ret = str.substr(0, found + 1);
+		else
+			ret = str.substr(0, found);
+	else                    // subtract from char to beginning
+		if (include_char)
+			ret = str.substr(found, str.size());
+		else
+			ret = str.substr(found + 1, str.size());
+
+	return ret;
+}
+

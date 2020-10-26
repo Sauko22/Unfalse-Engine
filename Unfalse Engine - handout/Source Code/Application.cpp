@@ -12,6 +12,8 @@ Application::Application()
 	UI = new ModuleUI(this);
 	primitives = new ModulePrimitives(this);
 	fbxload = new ModuleFBXLoad(this);
+	gameobject = new ModuleGameObject(this);
+	//filesystem = new ModuleFileSystem(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -27,12 +29,14 @@ Application::Application()
 	
 	// Load FBX
 	AddModule(fbxload);
+	//AddModule(filesystem);
 
 	// Scenes
 	AddModule(scene_intro);
 
 	// Render last
 	AddModule(UI);
+	AddModule(gameobject);
 	AddModule(renderer3D);
 }
 

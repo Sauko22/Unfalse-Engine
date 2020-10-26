@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include <string>
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -15,7 +16,7 @@ enum KEY_STATE
 class ModuleInput : public Module
 {
 public:
-	
+
 	ModuleInput(Application* app, bool start_enabled = true);
 	~ModuleInput();
 
@@ -69,5 +70,9 @@ public:
 	int mouse_x_motion;
 	int mouse_y_motion;
 	SDL_Event event;
+
 	char* dropped_filedir;
+	char* texturedir;
+
+	std::string folder;
 };

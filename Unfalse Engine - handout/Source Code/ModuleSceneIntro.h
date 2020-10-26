@@ -3,6 +3,8 @@
 
 #include "Globals.h"
 #include "Timer.h"
+#include "ModuleGameObject.h"
+#include <vector>
 
 #define BOUNCER_TIME 200
 #define FPS_INTERVAL 1.0 //seconds.
@@ -20,6 +22,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	//GameObject* CreateGameObject();
+
 public:
 
 
@@ -35,4 +39,7 @@ public:
 
 	//The frame rate regulator
 	Timer fps;
+
+	// GameObject
+	
 };

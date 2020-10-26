@@ -57,4 +57,6 @@ public:
 	uint renderTexture;
 	Vec2 img_size;
 	Vec2 win_size;
+
+	int j = 0;
 };

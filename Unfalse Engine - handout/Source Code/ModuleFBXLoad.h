@@ -2,32 +2,11 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Vector.h"
+#include "ModuleGameObject.h"
+#include <xstring>
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
-
-struct Mesh
-{
-	virtual void RenderMesh(int i) const;
-
-	uint id_index = 0; // index in VRAM
-	uint num_index = 0;
-	uint* index = nullptr;
-
-	uint id_vertex = 0; // unique vertex in VRAM
-	uint num_vertex = 0;
-	float* vertex = nullptr;
-
-	uint id_normals = 0; // unique vertex in VRAM
-	uint num_normals = 0;
-	float* normals = nullptr;
-
-	uint id_tex = 0; // unique vertex in VRAM
-	uint num_tex = 0;
-	float* tex = nullptr;
-
-	uint imgID = 0;
-};
 
 class ModuleFBXLoad : public Module
 {
@@ -39,22 +18,19 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path,int texID);
+	void Import(char* file_path/*,char* texID*/);
 
 	void Load_Mesh();
 
 	void LoadTexture(char* file_path);
 
-public:
+	std::string SubtractString(std::string str, const char* chars_to_find, bool reading_backwards, bool subtract_until_char, bool include_char);
 
-	Mesh* impmesh;
+public:
+	Component* impmesh;
+	GameObject* gameobject;
 
 	ILuint textIL;
-	GLuint textgl;
-	GLuint textureID;
-
-	// Show all fbx loaded on screen
-	std::vector<Mesh*> mesh_list;
 
 	bool ResizeFBX;
 };

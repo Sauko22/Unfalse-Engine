@@ -154,6 +154,11 @@ update_status ModuleRenderer3D::PreUpdate()
 		LOG("RESIZED");
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
+	{
+		j = 1;
+	}
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -170,9 +175,9 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
-	for (uint i = 0; i < App->fbxload->mesh_list.size(); i++)
+	for (uint i = 0; i < App->gameobject->component_list.size(); i++)
 	{
-		RELEASE(App->fbxload->mesh_list[i])
+		RELEASE(App->gameobject->component_list[i])
 	}
 
 	return true;
@@ -264,11 +269,11 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw any Meshes loaded into scene
-	if (App->fbxload->mesh_list.empty() == false)
+	if (App->gameobject->component_list.empty() == false)
 	{
-		for (int i = 0; i < App->fbxload->mesh_list.size(); i++)
+		for (int i = 0; i < App->gameobject->component_list.size(); i++)
 		{
-			App->fbxload->mesh_list[i]->RenderMesh(i);
+			App->gameobject->component_list[i]->RenderComponent(i);
 		}
 	}
 
@@ -300,17 +305,17 @@ void ModuleRenderer3D::DrawNormalLines(bool* p_open) {
 	glBegin(GL_LINES);
 	glColor3f(1.0f, 0.0f, 0.0f);
 
-	for (int j = 0; j < App->fbxload->mesh_list.size(); j++)
+	for (int j = 0; j < App->gameobject->component_list.size(); j++)
 	{
-		for (size_t i = 0; i < App->fbxload->mesh_list[j]->num_vertex * 3; i += 3)
+		for (size_t i = 0; i < App->gameobject->component_list[j]->num_vertex * 3; i += 3)
 		{
-			GLfloat v_x = App->fbxload->mesh_list[j]->vertex[i];
-			GLfloat v_y = App->fbxload->mesh_list[j]->vertex[i + 1];
-			GLfloat v_z = App->fbxload->mesh_list[j]->vertex[i + 2];
+			GLfloat v_x = App->gameobject->component_list[j]->vertex[i];
+			GLfloat v_y = App->gameobject->component_list[j]->vertex[i + 1];
+			GLfloat v_z = App->gameobject->component_list[j]->vertex[i + 2];
 
-			GLfloat n_x = App->fbxload->mesh_list[j]->normals[i];
-			GLfloat n_y = App->fbxload->mesh_list[j]->normals[i + 1];
-			GLfloat n_z = App->fbxload->mesh_list[j]->normals[i + 2];
+			GLfloat n_x = App->gameobject->component_list[j]->normals[i];
+			GLfloat n_y = App->gameobject->component_list[j]->normals[i + 1];
+			GLfloat n_z = App->gameobject->component_list[j]->normals[i + 2];
 
 			glVertex3f(v_x, v_y, v_z);
 			glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);

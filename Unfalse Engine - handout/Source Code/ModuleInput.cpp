@@ -123,18 +123,27 @@ update_status ModuleInput::PreUpdate()
 			{
 				dropped_filedir = e.drop.file;
 				std::string Dir(e.drop.file);
+				std::string F("Hola.soc,imbecil");
+				
+				/// <summary>
+				folder = App->fbxload->SubtractString(F.c_str(), ".", true, false, false);
+				LOG("%s", F.c_str());
+				LOG("%s", folder);
+				/// </summary>
+				
+				
+				//texturedir = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
+				
 				Dir.substr(Dir.find("."));
 
 				if (Dir.substr(Dir.find(".")) == (".fbx") || Dir.substr(Dir.find(".")) == (".FBX"))
-					App->fbxload->Import(dropped_filedir, App->fbxload->textureID);
+					App->fbxload->Import(dropped_filedir/*, texturedir*/);
 				else
 					App->fbxload->LoadTexture(dropped_filedir);
 
 				SDL_free(dropped_filedir);
-			
 			}
-				
-				break;
+			break;
 
 			case SDL_WINDOWEVENT:
 			{
