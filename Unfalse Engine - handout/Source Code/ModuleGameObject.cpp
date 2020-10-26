@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleGameObject.h"
+#include "p2Defs.h"
 
 ModuleGameObject::ModuleGameObject(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -25,6 +26,11 @@ bool ModuleGameObject::Start()
 bool ModuleGameObject::CleanUp()
 {
 	LOG("Unloading GameObject");
+
+	for (uint i = 0; i < gameobject_list.size(); i++)
+	{
+		RELEASE(gameobject_list[i])
+	}
 
 	return true;
 }

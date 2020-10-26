@@ -123,12 +123,12 @@ update_status ModuleInput::PreUpdate()
 			{
 				dropped_filedir = e.drop.file;
 				std::string Dir(e.drop.file);
-				std::string F("Hola.soc,imbecil");
 				
 				/// <summary>
+				/*std::string F("Hola.soc,imbecil");
 				folder = App->fbxload->SubtractString(F.c_str(), ".", true, false, false);
 				LOG("%s", F.c_str());
-				LOG("%s", folder);
+				LOG("%s", folder);*/
 				/// </summary>
 				
 				

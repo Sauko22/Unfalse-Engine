@@ -164,11 +164,8 @@ void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
 				LOG("%s Loaded", impmesh->meshTexture);
 			}
 
-			App->gameobject->component_list.push_back(impmesh);
 			App->gameobject->temp_comp_list.push_back(impmesh);
-			
 			gameobject->components++;
-			LOG("%i", App->gameobject->component_list.size());
 		}
 		gameobject->name = file_path;
 		gameobject->CreateGameObject();
@@ -207,8 +204,9 @@ void ModuleFBXLoad::Load_Mesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * impmesh->num_tex * 2, &impmesh->tex[0], GL_STATIC_DRAW);
 }
 
-void Component::RenderComponent(int i) const
+void GameObject::RenderGameObject() const
 {
+	// Change size
 	if (App->fbxload->ResizeFBX == true)
 	{
 		glScaled(0.05f, 0.05f, 0.05f);
@@ -218,48 +216,54 @@ void Component::RenderComponent(int i) const
 		glScaled(1, 1, 1);
 	}
 
-	// Texture from Devil
-	glBindTexture(GL_TEXTURE_2D, App->gameobject->component_list[i]->textgl);
+	if (comp_list.empty() == false)
+	{
+		for (int i = 0; i < comp_list.size(); i++)
+		{
+			// Texture from Devil
+			glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
 
-	//Draw Mesh
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_vertex);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+			//Draw Mesh
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_vertex);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	//Normals
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_normals);
-	glNormalPointer(GL_FLOAT, 0, NULL);
+			//Normals
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
+			glNormalPointer(GL_FLOAT, 0, NULL);
 
-	//Uvs
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_tex);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+			//Uvs
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_tex);
+			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER, App->gameobject->component_list[i]->id_normals);
+			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, App->gameobject->component_list[i]->id_index);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, comp_list[i]->id_index);
 
-	glDrawElements(GL_TRIANGLES, App->gameobject->component_list[i]->num_index, GL_UNSIGNED_INT, NULL);
+			glDrawElements(GL_TRIANGLES, comp_list[i]->num_index, GL_UNSIGNED_INT, NULL);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+	}
 }
 
 void ModuleFBXLoad::LoadTexture(char* file_path) 
 {
-	ilGenImages(2, &textIL);
+	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
 	ilLoadImage(file_path);
 
 	impmesh->textgl = ilutGLBindTexImage();
 
-	ilDeleteImages(2, &textIL);
+	ilDeleteImages(1, &textIL);
 }
 
 std::string  ModuleFBXLoad::SubtractString(std::string str, const char* chars_to_find, bool reading_backwards, bool subtract_until_char, bool include_char)    //IMPROVE: Make it into a helper/tool file

@@ -8,10 +8,10 @@ typedef unsigned int GLuint;
 
 struct Component
 {
-	virtual void RenderComponent(int i) const;
+	//virtual void RenderComponent(int i) const;
 	//virtual void CreateComponent() const;
 
-	std::string name;
+	std::string name = " ";
 
 	uint id_index = 0; // index in VRAM
 	uint num_index = 0;
@@ -35,10 +35,12 @@ struct Component
 
 struct GameObject
 {
-	//virtual void RenderGameObject(int i) const;
+	virtual void RenderGameObject() const;
 	virtual void CreateGameObject();
+	virtual void DrawNormalLines();
+
 	uint components = 0;
-	std::string name;
+	std::string name = " ";
 
 	std::vector<Component*> comp_list;
 };
@@ -56,9 +58,6 @@ public:
 
 public:
 	bool active;
-
-	// Components list
-	std::vector<Component*> component_list;
 
 	// GameObject list
 	std::vector<GameObject*> gameobject_list;

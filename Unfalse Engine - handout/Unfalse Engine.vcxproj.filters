@@ -111,9 +111,6 @@
     <ClInclude Include="Source Code\ModuleGameObject.h">
       <Filter>Sources\Modules\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\ModuleFileSystem.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -190,9 +187,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\ModuleGameObject.cpp">
       <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\ModuleFileSystem.cpp">
-      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

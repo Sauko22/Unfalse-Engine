@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "Vec2.h"
 #include "ModuleFBXLoad.h"
+#include "ModuleGameObject.h"
 
 #define MAX_LIGHTS 8
 
@@ -34,8 +35,6 @@ public:
 	void Draw();
 
 	void Draw_Axis();
-
-	void DrawNormalLines(bool* p_open = NULL);
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -58,5 +57,5 @@ public:
 	Vec2 img_size;
 	Vec2 win_size;
 
-	int j = 0;
+	int j;
 };

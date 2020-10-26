@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleFBXLoad.h"
+#include "ModuleWindow.h"
+#include "ModuleGameObject.h"
 #include "p2Defs.h"
 
 #include "Glew\include\glew.h"
@@ -29,8 +31,10 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	
 	showlines = false;
 
-	img_size = { 0,0 };;
-	win_size = { 0,0 };;
+	img_size = { 0,0 };
+	win_size = { 0,0 };
+
+	j = 0;
 }
 
 // Destructor
@@ -175,11 +179,6 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
-	for (uint i = 0; i < App->gameobject->component_list.size(); i++)
-	{
-		RELEASE(App->gameobject->component_list[i])
-	}
-
 	return true;
 }
 
@@ -269,17 +268,29 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw any Meshes loaded into scene
-	if (App->gameobject->component_list.empty() == false)
+	if (App->gameobject->gameobject_list.empty() == false)
 	{
-		for (int i = 0; i < App->gameobject->component_list.size(); i++)
+		for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
 		{
-			App->gameobject->component_list[i]->RenderComponent(i);
+			App->gameobject->gameobject_list[i]->RenderGameObject();
 		}
 	}
 
 	// Draw lines on all the normal faces of the mesh
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) showlines = !showlines;
-	if (showlines)DrawNormalLines(&showlines);
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
+		showlines = !showlines;
+	}
+	if (showlines)
+	{
+		if (App->gameobject->gameobject_list.empty() == false)
+		{
+			for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+			{
+				App->gameobject->gameobject_list[i]->DrawNormalLines();
+			}
+		}
+	}
 	
 	ImGui::End();
 }
@@ -300,27 +311,27 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 	}
 }
 
-void ModuleRenderer3D::DrawNormalLines(bool* p_open) {
+void GameObject::DrawNormalLines() 
+{
 
 	glBegin(GL_LINES);
 	glColor3f(1.0f, 0.0f, 0.0f);
 
-	for (int j = 0; j < App->gameobject->component_list.size(); j++)
+	for (int j = 0; j < comp_list.size(); j++)
 	{
-		for (size_t i = 0; i < App->gameobject->component_list[j]->num_vertex * 3; i += 3)
+		for (size_t i = 0; i < comp_list[j]->num_vertex * 3; i += 3)
 		{
-			GLfloat v_x = App->gameobject->component_list[j]->vertex[i];
-			GLfloat v_y = App->gameobject->component_list[j]->vertex[i + 1];
-			GLfloat v_z = App->gameobject->component_list[j]->vertex[i + 2];
+			GLfloat v_x = comp_list[j]->vertex[i];
+			GLfloat v_y = comp_list[j]->vertex[i + 1];
+			GLfloat v_z = comp_list[j]->vertex[i + 2];
 
-			GLfloat n_x = App->gameobject->component_list[j]->normals[i];
-			GLfloat n_y = App->gameobject->component_list[j]->normals[i + 1];
-			GLfloat n_z = App->gameobject->component_list[j]->normals[i + 2];
+			GLfloat n_x = comp_list[j]->normals[i];
+			GLfloat n_y = comp_list[j]->normals[i + 1];
+			GLfloat n_z = comp_list[j]->normals[i + 2];
 
 			glVertex3f(v_x, v_y, v_z);
 			glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
 		}
-		
 	}
 
 	glEnd();
