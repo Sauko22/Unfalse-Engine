@@ -9,7 +9,7 @@ int close_sdl_rwops(SDL_RWops* rw);
 struct aiFileIO;
 
 //struct BASS_FILEPROCS;
-class Config;
+
 struct PathNode;
 
 typedef unsigned __int64 uint64;
@@ -24,7 +24,7 @@ public:
 	~ModuleFileSystem();
 
 	// Called before render is available
-	bool Init(Config& config);
+	bool Init();
 
 	// Called before quitting
 	bool CleanUp() override;

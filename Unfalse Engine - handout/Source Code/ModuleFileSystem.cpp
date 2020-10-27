@@ -37,7 +37,7 @@ ModuleFileSystem::~ModuleFileSystem()
 }
 
 // Called before render is available
-bool ModuleFileSystem::Init(Config& config)
+bool ModuleFileSystem::Init()
 {
 	LOG("Loading File System");
 	bool ret = true;
@@ -64,10 +64,10 @@ bool ModuleFileSystem::CleanUp()
 
 void ModuleFileSystem::CreateLibraryDirectories()
 {
-	CreateDir(LIBRARY_PATH);
+	/*CreateDir(LIBRARY_PATH);
 	CreateDir(FOLDERS_PATH);
 	CreateDir(MESHES_PATH);
-	CreateDir(TEXTURES_PATH);
+	CreateDir(TEXTURES_PATH);*/
 }
 
 // Add a new zip file or folder
