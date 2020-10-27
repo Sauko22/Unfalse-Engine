@@ -220,41 +220,71 @@ void GameObject::RenderGameObject() const
 	{
 		glScaled(1, 1, 1);
 	}
-
-	if (comp_list.empty() == false)
+	
+	if (ObjrenderActive == true)
 	{
-		for (int i = 0; i < comp_list.size(); i++)
+		if (comp_list.empty() == false)
 		{
-			// Texture from Devil
-			glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
+			for (int i = 0; i < comp_list.size(); i++)
+			{
+				if (ObjtexActive == true)
+				{
+					// Texture from Devil
+					glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
+				}
 
-			//Draw Mesh
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_vertex);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
+				//Draw Mesh
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_vertex);
+				glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-			//Normals
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
-			glNormalPointer(GL_FLOAT, 0, NULL);
+				//Normals
+				glEnableClientState(GL_NORMAL_ARRAY);
+				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
+				glNormalPointer(GL_FLOAT, 0, NULL);
 
-			//Uvs
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_tex);
-			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+				//Uvs
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_tex);
+				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-			glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
+				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, comp_list[i]->id_index);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, comp_list[i]->id_index);
 
-			glDrawElements(GL_TRIANGLES, comp_list[i]->num_index, GL_UNSIGNED_INT, NULL);
+				glDrawElements(GL_TRIANGLES, comp_list[i]->num_index, GL_UNSIGNED_INT, NULL);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				if (ObjtexActive == true)
+				{
+					glBindTexture(GL_TEXTURE_2D, 0);
+				}
+				glDisableClientState(GL_VERTEX_ARRAY);
+				glDisableClientState(GL_NORMAL_ARRAY);
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+				if (ObjnormActive == true)
+				{
+					glBegin(GL_LINES);
+					//glColor3f(1.0f, 0.0f, 0.0f);
+
+					for (size_t k = 0; k < comp_list[i]->num_vertex * 3; k += 3)
+					{
+						GLfloat v_x = comp_list[i]->vertex[k];
+						GLfloat v_y = comp_list[i]->vertex[k + 1];
+						GLfloat v_z = comp_list[i]->vertex[k + 2];
+
+						GLfloat n_x = comp_list[i]->normals[k];
+						GLfloat n_y = comp_list[i]->normals[k + 1];
+						GLfloat n_z = comp_list[i]->normals[k + 2];
+
+						glVertex3f(v_x, v_y, v_z);
+						glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
+					}
+					glEnd();
+				}
+			}
 		}
 	}
 }

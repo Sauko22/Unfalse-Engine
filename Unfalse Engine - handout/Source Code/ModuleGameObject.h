@@ -8,9 +8,6 @@ typedef unsigned int GLuint;
 
 struct Component
 {
-	//virtual void RenderComponent(int i) const;
-	//virtual void CreateComponent() const;
-
 	std::string name = " ";
 
 	uint id_index = 0; // index in VRAM
@@ -31,18 +28,29 @@ struct Component
 
 	char* meshTexture = nullptr;
 	GLuint textgl;
+
+	/*bool MeshrenderActive = true;
+	bool MeshtexActive = true;
+	bool MeshnormActive = false;*/
 };
 
 struct GameObject
 {
+	virtual void showInspectorWin();
 	virtual void RenderGameObject() const;
 	virtual void CreateGameObject();
-	virtual void DrawNormalLines();
+	//virtual void DrawNormalLines();
 
 	uint components = 0;
 	std::string name = " ";
 
 	std::vector<Component*> comp_list;
+
+	bool objSelected = false;
+
+	bool ObjrenderActive = true;
+	bool ObjtexActive = true;
+	bool ObjnormActive = false;
 };
 
 

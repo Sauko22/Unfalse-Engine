@@ -39,6 +39,20 @@ update_status ModuleGameObject::Update()
 {
 	bool ret = true;
 
+	if (ImGui::Begin("Inspector", NULL))
+	{
+		if (App->gameobject->gameobject_list.empty() == false)
+		{
+			for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+			{
+				if (App->gameobject->gameobject_list[i]->objSelected == true)
+				{
+					App->gameobject->gameobject_list[i]->showInspectorWin();
+				}
+			}
+		}
+		ImGui::End();
+	}
 
 	return UPDATE_CONTINUE;
 }

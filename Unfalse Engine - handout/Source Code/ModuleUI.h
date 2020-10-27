@@ -42,9 +42,11 @@ public:
 	bool showConfig;
 
 	// Inspector
+	/*bool insactive;
 	bool objactive;
 	bool meshactive;
 	bool texactive;
+	bool normactive;*/
 
 	// Docking
 	bool showDock;

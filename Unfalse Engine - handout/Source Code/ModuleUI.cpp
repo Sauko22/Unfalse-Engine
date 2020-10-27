@@ -35,9 +35,11 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showConfig = false;
 
 	// Inspector
+	/*insactive = false;
 	objactive = true;
 	texactive = true;
 	meshactive = true;
+	normactive = false;*/
 
 	// Docking
 	showDock = false;
@@ -277,12 +279,12 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	if (ImGui::Begin("Inspector", NULL)) 
+	/*if (ImGui::Begin("Inspector", NULL)) 
 	{
-		showInspectorWin();
+		
 
 		ImGui::End();
-	}
+	}*/
 
 	if (ImGui::Begin("Hierarchy"))
 	{
@@ -295,7 +297,14 @@ update_status ModuleUI::Update()
 			ImGuiTreeNodeFlags node_flags = base_flags;
 			const bool is_selected = (selection_mask & (1 << i)) != 0;
 			if (is_selected)
+			{
+				for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+				{
+					App->gameobject->gameobject_list[i]->objSelected = false;
+				}
 				node_flags |= ImGuiTreeNodeFlags_Selected;
+				App->gameobject->gameobject_list[i]->objSelected = true;
+			}
 				
 			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "GameObject %s", App->gameobject->gameobject_list[i]->name.c_str());
 			if (ImGui::IsItemClicked())
@@ -382,34 +391,37 @@ void ModuleUI::putLog(const char* log)
 	items.push_back(item);
 }
 
-void ModuleUI::showInspectorWin()
+void GameObject::showInspectorWin()
 {
 	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-	ImGui::Checkbox("ActiveObj", &objactive); ImGui::SameLine();
-	static char str0[128] = "Hello, world!";
-	ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
-	}
-	if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		static float pos[3] = { 0.0f, 0.0f, 0.0f };
-		ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
-		static float angle[3] = { 0.0f, 0.0f, 0.0f };
-		ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
-		static float scale[3] = { 1.0f, 1.0f, 1.0f };
-		ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
-	}
-	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("ActiveMesh", &meshactive);
-		ImGui::Text("fbx name");
-	}
-	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("ActiveMat", &texactive);
-		ImGui::Text("texture name");
-		
-		//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
+		static char str0[128] = "Hello, world!";
+		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+
+		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			static float pos[3] = { 0.0f, 0.0f, 0.0f };
+			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
+			static float angle[3] = { 0.0f, 0.0f, 0.0f };
+			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
+			static float scale[3] = { 1.0f, 1.0f, 1.0f };
+			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
+		}
+		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			//ImGui::Checkbox("ActiveMesh", &meshactive);
+			ImGui::Checkbox("ActiveNormals", &ObjnormActive);
+			ImGui::Text("fbx name");
+		}
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("ActiveMat", &ObjtexActive);
+			ImGui::Text("texture name");
+
+			// Implement texture image
+			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+		}
 	}
 }
 

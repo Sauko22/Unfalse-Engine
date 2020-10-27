@@ -277,7 +277,7 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw lines on all the normal faces of the mesh
-	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	/*if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 	{
 		showlines = !showlines;
 	}
@@ -290,7 +290,7 @@ void ModuleRenderer3D::Draw()
 				App->gameobject->gameobject_list[i]->DrawNormalLines();
 			}
 		}
-	}
+	}*/
 	
 	ImGui::End();
 }
@@ -311,9 +311,8 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 	}
 }
 
-void GameObject::DrawNormalLines() 
+/*void GameObject::DrawNormalLines() 
 {
-
 	glBegin(GL_LINES);
 	glColor3f(1.0f, 0.0f, 0.0f);
 
@@ -335,5 +334,5 @@ void GameObject::DrawNormalLines()
 	}
 
 	glEnd();
-}
+}*/
 
