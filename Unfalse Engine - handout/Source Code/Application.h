@@ -14,6 +14,7 @@
 #include "ModulePrimitives.h"
 #include "ModuleFBXLoad.h"
 #include "ModuleGameObject.h"
+#include "ModuleFileSystem.h"
 
 #include <string>
 #include <vector>
@@ -32,10 +33,14 @@ public:
 	ModulePrimitives* primitives;
 	ModuleFBXLoad* fbxload;
 	ModuleGameObject* gameobject;
+	ModuleFileSystem* filesys;
 
 private:
 
 	std::vector<Module*> list_modules;
+
+	std::string title;
+	std::string organization;
 
 public:
 
@@ -45,6 +50,9 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	const char* GetOrganizationName() const;
+	const char* GetTitleName() const;
 
 private:
 

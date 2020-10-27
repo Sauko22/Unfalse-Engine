@@ -13,6 +13,7 @@ Application::Application()
 	primitives = new ModulePrimitives(this);
 	fbxload = new ModuleFBXLoad(this);
 	gameobject = new ModuleGameObject(this);
+	filesys = new ModuleFileSystem(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -29,6 +30,9 @@ Application::Application()
 	// Load FBX
 	AddModule(fbxload);
 
+	// File System
+	AddModule(filesys);
+
 	// Scenes
 	AddModule(scene_intro);
 
@@ -36,6 +40,9 @@ Application::Application()
 	AddModule(UI);
 	AddModule(gameobject);
 	AddModule(renderer3D);
+
+	title = TITLE;
+	organization = ORGANIZATION;
 }
 
 Application::~Application()
@@ -126,4 +133,14 @@ bool Application::CleanUp()
 void Application::AddModule(Module* mod)
 {
 	list_modules.push_back(mod);
+}
+
+const char* Application::GetTitleName() const
+{
+	return title.c_str();
+}
+
+const char* Application::GetOrganizationName() const
+{
+	return organization.c_str();
 }

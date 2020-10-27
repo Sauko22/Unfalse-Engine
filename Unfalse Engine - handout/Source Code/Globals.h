@@ -32,3 +32,4 @@ enum update_status
 #define WIN_FULLSCREEN_DESKTOP false
 //#define VSYNC true
 #define TITLE "Unfalse Engine Free trial 30 days"
+#define ORGANIZATION "UPC"
