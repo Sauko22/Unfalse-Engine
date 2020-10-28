@@ -31,6 +31,8 @@ struct Component
 
 	GLuint defaultex;
 
+	bool meshSelected = false;
+
 	/*bool MeshrenderActive = true;
 	bool MeshtexActive = true;
 	bool MeshnormActive = false;*/
@@ -41,7 +43,6 @@ struct GameObject
 	virtual void showInspectorWin();
 	virtual void RenderGameObject() const;
 	virtual void CreateGameObject();
-	//virtual void DrawNormalLines();
 
 	uint components = 0;
 	std::string name = " ";
@@ -54,7 +55,7 @@ struct GameObject
 	bool ObjtexActive = true;
 	bool ObjnormActive = false;
 
-	bool ObjdefauActive = false;
+	bool ObjdefauTex = false;
 };
 
 

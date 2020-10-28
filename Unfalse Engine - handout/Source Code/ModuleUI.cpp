@@ -291,22 +291,31 @@ update_status ModuleUI::Update()
 		static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 		static int selection_mask = (1 << 2);
 		int node_clicked = -1;
+		
 		for (int i = 0; i < App->gameobject->gameobject_list.size(); i++) 
 		{
 			// Disable the default "open on single-click behavior" + set Selected flag according to our selection.
 			ImGuiTreeNodeFlags node_flags = base_flags;
 			const bool is_selected = (selection_mask & (1 << i)) != 0;
+			
 			if (is_selected)
 			{
+				node_flags |= ImGuiTreeNodeFlags_Selected;
+
 				for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
 				{
 					App->gameobject->gameobject_list[i]->objSelected = false;
 				}
-				node_flags |= ImGuiTreeNodeFlags_Selected;
+				
 				App->gameobject->gameobject_list[i]->objSelected = true;
+				for (int k = 0; k < App->gameobject->gameobject_list[i]->comp_list.size(); k++)
+				{
+					App->gameobject->gameobject_list[i]->comp_list[k]->meshSelected = false;
+				}
 			}
 				
 			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "GameObject %s", App->gameobject->gameobject_list[i]->name.c_str());
+			
 			if (ImGui::IsItemClicked())
 				node_clicked = i;
 
@@ -323,18 +332,13 @@ update_status ModuleUI::Update()
 		}
 		if (node_clicked != -1)
 		{
-			// Update selection state
-			// (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-			if (ImGui::GetIO().KeyCtrl)
-				selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-			else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
-				selection_mask = (1 << node_clicked);           // Click to single-select
+			selection_mask = (1 << node_clicked);	// Click to single-select
 		}
 
 		ImGui::End();
 	}
 
-	if (ImGui::Begin("Console", NULL)) 
+	if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_HorizontalScrollbar))
 	{
 		showConsoleWin();
 
@@ -424,7 +428,7 @@ void GameObject::showInspectorWin()
 		}
 		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Checkbox("Defaultext", &ObjdefauActive);
+			ImGui::Checkbox("Defaultext", &ObjdefauTex);
 			ImGui::Text("texture name");
 
 			// Implement texture image

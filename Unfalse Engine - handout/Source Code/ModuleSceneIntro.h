@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Timer.h"
 #include "ModuleGameObject.h"
+#include "PathNode.h"
 #include <vector>
 
 #define BOUNCER_TIME 200
@@ -39,7 +40,4 @@ public:
 
 	//The frame rate regulator
 	Timer fps;
-
-	// GameObject
-	
 };

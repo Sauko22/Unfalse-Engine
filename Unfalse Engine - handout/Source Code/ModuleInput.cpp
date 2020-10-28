@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleFBXLoad.h"
+#include "ModuleFileSystem.h"
 
 #include "Glew/include/glew.h"
 
@@ -123,14 +124,17 @@ update_status ModuleInput::PreUpdate()
 			{
 				dropped_filedir = e.drop.file;
 				std::string Dir(e.drop.file);
-				
-				/// <summary>
-				/*std::string F("Hola.soc,imbecil");
-				folder = App->fbxload->SubtractString(F.c_str(), ".", true, false, false);
-				LOG("%s", F.c_str());
-				LOG("%s", folder);*/
-				/// </summary>
-				
+				LOG("FILE DROPPED: %s", Dir.c_str());
+
+				std::string fileDir = "";
+				std::string extDir = "";
+				std::string relativeDir = "";
+
+				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir);
+				LOG("%s", fileDir.c_str());
+				LOG("%s", extDir.c_str());
+				relativeDir.append("Assets").append("/").append(fileDir).append(extDir);
+				LOG("RELATIVE DIR: %s", relativeDir.c_str());
 				
 				//texturedir = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
 				

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
+#include "ModuleFileSystem.h"
 
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -34,7 +35,14 @@ bool ModuleSceneIntro::Start()
 	//App->primitives->CreatePlane(0, 0, 0);
 	/*App->primitives->CreateCylinder(-3, 0, 0, 1, 2);*/
 	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
-	App->fbxload->Import("C:\\Users\\Pol\\Documents\\GitHub\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\BakerHouse.fbx");
+
+	//App->fbxload->Import("C:\\Users\\Pol\\Documents\\GitHub\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\BakerHouse.fbx");
+
+	/*std::string file_path = "Assets\\BakerHouse.fbx";
+	char* buffer = nullptr;
+	uint fileSize = 0;
+	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+	App->fbxload->Import(buffer, fileSize);*/
 
 	return ret;
 }

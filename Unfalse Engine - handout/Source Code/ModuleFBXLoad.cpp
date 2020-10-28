@@ -86,8 +86,9 @@ bool ModuleFBXLoad::CleanUp()
 }
 
 // PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
+void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 {
+	/*const aiScene* scene = aiImportFileFromMemory(file_path, filesize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);*/
 	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (scene != nullptr && scene->HasMeshes())
@@ -232,7 +233,7 @@ void GameObject::RenderGameObject() const
 				if (ObjtexActive == true)
 				{
 					// Texture from Devil
-					if (ObjdefauActive == true)
+					if (ObjdefauTex == true)
 					{
 						glBindTexture(GL_TEXTURE_2D, comp_list[i]->defaultex);
 

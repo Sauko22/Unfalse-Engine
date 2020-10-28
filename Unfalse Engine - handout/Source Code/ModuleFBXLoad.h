@@ -18,7 +18,7 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path/*,char* texID*/);
+	void Import(char* file_path/*,uint filesize*/);
 
 	void Load_Mesh();
 
