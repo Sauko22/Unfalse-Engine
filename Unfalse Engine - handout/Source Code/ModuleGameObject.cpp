@@ -20,6 +20,7 @@ bool ModuleGameObject::Start()
 	texture1 = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
 	texture2 = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Blitzcrank\\blitzcrank_skin11_TX_CM.png";
 
+	
 	return ret;
 }
 
@@ -77,4 +78,6 @@ void GameObject::CreateGameObject()
 	}*/
 	App->gameobject->gameobject_list.push_back(App->fbxload->gameobject);
 }
+
+
 

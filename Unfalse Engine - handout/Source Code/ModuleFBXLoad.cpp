@@ -151,14 +151,16 @@ void ModuleFBXLoad::Import(char* file_path/*, char* texID*/)
 			LOG("Component %s", impmesh->name.c_str());
 			Load_Mesh();
 			
-			if (App->renderer3D->j == 0)
+			/*if (App->renderer3D->j == 0)
 			{
 				impmesh->meshTexture = App->gameobject->texture1;
 			}
 			else if (App->renderer3D->j == 1)
 			{
 				impmesh->meshTexture = App->gameobject->texture2;
-			}
+			}*/
+			impmesh->defaultex = App->renderer3D->texchec;
+
 			// Load texture
 			if (impmesh->meshTexture != nullptr)
 			{
@@ -230,9 +232,15 @@ void GameObject::RenderGameObject() const
 				if (ObjtexActive == true)
 				{
 					// Texture from Devil
-					glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
-				}
+					if (ObjdefauActive == true)
+					{
+						glBindTexture(GL_TEXTURE_2D, comp_list[i]->defaultex);
 
+					}
+					else {
+						glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
+					}
+				}
 				//Draw Mesh
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_vertex);
@@ -259,6 +267,8 @@ void GameObject::RenderGameObject() const
 				if (ObjtexActive == true)
 				{
 					glBindTexture(GL_TEXTURE_2D, 0);
+
+					
 				}
 				glDisableClientState(GL_VERTEX_ARRAY);
 				glDisableClientState(GL_NORMAL_ARRAY);

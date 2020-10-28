@@ -29,6 +29,8 @@ struct Component
 	char* meshTexture = nullptr;
 	GLuint textgl;
 
+	GLuint defaultex;
+
 	/*bool MeshrenderActive = true;
 	bool MeshtexActive = true;
 	bool MeshnormActive = false;*/
@@ -51,6 +53,8 @@ struct GameObject
 	bool ObjrenderActive = true;
 	bool ObjtexActive = true;
 	bool ObjnormActive = false;
+
+	bool ObjdefauActive = false;
 };
 
 
@@ -63,6 +67,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+	
 
 public:
 	bool active;

@@ -53,4 +53,6 @@ public:
 	Vec2 win_size;
 
 	int j;
+
+	GLuint texchec;
 };

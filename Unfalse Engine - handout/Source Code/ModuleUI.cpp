@@ -422,6 +422,14 @@ void GameObject::showInspectorWin()
 			// Implement texture image
 			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
 		}
+		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Defaultext", &ObjdefauActive);
+			ImGui::Text("texture name");
+
+			// Implement texture image
+			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+		}
 	}
 }
 
