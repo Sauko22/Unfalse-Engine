@@ -19,6 +19,7 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_x_motion = 0;
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
+	texture_dropped = false;
 }
 
 // Destructor
@@ -143,7 +144,16 @@ update_status ModuleInput::PreUpdate()
 				if (Dir.substr(Dir.find(".")) == (".fbx") || Dir.substr(Dir.find(".")) == (".FBX"))
 					App->fbxload->Import(dropped_filedir/*, texturedir*/);
 				else
-					App->fbxload->LoadTexture(dropped_filedir);
+				{
+					for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+					{
+						if (App->gameobject->gameobject_list[i]->objSelected == true)
+						{
+							texture_dropped = true;
+						}
+					}
+				}
+					
 
 				SDL_free(dropped_filedir);
 			}

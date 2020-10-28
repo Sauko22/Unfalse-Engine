@@ -23,6 +23,8 @@ public:
 	void Load_Mesh();
 
 	void LoadTexture(char* file_path);
+	
+	void LoadTextureObject(char* file_path, int k, int i);
 
 public:
 	Component* impmesh;

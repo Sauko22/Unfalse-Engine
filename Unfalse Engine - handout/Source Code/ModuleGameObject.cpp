@@ -49,6 +49,15 @@ update_status ModuleGameObject::Update()
 				if (App->gameobject->gameobject_list[i]->objSelected == true)
 				{
 					App->gameobject->gameobject_list[i]->showInspectorWin();
+
+					if (App->input->texture_dropped == true)
+					{
+						for (int k = 0; k < App->gameobject->gameobject_list[i]->comp_list.size(); k++)
+						{
+							App->fbxload->LoadTextureObject(App->input->dropped_filedir, k, i);
+						}
+						App->input->texture_dropped = false;
+					}
 				}
 			}
 		}

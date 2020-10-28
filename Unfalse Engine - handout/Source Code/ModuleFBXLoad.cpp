@@ -312,3 +312,15 @@ void ModuleFBXLoad::LoadTexture(char* file_path)
 	ilDeleteImages(1, &textIL);
 }
 
+void ModuleFBXLoad::LoadTextureObject(char* file_path, int k, int i)
+{
+	ilGenImages(1, &textIL);
+	ilBindImage(textIL);
+
+	ilLoadImage(file_path);
+
+	App->gameobject->gameobject_list[i]->comp_list[k]->textgl = ilutGLBindTexImage();
+
+	ilDeleteImages(1, &textIL);
+}
+

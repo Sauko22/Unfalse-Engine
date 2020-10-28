@@ -74,5 +74,5 @@ public:
 	char* dropped_filedir;
 	char* texturedir;
 
-	//std::string folder = " ";
+	bool texture_dropped;
 };
