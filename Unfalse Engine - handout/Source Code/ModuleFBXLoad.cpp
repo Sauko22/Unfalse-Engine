@@ -34,8 +34,8 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	impmesh = new Component;
-	gameobject = new GameObject;
+	impmesh = new GameObject;
+	emptygameobject = new EmptyGameObject;
 	ResizeFBX = false;
 	j = 0;
 }
@@ -93,12 +93,12 @@ void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		gameobject = new GameObject;
+		emptygameobject = new EmptyGameObject;
 
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
-			impmesh = new Component;
+			impmesh = new GameObject;
 			aiMesh* ourMesh = scene->mMeshes[i];
 
 			// copy vertices
@@ -147,9 +147,9 @@ void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 				}
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
-			std::string com = std::to_string(gameobject->components);
-			impmesh->name = ("Component %s", com);
-			LOG("Component %s", impmesh->name.c_str());
+			std::string com = std::to_string(emptygameobject->gameObjects);
+			impmesh->name = ("GameObject %s", com);
+			LOG("GameObject %s", impmesh->name.c_str());
 			Load_Mesh();
 			
 			/*if (App->renderer3D->j == 0)
@@ -169,16 +169,17 @@ void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 				LOG("%s Loaded", impmesh->meshTexture);
 			}
 
-			App->gameobject->temp_comp_list.push_back(impmesh);
-			gameobject->components++;
+			App->gameobject->temp_gameobj_list.push_back(impmesh);
+			emptygameobject->gameObjects++;
 		}
 		j++;
 		std::string obj = std::to_string(j);
-		gameobject->name = ("Objecto %s", obj);
-		LOG("Object %s", gameobject->name.c_str());
-		gameobject->CreateGameObject();
+		emptygameobject->name = ("EmptyGameObject %s", obj);
+		LOG("Object %s", emptygameobject->name.c_str());
+
+		emptygameobject->CreateEmptyGameObject();
 		
-		App->gameobject->temp_comp_list.clear();
+		App->gameobject->temp_gameobj_list.clear();
 
 		aiReleaseImport(scene);
 		LOG("%s Loaded", file_path);
@@ -212,7 +213,7 @@ void ModuleFBXLoad::Load_Mesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * impmesh->num_tex * 2, &impmesh->tex[0], GL_STATIC_DRAW);
 }
 
-void GameObject::RenderGameObject() const
+void EmptyGameObject::RenderEmptyGameObject() const
 {
 	// Change size
 	if (App->fbxload->ResizeFBX == true)
@@ -224,71 +225,84 @@ void GameObject::RenderGameObject() const
 		glScaled(1, 1, 1);
 	}
 	
-	if (ObjrenderActive == true)
+	if (gameobject_list.empty() == false)
 	{
-		if (comp_list.empty() == false)
+		for (int i = 0; i < gameobject_list.size(); i++)
 		{
-			for (int i = 0; i < comp_list.size(); i++)
+			if (gameobject_list[i]->ObjrenderActive == true)
 			{
-				if (ObjtexActive == true)
+				if (emptytexActive == true)
 				{
-					// Texture from Devil
-					if (ObjdefauTex == true)
+					if (gameobject_list[i]->ObjtexActive == true)
 					{
-						glBindTexture(GL_TEXTURE_2D, comp_list[i]->defaultex);
+						// Texture from Devil
+						if (gameobject_list[i]->ObjdefauTex == true || emptydefauTex == true)
+						{
+							glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->defaultex);
 
+						}
+						else 
+						{
+							glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->textgl);
+						}
 					}
-					else {
-						glBindTexture(GL_TEXTURE_2D, comp_list[i]->textgl);
-					}
+				}
+				if (emptytexActive == false && emptydefauTex == true)
+				{
+					glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->defaultex);
 				}
 				//Draw Mesh
 				glEnableClientState(GL_VERTEX_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_vertex);
+				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_vertex);
 				glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 				//Normals
 				glEnableClientState(GL_NORMAL_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
+				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_normals);
 				glNormalPointer(GL_FLOAT, 0, NULL);
 
 				//Uvs
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_tex);
+				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_tex);
 				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-				glBindBuffer(GL_ARRAY_BUFFER, comp_list[i]->id_normals);
+				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_normals);
 
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, comp_list[i]->id_index);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gameobject_list[i]->id_index);
 
-				glDrawElements(GL_TRIANGLES, comp_list[i]->num_index, GL_UNSIGNED_INT, NULL);
+				glDrawElements(GL_TRIANGLES, gameobject_list[i]->num_index, GL_UNSIGNED_INT, NULL);
 
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				if (ObjtexActive == true)
+				if (emptytexActive == true)
+				{
+					if (gameobject_list[i]->ObjtexActive == true)
+					{
+						glBindTexture(GL_TEXTURE_2D, 0);
+					}
+				}
+				if (emptytexActive == false && emptydefauTex == true)
 				{
 					glBindTexture(GL_TEXTURE_2D, 0);
-
-					
 				}
 				glDisableClientState(GL_VERTEX_ARRAY);
 				glDisableClientState(GL_NORMAL_ARRAY);
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-				if (ObjnormActive == true)
+				if (gameobject_list[i]->ObjnormActive == true)
 				{
 					glBegin(GL_LINES);
 					//glColor3f(1.0f, 0.0f, 0.0f);
 
-					for (size_t k = 0; k < comp_list[i]->num_vertex * 3; k += 3)
+					for (size_t k = 0; k < gameobject_list[i]->num_vertex * 3; k += 3)
 					{
-						GLfloat v_x = comp_list[i]->vertex[k];
-						GLfloat v_y = comp_list[i]->vertex[k + 1];
-						GLfloat v_z = comp_list[i]->vertex[k + 2];
+						GLfloat v_x = gameobject_list[i]->vertex[k];
+						GLfloat v_y = gameobject_list[i]->vertex[k + 1];
+						GLfloat v_z = gameobject_list[i]->vertex[k + 2];
 
-						GLfloat n_x = comp_list[i]->normals[k];
-						GLfloat n_y = comp_list[i]->normals[k + 1];
-						GLfloat n_z = comp_list[i]->normals[k + 2];
+						GLfloat n_x = gameobject_list[i]->normals[k];
+						GLfloat n_y = gameobject_list[i]->normals[k + 1];
+						GLfloat n_z = gameobject_list[i]->normals[k + 2];
 
 						glVertex3f(v_x, v_y, v_z);
 						glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
@@ -319,7 +333,7 @@ void ModuleFBXLoad::LoadTextureObject(char* file_path, int k, int i)
 
 	ilLoadImage(file_path);
 
-	App->gameobject->gameobject_list[i]->comp_list[k]->textgl = ilutGLBindTexImage();
+	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->textgl = ilutGLBindTexImage();
 
 	ilDeleteImages(1, &textIL);
 }

@@ -28,9 +28,9 @@ bool ModuleGameObject::CleanUp()
 {
 	LOG("Unloading GameObject");
 
-	for (uint i = 0; i < gameobject_list.size(); i++)
+	for (uint i = 0; i < emptygameobject_list.size(); i++)
 	{
-		RELEASE(gameobject_list[i])
+		RELEASE(emptygameobject_list[i])
 	}
 
 	return true;
@@ -42,21 +42,28 @@ update_status ModuleGameObject::Update()
 
 	if (ImGui::Begin("Inspector", NULL))
 	{
-		if (App->gameobject->gameobject_list.empty() == false)
+		if (App->gameobject->emptygameobject_list.empty() == false)
 		{
-			for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+			for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 			{
-				if (App->gameobject->gameobject_list[i]->objSelected == true)
+				if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
 				{
-					App->gameobject->gameobject_list[i]->showInspectorWin();
+					App->gameobject->emptygameobject_list[i]->showEmptyInspectorWin();
 
 					if (App->input->texture_dropped == true)
 					{
-						for (int k = 0; k < App->gameobject->gameobject_list[i]->comp_list.size(); k++)
+						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
 						{
 							App->fbxload->LoadTextureObject(App->input->dropped_filedir, k, i);
 						}
 						App->input->texture_dropped = false;
+					}
+				}
+				for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+				{
+					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+					{
+						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->showInspectorWin();
 					}
 				}
 			}
@@ -67,13 +74,13 @@ update_status ModuleGameObject::Update()
 	return UPDATE_CONTINUE;
 }
 
-void GameObject::CreateGameObject()
+void EmptyGameObject::CreateEmptyGameObject()
 {
-	if (App->gameobject->temp_comp_list.empty() == false)
+	if (App->gameobject->temp_gameobj_list.empty() == false)
 	{
-		for (int i = 0; i < App->gameobject->temp_comp_list.size(); i++)
+		for (int i = 0; i < App->gameobject->temp_gameobj_list.size(); i++)
 		{
-			comp_list.push_back(App->gameobject->temp_comp_list[i]);
+			gameobject_list.push_back(App->gameobject->temp_gameobj_list[i]);
 		}
 	}
 
@@ -85,7 +92,7 @@ void GameObject::CreateGameObject()
 	{
 		App->fbxload->gameobject->objectTexture = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Blitzcrank\\blitzcrank_skin11_TX_CM.png";
 	}*/
-	App->gameobject->gameobject_list.push_back(App->fbxload->gameobject);
+	App->gameobject->emptygameobject_list.push_back(App->fbxload->emptygameobject);
 }
 
 

@@ -268,11 +268,14 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw any Meshes loaded into scene
-	if (App->gameobject->gameobject_list.empty() == false)
+	if (App->gameobject->emptygameobject_list.empty() == false)
 	{
-		for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+		for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 		{
-			App->gameobject->gameobject_list[i]->RenderGameObject();
+			if (App->gameobject->emptygameobject_list[i]->emptyrenderActive == true)
+			{
+				App->gameobject->emptygameobject_list[i]->RenderEmptyGameObject();
+			}
 		}
 	}
 

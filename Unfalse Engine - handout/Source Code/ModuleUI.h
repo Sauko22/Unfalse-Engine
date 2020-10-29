@@ -54,7 +54,6 @@ public:
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
 	void showConsoleWin();
-	void showInspectorWin();
 	void showDockSpace(bool* p_open = NULL);
 	void showTextureImage();
 

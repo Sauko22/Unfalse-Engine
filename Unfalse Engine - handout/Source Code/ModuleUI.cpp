@@ -292,7 +292,7 @@ update_status ModuleUI::Update()
 		static int selection_mask = (1 << 2);
 		int node_clicked = -1;
 		
-		for (int i = 0; i < App->gameobject->gameobject_list.size(); i++) 
+		for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++) 
 		{
 			// Disable the default "open on single-click behavior" + set Selected flag according to our selection.
 			ImGuiTreeNodeFlags node_flags = base_flags;
@@ -302,19 +302,19 @@ update_status ModuleUI::Update()
 			{
 				node_flags |= ImGuiTreeNodeFlags_Selected;
 
-				for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+				for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 				{
-					App->gameobject->gameobject_list[i]->objSelected = false;
+					App->gameobject->emptygameobject_list[i]->emptySelected = false;
 				}
 				
-				App->gameobject->gameobject_list[i]->objSelected = true;
-				for (int k = 0; k < App->gameobject->gameobject_list[i]->comp_list.size(); k++)
+				App->gameobject->emptygameobject_list[i]->emptySelected = true;
+				for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
 				{
-					App->gameobject->gameobject_list[i]->comp_list[k]->meshSelected = false;
+					App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
 				}
 			}
 				
-			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "GameObject %s", App->gameobject->gameobject_list[i]->name.c_str());
+			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "EmptyGameObject %s", App->gameobject->emptygameobject_list[i]->name.c_str());
 			
 			if (ImGui::IsItemClicked())
 				node_clicked = i;
@@ -322,10 +322,10 @@ update_status ModuleUI::Update()
 			if (node_open)
 			{
 				// Items 0..2 are Tree Node
-				for (int j = 0; j < App->gameobject->gameobject_list[i]->comp_list.size(); j++)
+				for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 				{
 					node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-					ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "Components %s", App->gameobject->gameobject_list[i]->comp_list[j]->name.c_str());
+					ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "GameObject %s", App->gameobject->emptygameobject_list[i]->gameobject_list[j]->name.c_str());
 				}
 				ImGui::TreePop();
 			}
@@ -393,6 +393,42 @@ void ModuleUI::putLog(const char* log)
 	std::string item;
 	item = log;
 	items.push_back(item);
+}
+
+void EmptyGameObject::showEmptyInspectorWin()
+{
+	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("ActiveObj", &emptyrenderActive); ImGui::SameLine();
+		static char str0[128] = "Hello, world!";
+		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+
+		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			static float pos[3] = { 0.0f, 0.0f, 0.0f };
+			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
+			static float angle[3] = { 0.0f, 0.0f, 0.0f };
+			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
+			static float scale[3] = { 1.0f, 1.0f, 1.0f };
+			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
+		}
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("ActiveMat", &emptytexActive);
+			ImGui::Text("texture name");
+
+			// Implement texture image
+			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+		}
+		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Defaultext", &emptydefauTex);
+			ImGui::Text("texture name");
+
+			// Implement texture image
+			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+		}
+	}
 }
 
 void GameObject::showInspectorWin()

@@ -6,8 +6,11 @@
 
 typedef unsigned int GLuint;
 
-struct Component
+struct GameObject
 {
+	virtual void showInspectorWin();
+	//virtual void RenderGameObject() const;
+
 	std::string name = " ";
 
 	uint id_index = 0; // index in VRAM
@@ -31,31 +34,28 @@ struct Component
 
 	GLuint defaultex;
 
-	bool meshSelected = false;
-
-	/*bool MeshrenderActive = true;
-	bool MeshtexActive = true;
-	bool MeshnormActive = false;*/
-};
-
-struct GameObject
-{
-	virtual void showInspectorWin();
-	virtual void RenderGameObject() const;
-	virtual void CreateGameObject();
-
-	uint components = 0;
-	std::string name = " ";
-
-	std::vector<Component*> comp_list;
-
 	bool objSelected = false;
-
 	bool ObjrenderActive = true;
 	bool ObjtexActive = true;
 	bool ObjnormActive = false;
-
 	bool ObjdefauTex = false;
+};
+
+struct EmptyGameObject
+{
+	virtual void CreateEmptyGameObject();
+	virtual void RenderEmptyGameObject() const;
+	virtual void showEmptyInspectorWin();
+
+	std::string name = " ";
+	uint gameObjects = 0;
+
+	std::vector<GameObject*> gameobject_list;
+
+	bool emptySelected = false;
+	bool emptyrenderActive = true;
+	bool emptytexActive = true;
+	bool emptydefauTex = false;
 };
 
 
@@ -74,9 +74,9 @@ public:
 	bool active;
 
 	// GameObject list
-	std::vector<GameObject*> gameobject_list;
+	std::vector<EmptyGameObject*> emptygameobject_list;
 
-	std::vector<Component*> temp_comp_list;
+	std::vector<GameObject*> temp_gameobj_list;
 
 	char* texture1;
 	char* texture2;

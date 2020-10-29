@@ -145,9 +145,9 @@ update_status ModuleInput::PreUpdate()
 					App->fbxload->Import(dropped_filedir/*, texturedir*/);
 				else
 				{
-					for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
+					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 					{
-						if (App->gameobject->gameobject_list[i]->objSelected == true)
+						if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
 						{
 							texture_dropped = true;
 						}

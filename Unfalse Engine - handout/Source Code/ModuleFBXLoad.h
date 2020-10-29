@@ -27,12 +27,12 @@ public:
 	void LoadTextureObject(char* file_path, int k, int i);
 
 public:
-	Component* impmesh;
-	GameObject* gameobject;
+	GameObject* impmesh;
+	EmptyGameObject* emptygameobject;
 
 	ILuint textIL;
 
-	uint j;
+	int j;
 
 	bool ResizeFBX;
 };
