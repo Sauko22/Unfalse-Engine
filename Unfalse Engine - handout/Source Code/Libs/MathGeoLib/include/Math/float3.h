@@ -37,10 +37,6 @@
 #include <OgreVector3.h>
 #endif
 
-#ifdef MATH_BULLET_INTEROP
-#include "../../../Bullet/include/LinearMath/btVector3.h"
-#endif
-
 MATH_BEGIN_NAMESPACE
 
 /// A vector of form (x,y,z).

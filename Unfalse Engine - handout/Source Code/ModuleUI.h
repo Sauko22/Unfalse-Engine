@@ -70,7 +70,7 @@ public:
 	*/
 
 	void putLog(const char*);
-	void print_commits_info(const char* username, const char* repo);
+	//void print_commits_info(const char* username, const char* repo);
 
 	std::vector<std::string> items;
 

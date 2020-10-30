@@ -54,7 +54,7 @@ update_status ModuleGameObject::Update()
 					{
 						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
 						{
-							App->fbxload->LoadTextureObject(App->input->dropped_filedir, k, i);
+							//App->fbxload->LoadTextureObject(App->input->dropped_filedir, k, i);
 						}
 						App->input->texture_dropped = false;
 					}
@@ -68,7 +68,7 @@ update_status ModuleGameObject::Update()
 						{
 							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 							{
-								App->fbxload->LoadTextureObject(App->input->dropped_filedir, j, i);
+								//App->fbxload->LoadTextureObject(App->input->dropped_filedir, j, i);
 							}
 
 							App->input->texture_obj_dropped = false;
@@ -97,17 +97,49 @@ void EmptyGameObject::CreateEmptyGameObject()
 			gameobject_list.push_back(App->gameobject->temp_gameobj_list[i]);
 		}
 	}
-
-	/*if (App->renderer3D->j == 0)
-	{
-		App->fbxload->gameobject->objectTexture = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
-	}
-	else if (App->renderer3D->j == 1)
-	{
-		App->fbxload->gameobject->objectTexture = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Blitzcrank\\blitzcrank_skin11_TX_CM.png";
-	}*/
 	App->gameobject->emptygameobject_list.push_back(App->fbxload->emptygameobject);
 }
 
+GameObject::GameObject()
+{}
+
+GameObject::~GameObject()
+{}
+
+void GameObject::update()
+{
+	// Update components
+	/*std::vector<Component*>::iterator it;
+	for (it = component_list.begin(); it != component_list.end(); ++it)
+	{
+		(*it)->update();
+	}*/
+	for (int i = 0; i < component_list.size(); i++)
+	{
+		component_list[i]->update();
+	}
+}
+
+Component* GameObject::AddComponent(Component::compType type)
+{
+	Component* ret = nullptr;
+
+	switch (type)
+	{
+	case Component::compType::TRANSFORM:
+		ret = new CompTransform(this, vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0));
+		break;
+	case Component::compType::MESH: 
+		ret = new CompMesh(this); 
+		break;
+	case Component::compType::MATERIAL:
+		ret = new CompMaterial(this);
+		break;
+	}
+
+	component_list.push_back(ret);
+
+	return ret;
+}
 
 

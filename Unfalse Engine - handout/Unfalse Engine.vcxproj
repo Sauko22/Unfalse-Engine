@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\Color.h" />
+    <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\ModuleFileSystem.h" />
     <ClInclude Include="Source Code\ModuleGameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />
@@ -113,6 +114,7 @@
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />
+    <ClCompile Include="Source Code\Component.cpp" />
     <ClCompile Include="Source Code\ModuleFileSystem.cpp" />
     <ClCompile Include="Source Code\ModuleGameObject.cpp" />
     <ClCompile Include="Source Code\glmath.cpp" />

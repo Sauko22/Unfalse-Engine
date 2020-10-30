@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "Vector.h"
 #include "ModuleGameObject.h"
+#include "Component.h"
 #include <xstring>
 
 typedef unsigned int GLuint;
@@ -18,17 +19,18 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path, uint filesize);
+	void Import(char* file_path, uint filesize, char* tex_path = nullptr);
 
 	void Load_Mesh();
 
 	void LoadTexture(char* file_path);
 	
-	void LoadTextureObject(char* file_path, int k, int i);
+	//void LoadTextureObject(char* file_path, int k, int i);
 
 public:
-	GameObject* impmesh;
 	EmptyGameObject* emptygameobject;
+	CompMesh* compmesh;
+	GameObject* gameobject;
 
 	ILuint textIL;
 

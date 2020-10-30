@@ -22,6 +22,9 @@
     <Filter Include="libs">
       <UniqueIdentifier>{2f62da3f-c049-440d-a2ff-62f76d37eb4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Modules\Game\GameObject">
+      <UniqueIdentifier>{0d2e723c-7695-4671-a001-9ff3464e8dee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Color.h">
@@ -108,14 +111,17 @@
     <ClInclude Include="Source Code\Vector.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\ModuleGameObject.h">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\ModuleFileSystem.h">
       <Filter>Sources\Modules\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\PathNode.h">
       <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ModuleGameObject.h">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Component.h">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,11 +197,14 @@
     <ClCompile Include="Source Code\Vec2.cpp">
       <Filter>Sources\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\ModuleGameObject.cpp">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\ModuleFileSystem.cpp">
       <Filter>Sources\Modules\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleGameObject.cpp">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Component.cpp">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

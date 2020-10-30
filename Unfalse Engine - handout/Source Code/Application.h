@@ -20,6 +20,8 @@
 #include <vector>
 #include <list>
 
+class Component;
+
 class Application
 {
 public:

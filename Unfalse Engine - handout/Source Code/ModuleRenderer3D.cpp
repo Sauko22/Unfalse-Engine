@@ -3,6 +3,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleFBXLoad.h"
 #include "ModuleWindow.h"
+#include "Component.h"
 #include "ModuleGameObject.h"
 #include "p2Defs.h"
 
@@ -268,7 +269,87 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw any Meshes loaded into scene
-	if (App->gameobject->emptygameobject_list.empty() == false)
+	for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+	{
+		if (App->gameobject->emptygameobject_list[i]->emptyrenderActive == true)
+		{
+			for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+			{
+				// Render active
+				if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjrenderActive == true)
+				{
+					// Normals active
+					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjnormActive == true)
+					{
+						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+						{
+							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = true;
+						}
+					}
+					else
+					{
+						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+						{
+							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = false;
+						}
+					}
+
+					// Texture active
+					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive == true)
+					{
+						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
+						{
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
+							}
+						}
+						else
+						{
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
+							}
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = true;
+							}
+						}
+					}
+					else
+					{
+						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
+						{
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
+							}
+						}
+						else
+						{
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
+							}
+						}
+						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+						{
+							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = false;
+						}
+					}
+
+					App->gameobject->emptygameobject_list[i]->gameobject_list[j]->update();
+				}
+			}
+		}
+		/*std::vector<GameObject*>::iterator it;
+		for (it = App->gameobject->emptygameobject_list[i]->gameobject_list.begin(); it != App->gameobject->emptygameobject_list[i]->gameobject_list.end(); ++it)
+		{
+			(*it)->update();
+		}*/
+	}
+	
+	/*if (App->gameobject->emptygameobject_list.empty() == false)
 	{
 		for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 		{
@@ -277,7 +358,7 @@ void ModuleRenderer3D::Draw()
 				App->gameobject->emptygameobject_list[i]->RenderEmptyGameObject();
 			}
 		}
-	}
+	}*/
 
 	// Draw lines on all the normal faces of the mesh
 	/*if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)

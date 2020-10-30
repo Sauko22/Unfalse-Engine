@@ -37,10 +37,11 @@ bool ModuleSceneIntro::Start()
 	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
 
 	std::string file_path = "Assets/Baker_house/BakerHouse.fbx";
+	char* tex_path = "Assets/Baker_house/Baker_house.png";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->Import(buffer, fileSize);
+	App->fbxload->Import(buffer, fileSize, tex_path);
 
 	return ret;
 }

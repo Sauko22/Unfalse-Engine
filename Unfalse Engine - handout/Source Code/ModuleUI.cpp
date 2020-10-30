@@ -5,6 +5,7 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
+#include "ModuleGameObject.h"
 #include "ModuleFBXLoad.h"
 
 #include "Glew\include\glew.h"
@@ -16,8 +17,8 @@
 
 //ImGui
 
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib */
 
 
 //// JSON Header 
@@ -291,7 +292,7 @@ update_status ModuleUI::Update()
 		static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 		static int selection_mask = (1 << 2);
 		int node_clicked = -1;
-		
+
 		for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++) 
 		{
 			// Disable the default "open on single-click behavior" + set Selected flag according to our selection.
@@ -437,22 +438,6 @@ void EmptyGameObject::showEmptyInspectorWin()
 			static float scale[3] = { 1.0f, 1.0f, 1.0f };
 			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
 		}
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("ActiveMat", &emptytexActive);
-			ImGui::Text("texture name");
-
-			// Implement texture image
-			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
-		}
-		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("Defaultext", &emptydefauTex);
-			ImGui::Text("texture name");
-
-			// Implement texture image
-			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
-		}
 	}
 }
 
@@ -493,7 +478,7 @@ void GameObject::showInspectorWin()
 			ImGui::Text("texture name");
 
 			// Implement texture image
-			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+			// ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
 		}
 	}
 }

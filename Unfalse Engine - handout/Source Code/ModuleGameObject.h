@@ -3,48 +3,14 @@
 #include "Globals.h"
 #include <vector>
 #include <string>
+#include "Component.h"
 
 typedef unsigned int GLuint;
-
-struct GameObject
-{
-	virtual void showInspectorWin();
-	//virtual void RenderGameObject() const;
-
-	std::string name = " ";
-
-	uint id_index = 0; // index in VRAM
-	uint num_index = 0;
-	uint* index = nullptr;
-
-	uint id_vertex = 0; // unique vertex in VRAM
-	uint num_vertex = 0;
-	float* vertex = nullptr;
-
-	uint id_normals = 0; // unique vertex in VRAM
-	uint num_normals = 0;
-	float* normals = nullptr;
-
-	uint id_tex = 0; // unique vertex in VRAM
-	uint num_tex = 0;
-	float* tex = nullptr;
-
-	char* meshTexture = nullptr;
-	GLuint textgl;
-
-	GLuint defaultex;
-
-	bool objSelected = false;
-	bool ObjrenderActive = true;
-	bool ObjtexActive = true;
-	bool ObjnormActive = false;
-	bool ObjdefauTex = false;
-};
 
 struct EmptyGameObject
 {
 	virtual void CreateEmptyGameObject();
-	virtual void RenderEmptyGameObject() const;
+	//virtual void RenderEmptyGameObject() const;
 	virtual void showEmptyInspectorWin();
 
 	std::string name = " ";
@@ -54,10 +20,7 @@ struct EmptyGameObject
 
 	bool emptySelected = false;
 	bool emptyrenderActive = true;
-	bool emptytexActive = true;
-	bool emptydefauTex = false;
 };
-
 
 class ModuleGameObject : public Module
 {
@@ -69,7 +32,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 	
-
 public:
 	bool active;
 
@@ -80,4 +42,28 @@ public:
 
 	char* texture1;
 	char* texture2;
+};
+
+class GameObject
+{
+public:
+	GameObject();
+	~GameObject();
+
+	virtual void showInspectorWin();
+
+	void update();
+
+	Component* AddComponent(Component::compType type);
+
+	std::vector<Component*> component_list;
+
+public:
+	std::string name = " ";
+
+	bool objSelected = false;
+	bool ObjrenderActive = true;
+	bool ObjtexActive = true;
+	bool ObjnormActive = false;
+	bool ObjdefauTex = false;
 };
