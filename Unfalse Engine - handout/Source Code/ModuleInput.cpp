@@ -20,6 +20,9 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
 	texture_dropped = false;
+	texture_obj_dropped = false;
+
+	name = "";
 }
 
 // Destructor
@@ -127,22 +130,25 @@ update_status ModuleInput::PreUpdate()
 				std::string Dir(e.drop.file);
 				LOG("FILE DROPPED: %s", Dir.c_str());
 
+				// Get Object name
 				std::string fileDir = "";
 				std::string extDir = "";
-				std::string relativeDir = "";
-
 				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir);
-				LOG("%s", fileDir.c_str());
-				LOG("%s", extDir.c_str());
-				relativeDir.append("Assets").append("/").append(fileDir).append(extDir);
-				LOG("RELATIVE DIR: %s", relativeDir.c_str());
-				
-				//texturedir = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
-				
-				Dir.substr(Dir.find("."));
+				LOG("OBJECT NAME: %s", extDir.c_str());
+				name = extDir;
 
-				if (Dir.substr(Dir.find(".")) == (".fbx") || Dir.substr(Dir.find(".")) == (".FBX"))
-					App->fbxload->Import(dropped_filedir/*, texturedir*/);
+				char* buffer = nullptr;
+				uint fileSize = 0;
+
+				std::size_t assets = Dir.find("Assets");
+				std::string load_directory = Dir.substr(assets);
+				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
+				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
+
+				fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+
+				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
+					App->fbxload->Import(buffer, fileSize);
 				else
 				{
 					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
@@ -151,10 +157,16 @@ update_status ModuleInput::PreUpdate()
 						{
 							texture_dropped = true;
 						}
+						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+						{
+							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+							{
+								texture_obj_dropped = true;
+							}
+						}
 					}
 				}
 					
-
 				SDL_free(dropped_filedir);
 			}
 			break;

@@ -298,7 +298,7 @@ update_status ModuleUI::Update()
 			ImGuiTreeNodeFlags node_flags = base_flags;
 			const bool is_selected = (selection_mask & (1 << i)) != 0;
 			
-			if (is_selected)
+			/*if (is_selected)
 			{
 				node_flags |= ImGuiTreeNodeFlags_Selected;
 
@@ -312,12 +312,24 @@ update_status ModuleUI::Update()
 				{
 					App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
 				}
-			}
+			}*/
 				
-			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "EmptyGameObject %s", App->gameobject->emptygameobject_list[i]->name.c_str());
+			bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "%s", App->gameobject->emptygameobject_list[i]->name.c_str());
 			
 			if (ImGui::IsItemClicked())
-				node_clicked = i;
+			{
+				//node_clicked = i;
+				for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+				{
+					App->gameobject->emptygameobject_list[i]->emptySelected = false;
+				}
+				for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
+				{
+					App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+				}
+				App->gameobject->emptygameobject_list[i]->emptySelected = true;
+			}
+				
 
 			if (node_open)
 			{
@@ -325,7 +337,20 @@ update_status ModuleUI::Update()
 				for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 				{
 					node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-					ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "GameObject %s", App->gameobject->emptygameobject_list[i]->gameobject_list[j]->name.c_str());
+					ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "%s", App->gameobject->emptygameobject_list[i]->gameobject_list[j]->name.c_str());
+
+					if (ImGui::IsItemClicked())
+					{
+						for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+						{
+							App->gameobject->emptygameobject_list[i]->emptySelected = false;
+						}
+						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
+						{
+							App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+						}
+						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected = true;
+					}
 				}
 				ImGui::TreePop();
 			}

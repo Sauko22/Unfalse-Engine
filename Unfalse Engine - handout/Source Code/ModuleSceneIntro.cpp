@@ -36,13 +36,11 @@ bool ModuleSceneIntro::Start()
 	/*App->primitives->CreateCylinder(-3, 0, 0, 1, 2);*/
 	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
 
-	//App->fbxload->Import("C:\\Users\\Pol\\Documents\\GitHub\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\BakerHouse.fbx");
-
-	/*std::string file_path = "Assets\\BakerHouse.fbx";
+	std::string file_path = "Assets/Baker_house/BakerHouse.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->Import(buffer, fileSize);*/
+	App->fbxload->Import(buffer, fileSize);
 
 	return ret;
 }

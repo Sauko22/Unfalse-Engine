@@ -86,10 +86,10 @@ bool ModuleFBXLoad::CleanUp()
 }
 
 // PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
+void ModuleFBXLoad::Import(char* file_path, uint filesize)
 {
-	/*const aiScene* scene = aiImportFileFromMemory(file_path, filesize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);*/
-	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFileFromMemory(file_path, filesize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -147,8 +147,16 @@ void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 				}
 				LOG("New mesh with %d uvs", impmesh->num_tex);
 			}
-			std::string com = std::to_string(emptygameobject->gameObjects);
-			impmesh->name = ("GameObject %s", com);
+			std::string obj = std::to_string(i);
+			if (App->input->name == "")
+			{
+				impmesh->name.append("GameObject_").append(obj);
+			}
+			else
+			{
+				impmesh->name = App->input->name;
+				impmesh->name.append("_").append(obj);
+			}
 			LOG("GameObject %s", impmesh->name.c_str());
 			Load_Mesh();
 			
@@ -174,15 +182,21 @@ void ModuleFBXLoad::Import(char* file_path/*, uint filesize*/)
 		}
 		j++;
 		std::string obj = std::to_string(j);
-		emptygameobject->name = ("EmptyGameObject %s", obj);
-		LOG("Object %s", emptygameobject->name.c_str());
+		if (App->input->name == "")
+		{
+			emptygameobject->name.append("EmptyObject_").append(obj);
+		}
+		else
+		{
+			emptygameobject->name = ("%s", App->input->name);
+		}
+		LOG("EmptyObject %s", emptygameobject->name.c_str());
 
 		emptygameobject->CreateEmptyGameObject();
 		
 		App->gameobject->temp_gameobj_list.clear();
 
 		aiReleaseImport(scene);
-		LOG("%s Loaded", file_path);
 	}
 	else
 	{

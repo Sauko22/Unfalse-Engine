@@ -59,8 +59,22 @@ update_status ModuleGameObject::Update()
 						App->input->texture_dropped = false;
 					}
 				}
+
 				for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 				{
+					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+					{
+						if (App->input->texture_obj_dropped == true)
+						{
+							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+							{
+								App->fbxload->LoadTextureObject(App->input->dropped_filedir, j, i);
+							}
+
+							App->input->texture_obj_dropped = false;
+						}
+					}
+
 					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 					{
 						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->showInspectorWin();

@@ -75,4 +75,7 @@ public:
 	char* texturedir;
 
 	bool texture_dropped;
+	bool texture_obj_dropped;
+
+	std::string name;
 };
