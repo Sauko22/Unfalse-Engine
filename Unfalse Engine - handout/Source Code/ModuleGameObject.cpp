@@ -52,9 +52,16 @@ update_status ModuleGameObject::Update()
 
 					if (App->input->texture_dropped == true)
 					{
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
+						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 						{
-							//App->fbxload->LoadTextureObject(App->input->dropped_filedir, k, i);
+							for (int l = 0; l < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); l++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[l]->ObjtexActive = true;
+							}
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							{
+								App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
+							}
 						}
 						App->input->texture_dropped = false;
 					}
@@ -66,15 +73,16 @@ update_status ModuleGameObject::Update()
 					{
 						if (App->input->texture_obj_dropped == true)
 						{
-							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive = true;
+
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
 							{
-								//App->fbxload->LoadTextureObject(App->input->dropped_filedir, j, i);
+								App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
 							}
-
-							App->input->texture_obj_dropped = false;
 						}
+						App->input->texture_obj_dropped = false;
 					}
-
+				
 					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 					{
 						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->showInspectorWin();
@@ -101,7 +109,13 @@ void EmptyGameObject::CreateEmptyGameObject()
 }
 
 GameObject::GameObject()
-{}
+{
+	objSelected = false;
+	ObjrenderActive = true;
+	ObjtexActive = false;
+	ObjnormActive = false;
+	ObjdefauTex = false;
+}
 
 GameObject::~GameObject()
 {}
@@ -118,6 +132,11 @@ void GameObject::update()
 	{
 		component_list[i]->update();
 	}
+
+	/*for (int i = 0; i < gameobject_child_list.size(); i++)
+	{
+		gameobject_child_list[i]->update();
+	}*/
 }
 
 Component* GameObject::AddComponent(Component::compType type)

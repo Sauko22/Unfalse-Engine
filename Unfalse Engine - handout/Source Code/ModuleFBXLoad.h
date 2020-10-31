@@ -25,7 +25,7 @@ public:
 
 	void LoadTexture(char* file_path);
 	
-	//void LoadTextureObject(char* file_path, int k, int i);
+	virtual void LoadTextureObject(char* file_path, int i, int k, int j);
 
 public:
 	EmptyGameObject* emptygameobject;

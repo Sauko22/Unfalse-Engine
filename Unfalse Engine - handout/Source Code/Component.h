@@ -34,6 +34,7 @@ public:
 	bool normactive;
 	bool texactive;
 	bool deftexactive;
+	GLuint newtexgl;
 };
 
 class CompTransform : public Component

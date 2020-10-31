@@ -67,6 +67,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;E:\Github Repositories\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs;C:\Users\Pol\Documents\GitHub\Unfalse-Engine\Unfalse Engine - handout\Source Code\Libs</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

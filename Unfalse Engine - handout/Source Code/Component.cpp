@@ -23,6 +23,7 @@ Component::Component(compType type, GameObject*) : type(type), gameObject(gameOb
 	texactive = false;
 	texactive = false;
 	deftexactive = false;
+	newtexgl = 0;
 }
 
 Component::~Component()
@@ -50,6 +51,7 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	normactive = false;
 	texactive = false;
 	deftexactive = false;
+	newtexgl = 0;
 }
 
 CompMesh::~CompMesh()
@@ -66,6 +68,11 @@ void CompMesh::RenderMesh()
 {
 	for (int i = 0; i < mesh_list.size(); i++)
 	{
+		if (newtexgl != 0)
+		{
+			mesh_list[i]->textgl = newtexgl;
+			mesh_list[i]->hastext = true;
+		}
 		if (mesh_list[i]->hastext == true)
 		{
 			if (texactive == true)
@@ -86,6 +93,10 @@ void CompMesh::RenderMesh()
 					glBindTexture(GL_TEXTURE_2D, mesh_list[i]->defaultex);
 				}
 			}
+		}
+		if (mesh_list[i]->hastext == false && deftexactive == true)
+		{
+			glBindTexture(GL_TEXTURE_2D, mesh_list[i]->defaultex);
 		}
 		//Draw Mesh
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -123,6 +134,10 @@ void CompMesh::RenderMesh()
 					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
+		}
+		if (mesh_list[i]->hastext == false && deftexactive == true)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);

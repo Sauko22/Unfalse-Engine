@@ -57,13 +57,14 @@ public:
 	Component* AddComponent(Component::compType type);
 
 	std::vector<Component*> component_list;
+	//std::vector<GameObject*> gameobject_child_list;
 
 public:
 	std::string name = " ";
 
-	bool objSelected = false;
-	bool ObjrenderActive = true;
-	bool ObjtexActive = true;
-	bool ObjnormActive = false;
-	bool ObjdefauTex = false;
+	bool objSelected;
+	bool ObjrenderActive;
+	bool ObjtexActive;
+	bool ObjnormActive;
+	bool ObjdefauTex;
 };

@@ -44,15 +44,15 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 // Destructor
 ModuleFBXLoad::~ModuleFBXLoad()
 {
-	/*glDeleteBuffers(1, &mesh->id_index);
-	glDeleteBuffers(1, &mesh->id_vertex);
-	glDeleteBuffers(1, &mesh->id_normals);
-	glDeleteBuffers(1, &mesh->id_tex);
+	glDeleteBuffers(1, &compmesh->newmesh->id_index);
+	glDeleteBuffers(1, &compmesh->newmesh->id_vertex);
+	glDeleteBuffers(1, &compmesh->newmesh->id_normals);
+	glDeleteBuffers(1, &compmesh->newmesh->id_tex);
 
-	delete[] mesh->index;
-	delete[] mesh->normals;
-	delete[] mesh->vertex;
-	delete[] mesh->tex;*/
+	delete[] compmesh->newmesh->index;
+	delete[] compmesh->newmesh->normals;
+	delete[] compmesh->newmesh->vertex;
+	delete[] compmesh->newmesh->tex;
 }
 
 // Called before render is available
@@ -184,6 +184,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			{
 				compmesh->newmesh->hastext = true;
 				gameobject->AddComponent(Component::compType::MATERIAL);
+				gameobject->ObjtexActive = true;
 
 				LoadTexture(tex_path);
 				LOG("Texture from import Loaded");
@@ -356,15 +357,15 @@ void ModuleFBXLoad::LoadTexture(char* file_path)
 	ilDeleteImages(1, &textIL);
 }
 
-/*void ModuleFBXLoad::LoadTextureObject(char* file_path, int k, int i)
+void ModuleFBXLoad::LoadTextureObject(char* file_path, int i, int k, int j)
 {
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
 	ilLoadImage(file_path);
 
-	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->textgl = ilutGLBindTexImage();
+	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->component_list[j]->newtexgl = ilutGLBindTexImage();
 
 	ilDeleteImages(1, &textIL);
-}*/
+}
 
