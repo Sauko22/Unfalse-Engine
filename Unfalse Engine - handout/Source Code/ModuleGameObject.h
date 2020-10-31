@@ -39,9 +39,6 @@ public:
 	std::vector<EmptyGameObject*> emptygameobject_list;
 
 	std::vector<GameObject*> temp_gameobj_list;
-
-	char* texture1;
-	char* texture2;
 };
 
 class GameObject
@@ -57,10 +54,23 @@ public:
 	Component* AddComponent(Component::compType type);
 
 	std::vector<Component*> component_list;
+	std::vector<GameObject*> gameobject_list;
 	//std::vector<GameObject*> gameobject_child_list;
 
 public:
-	std::string name = " ";
+	std::string name;
+	std::string fbxname;
+	std::string pngname;
+	std::string deftexname;
+	uint index_name;
+	uint normals_name;
+	uint vertex_name;
+	uint faces_name;
+	uint texturescoords_name;
+	GLuint actualtexgl;
+
+	int texture_h;
+	int texture_w;
 
 	bool objSelected;
 	bool ObjrenderActive;

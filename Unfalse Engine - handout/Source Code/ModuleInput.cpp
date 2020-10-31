@@ -155,12 +155,21 @@ update_status ModuleInput::PreUpdate()
 					{
 						if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
 						{
+							for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+							{
+								texname = norm_load_directory.find_last_of("/");
+								texname_2 = norm_load_directory.substr(texname);
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
+							}
 							texture_dropped = true;
 						}
 						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 						{
 							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 							{
+								texname = norm_load_directory.find_last_of("/");
+								texname_2 = norm_load_directory.substr(texname);
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
 								texture_obj_dropped = true;
 							}
 						}

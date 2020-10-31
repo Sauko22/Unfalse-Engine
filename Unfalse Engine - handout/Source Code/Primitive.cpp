@@ -134,38 +134,6 @@ void Cube::InnerRender() const
 	// Primitive color
 	glColor4ub(255, 0, 0, 255);
 
-	// Cube done with glDrawarrays
-	
-	/*GLfloat vertices[] = { 1, 1, 1,  -1, 1, 1,  -1,-1, 1,      
-					   -1,-1, 1,   1,-1, 1,   1, 1, 1,      
-
-						1, 1, 1,   1,-1, 1,   1,-1,-1,      
-						1,-1,-1,   1, 1,-1,   1, 1, 1,      
-
-						1, 1, 1,   1, 1,-1,  -1, 1,-1,      
-					   -1, 1,-1,  -1, 1, 1,   1, 1, 1,     
-
-					   -1, 1, 1,  -1, 1,-1,  -1,-1,-1,      
-					   -1,-1,-1,  -1,-1, 1,  -1, 1, 1,      
-
-					   -1,-1,-1,   1,-1,-1,   1,-1, 1,      
-						1,-1, 1,  -1,-1, 1,  -1,-1,-1,      
-
-						1,-1,-1,  -1,-1,-1,  -1, 1,-1,      
-					   -1, 1,-1,   1, 1,-1,   1,-1,-1 };    
-
-
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glDisableClientState(GL_VERTEX_ARRAY);*/
-
-
-
-
 	// Cube done with glDrawelements
 	GLfloat vertices[24] = { 0.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f,

@@ -34,7 +34,7 @@ public:
 	bool normactive;
 	bool texactive;
 	bool deftexactive;
-	GLuint newtexgl;
+	GLuint newtexgl = 0;
 };
 
 class CompTransform : public Component
@@ -68,6 +68,8 @@ struct Mesh
 	uint id_tex = 0; // unique vertex in VRAM
 	uint num_tex = 0;
 	float* tex = nullptr;
+
+	uint num_faces = 0;
 
 	GLuint textgl;
 	GLuint defaultex;

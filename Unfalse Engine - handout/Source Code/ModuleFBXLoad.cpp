@@ -115,6 +115,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			// copy faces
 			if (ourMesh->HasFaces())
 			{
+				compmesh->newmesh->num_faces = ourMesh->mNumFaces;
 				compmesh->newmesh->num_index = ourMesh->mNumFaces * 3;
 				compmesh->newmesh->index = new uint[compmesh->newmesh->num_index]; // assume each face is a triangle
 				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
@@ -131,13 +132,11 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			}
 			if (ourMesh->HasNormals()) 
 			{
-
 				compmesh->newmesh->num_normals = ourMesh->mNumVertices;
 				compmesh->newmesh->normals = new float[compmesh->newmesh->num_normals * 3];
 				memcpy(compmesh->newmesh->normals, ourMesh->mNormals, sizeof(float) * compmesh->newmesh->num_normals * 3);
 				LOG("New mesh with %d normal", compmesh->newmesh->num_normals);
 				LOG("New mesh with %d idnormal", compmesh->newmesh->id_normals);
-
 			}
 			if (ourMesh->HasTextureCoords(0)) 
 			{
@@ -156,14 +155,24 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			std::string obj = std::to_string(i);
 			if (App->input->name == "")
 			{
-				gameobject->name.append("GameObject_").append(obj);
+				gameobject->name.append("BakerHouse_").append(obj);
+				gameobject->fbxname.append("BakerHouse").append(".fbx");
 			}
 			else
 			{
 				gameobject->name = App->input->name;
 				gameobject->name.append("_").append(obj);
+				gameobject->fbxname = App->input->name;
+				gameobject->fbxname.append(".fbx");
 			}
 			LOG("GameObject %s", gameobject->name.c_str());
+			
+			gameobject->faces_name = compmesh->newmesh->num_faces;
+			gameobject->texturescoords_name = compmesh->newmesh->num_tex;
+			gameobject->normals_name = compmesh->newmesh->num_normals;
+			gameobject->vertex_name = compmesh->newmesh->num_vertex;
+			gameobject->index_name = compmesh->newmesh->num_index;
+			
 			Load_Mesh();
 			
 			/*if (App->renderer3D->j == 0)
@@ -179,12 +188,33 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 
 			// Load texture if we have passed the texture path
 			compmesh->newmesh->defaultex = App->renderer3D->texchec;
+			gameobject->deftexname = "Checkers";
 
+			// Material
+			if (scene->HasMaterials())
+			{
+				aiMaterial* texture = nullptr;
+				aiString texture_path;
+
+				texture = scene->mMaterials[ourMesh->mMaterialIndex];
+
+				aiGetMaterialTexture(texture, aiTextureType_DIFFUSE, ourMesh->mMaterialIndex, &texture_path);
+
+				std::string texturepath = "Assets/Textures/";
+				texturepath.append(texture_path.C_Str());
+				if (texturepath != "Assets/Textures/")
+				{
+					tex_path = (char*)texturepath.c_str();
+					LOG("%s", tex_path);
+				}
+			}
 			if (tex_path != nullptr)
 			{
 				compmesh->newmesh->hastext = true;
 				gameobject->AddComponent(Component::compType::MATERIAL);
 				gameobject->ObjtexActive = true;
+
+				gameobject->pngname = tex_path;
 
 				LoadTexture(tex_path);
 				LOG("Texture from import Loaded");
@@ -201,7 +231,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 		std::string obj = std::to_string(j);
 		if (App->input->name == "")
 		{
-			emptygameobject->name.append("EmptyObject_").append(obj);
+			emptygameobject->name.append("BakerHouse_").append(obj);
 		}
 		else
 		{
@@ -352,7 +382,12 @@ void ModuleFBXLoad::LoadTexture(char* file_path)
 
 	ilLoadImage(file_path);
 
+	gameobject->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	gameobject->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+
 	compmesh->newmesh->textgl = ilutGLBindTexImage();
+
+	gameobject->actualtexgl = compmesh->newmesh->textgl;
 
 	ilDeleteImages(1, &textIL);
 }
@@ -363,6 +398,9 @@ void ModuleFBXLoad::LoadTextureObject(char* file_path, int i, int k, int j)
 	ilBindImage(textIL);
 
 	ilLoadImage(file_path);
+
+	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
 
 	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->component_list[j]->newtexgl = ilutGLBindTexImage();
 

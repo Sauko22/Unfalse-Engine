@@ -211,7 +211,13 @@ update_status ModuleUI::Update()
 			
 			if (ImGui::MenuItem("Cube"))
 			{
-					App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
+				/*std::string file_path = "Assets/Models/Cube.fbx";
+				char* buffer = nullptr;
+				uint fileSize = 0;
+				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+				App->fbxload->Import(buffer, fileSize);*/
+
+				App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
 			}
 			
 			if (ImGui::MenuItem("Sphere"))
@@ -323,10 +329,11 @@ update_status ModuleUI::Update()
 				for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 				{
 					App->gameobject->emptygameobject_list[i]->emptySelected = false;
-				}
-				for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-				{
-					App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+
+					for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
+					{
+						App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+					}
 				}
 				App->gameobject->emptygameobject_list[i]->emptySelected = true;
 			}
@@ -345,10 +352,11 @@ update_status ModuleUI::Update()
 						for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 						{
 							App->gameobject->emptygameobject_list[i]->emptySelected = false;
-						}
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+
+							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
+							{
+								App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
+							}
 						}
 						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected = true;
 					}
@@ -462,23 +470,44 @@ void GameObject::showInspectorWin()
 		{
 			//ImGui::Checkbox("ActiveMesh", &meshactive);
 			ImGui::Checkbox("ActiveNormals", &ObjnormActive);
-			ImGui::Text("fbx name");
+			ImGui::Text("Index: %i", index_name);
+			ImGui::Text("Normals: %i", normals_name);
+			ImGui::Text("Vertex: %i", vertex_name);
+			ImGui::Text("Faces: %i", faces_name);
+			ImGui::Text("Text coords: %i", texturescoords_name);
+			ImGui::Text("Gameobject: %s", fbxname.c_str());
 		}
 		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("ActiveMat", &ObjtexActive);
-			ImGui::Text("texture name");
+			ImGui::Text("%s", pngname.c_str());
 
-			// Implement texture image
-			//ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
+			ImGui::Text("Height: %i", texture_h);
+
+			ImTextureID texture = 0;
+			for (int k = 0; k < component_list.size(); k++)
+			{
+				if (component_list[k]->newtexgl != 0)
+				{
+					texture = (ImTextureID)component_list[k]->newtexgl;
+				}
+			}
+			if (texture != 0)
+			{
+				ImGui::Image(texture, ImVec2(128, 128));
+			}
+			else
+			{
+				ImGui::Image((ImTextureID)actualtexgl, ImVec2(128, 128));
+			}
 		}
 		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("Defaultext", &ObjdefauTex);
-			ImGui::Text("texture name");
+			ImGui::Text("%s", deftexname.c_str());
 
-			// Implement texture image
-			// ImGui::Image((ImTextureID)App->gameobject->texture1, ImVec2(256, 256));
+			ImGui::Image((ImTextureID)App->renderer3D->texchec, ImVec2(128, 128));
 		}
 	}
 }

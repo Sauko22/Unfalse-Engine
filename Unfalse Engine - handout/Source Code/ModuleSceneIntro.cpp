@@ -36,12 +36,11 @@ bool ModuleSceneIntro::Start()
 	/*App->primitives->CreateCylinder(-3, 0, 0, 1, 2);*/
 	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
 
-	std::string file_path = "Assets/Baker_house/BakerHouse.fbx";
-	char* tex_path = "Assets/Baker_house/Baker_house.png";
+	std::string file_path = "Assets/Models/BakerHouse.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->Import(buffer, fileSize, tex_path);
+	App->fbxload->Import(buffer, fileSize);
 
 	return ret;
 }

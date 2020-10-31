@@ -4,10 +4,7 @@
 #include "p2Defs.h"
 
 ModuleGameObject::ModuleGameObject(Application* app, bool start_enabled) : Module(app, start_enabled)
-{
-	texture1 = nullptr;
-	texture2 = nullptr;
-}
+{}
 
 ModuleGameObject::~ModuleGameObject()
 {}
@@ -16,10 +13,6 @@ bool ModuleGameObject::Start()
 {
 	LOG("Loading GameObject");
 	bool ret = true;
-
-	texture1 = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Baker_house\\Baker_house.png";
-	texture2 = "E:\\Github Repositories\\Unfalse-Engine\\Unfalse Engine - handout\\Game\\Assets\\Blitzcrank\\blitzcrank_skin11_TX_CM.png";
-
 	
 	return ret;
 }
@@ -110,11 +103,25 @@ void EmptyGameObject::CreateEmptyGameObject()
 
 GameObject::GameObject()
 {
+	name = " ";
+	fbxname = " ";
+	pngname = " ";
+	deftexname = " ";
+	index_name = 0;
+	normals_name = 0;
+	vertex_name = 0;
+	faces_name = 0;
+	texturescoords_name = 0;
+	actualtexgl = 0;
+
 	objSelected = false;
 	ObjrenderActive = true;
 	ObjtexActive = false;
 	ObjnormActive = false;
 	ObjdefauTex = false;
+
+	texture_h = 0;
+	texture_w = 0;
 }
 
 GameObject::~GameObject()
@@ -160,5 +167,3 @@ Component* GameObject::AddComponent(Component::compType type)
 
 	return ret;
 }
-
-
