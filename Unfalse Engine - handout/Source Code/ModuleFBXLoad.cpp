@@ -155,8 +155,32 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			std::string obj = std::to_string(i);
 			if (App->input->name == "")
 			{
-				gameobject->name.append("BakerHouse_").append(obj);
-				gameobject->fbxname.append("BakerHouse").append(".fbx");
+				
+					if (App->UI->cube == true)
+					{
+						gameobject->name.append("Cube_").append(obj);
+						gameobject->fbxname.append("Cube").append(".fbx");
+					}
+				else if  (App->UI->cylinder == true)
+					{
+						gameobject->name.append("Cylinder_").append(obj);
+						gameobject->fbxname.append("Cylinder").append(".fbx");
+					}
+				else if (App->UI->sphere == true)
+					{
+						gameobject->name.append("Sphere_").append(obj);
+						gameobject->fbxname.append("Sphere").append(".fbx");
+					}
+				else if (App->UI->pyramid == true)
+					{
+						gameobject->name.append("Pyramid_").append(obj);
+						gameobject->fbxname.append("Pyramid").append(".fbx");
+					}
+				else 
+				{
+					gameobject->name.append("BakerHouse_").append(obj);
+					gameobject->fbxname.append("BakerHouse").append(".fbx");
+				}
 			}
 			else
 			{
@@ -231,7 +255,27 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 		std::string obj = std::to_string(j);
 		if (App->input->name == "")
 		{
-			emptygameobject->name.append("BakerHouse_").append(obj);
+			if (App->UI->cube == true) 
+			{ 
+				emptygameobject->name = "Cube";
+				App->UI->cube = false;
+			}
+			else if (App->UI->sphere == true)
+			{
+				emptygameobject->name = "Sphere";
+				App->UI->sphere = false;
+			}
+			else if (App->UI->pyramid == true)
+			{
+				emptygameobject->name = "Pyramid";
+				App->UI->pyramid = false;
+			}
+			else if (App->UI->cylinder == true)
+			{
+				emptygameobject->name = "Cylinder";
+				App->UI->cylinder = false;
+			}
+			else emptygameobject->name.append("BakerHouse_").append(obj);
 		}
 		else
 		{

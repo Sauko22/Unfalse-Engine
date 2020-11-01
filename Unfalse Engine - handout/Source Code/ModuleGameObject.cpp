@@ -33,57 +33,60 @@ update_status ModuleGameObject::Update()
 {
 	bool ret = true;
 
-	if (ImGui::Begin("Inspector", NULL))
+	if (App->UI->activeInspec == true)
 	{
-		if (App->gameobject->emptygameobject_list.empty() == false)
+		if (ImGui::Begin("Inspector", NULL))
 		{
-			for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+			if (App->gameobject->emptygameobject_list.empty() == false)
 			{
-				if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
+				for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 				{
-					App->gameobject->emptygameobject_list[i]->showEmptyInspectorWin();
-
-					if (App->input->texture_dropped == true)
+					if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
 					{
-						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+						App->gameobject->emptygameobject_list[i]->showEmptyInspectorWin();
+
+						if (App->input->texture_dropped == true)
 						{
-							for (int l = 0; l < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); l++)
+							for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[l]->ObjtexActive = true;
+								for (int l = 0; l < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); l++)
+								{
+									App->gameobject->emptygameobject_list[i]->gameobject_list[l]->ObjtexActive = true;
+								}
+								for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+								{
+									App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
+								}
 							}
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
-							}
+							App->input->texture_dropped = false;
 						}
-						App->input->texture_dropped = false;
 					}
-				}
 
-				for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-				{
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+					for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 					{
-						if (App->input->texture_obj_dropped == true)
+						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive = true;
-
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+							if (App->input->texture_obj_dropped == true)
 							{
-								App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
+								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive = true;
+
+								for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
+								{
+									App->fbxload->LoadTextureObject(App->input->dropped_filedir, i, j, k);
+								}
 							}
+							App->input->texture_obj_dropped = false;
 						}
-						App->input->texture_obj_dropped = false;
-					}
-				
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
-					{
-						App->gameobject->emptygameobject_list[i]->gameobject_list[j]->showInspectorWin();
+
+						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
+						{
+							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->showInspectorWin();
+						}
 					}
 				}
 			}
+			ImGui::End();
 		}
-		ImGui::End();
 	}
 
 	return UPDATE_CONTINUE;

@@ -51,11 +51,26 @@ public:
 	// Docking
 	bool showDock;
 
+	// Primitives
+
+	bool cube;
+	bool pyramid;
+	bool sphere;
+	bool cylinder;
+
+
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
 	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
 	void showTextureImage();
+
+	// Editor menu
+	bool activeInspec;
+	bool activeConsole;
+	bool activeHierach;
+
+
 
 	//void AddLogText(std::string incoming_text);
 
@@ -77,6 +92,7 @@ public:
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 
+	vec3 cameradirection;
 	bool wireframe;
 	bool depth;
 	bool cull;

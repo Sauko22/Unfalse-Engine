@@ -26,7 +26,8 @@ public:
 	
 	vec3 X, Y, Z, Position, Reference;
 	float camera_speed;
-
+	bool lalt;
+	bool orbit;
 private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;
