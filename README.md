@@ -1,4 +1,4 @@
-# Unfalse Engine
+# Unfalse-Engine
 Unfalse Engine is a game engine made with C & C++ by two students from the 3rd grade of Design and Development of Videogames, from the CITM UPC (Terrassa).
 Marc Palma & Pol Juan were the responsibles to make this project come true.
 
@@ -98,3 +98,4 @@ Shows all the logs from the code.
 ### Additional information
 - FBX that has a texture linked, will be loaded with his respective texture
 - Models must be in the models folder and textures must be in textures folder
+
