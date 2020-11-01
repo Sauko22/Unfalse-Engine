@@ -10,7 +10,6 @@ typedef unsigned int GLuint;
 struct EmptyGameObject
 {
 	virtual void CreateEmptyGameObject();
-	//virtual void RenderEmptyGameObject() const;
 	virtual void showEmptyInspectorWin();
 
 	std::string name = " ";

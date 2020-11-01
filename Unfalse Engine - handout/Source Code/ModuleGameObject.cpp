@@ -133,16 +133,12 @@ GameObject::~GameObject()
 void GameObject::update()
 {
 	// Update components
-	/*std::vector<Component*>::iterator it;
-	for (it = component_list.begin(); it != component_list.end(); ++it)
-	{
-		(*it)->update();
-	}*/
 	for (int i = 0; i < component_list.size(); i++)
 	{
 		component_list[i]->update();
 	}
 
+	// Unused for this assingment
 	/*for (int i = 0; i < gameobject_child_list.size(); i++)
 	{
 		gameobject_child_list[i]->update();

@@ -61,11 +61,11 @@ struct Mesh
 	uint num_vertex = 0;
 	float* vertex = nullptr;
 
-	uint id_normals = 0; // unique vertex in VRAM
+	uint id_normals = 0; // unique normals in VRAM
 	uint num_normals = 0;
 	float* normals = nullptr;
 
-	uint id_tex = 0; // unique vertex in VRAM
+	uint id_tex = 0; // unique tex coords in VRAM
 	uint num_tex = 0;
 	float* tex = nullptr;
 

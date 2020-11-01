@@ -155,32 +155,9 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			std::string obj = std::to_string(i);
 			if (App->input->name == "")
 			{
+				gameobject->name.append("BakerHouse_").append(obj);
+				gameobject->fbxname.append("BakerHouse").append(".fbx");
 				
-					if (App->UI->cube == true)
-					{
-						gameobject->name.append("Cube_").append(obj);
-						gameobject->fbxname.append("Cube").append(".fbx");
-					}
-				else if  (App->UI->cylinder == true)
-					{
-						gameobject->name.append("Cylinder_").append(obj);
-						gameobject->fbxname.append("Cylinder").append(".fbx");
-					}
-				else if (App->UI->sphere == true)
-					{
-						gameobject->name.append("Sphere_").append(obj);
-						gameobject->fbxname.append("Sphere").append(".fbx");
-					}
-				else if (App->UI->pyramid == true)
-					{
-						gameobject->name.append("Pyramid_").append(obj);
-						gameobject->fbxname.append("Pyramid").append(".fbx");
-					}
-				else 
-				{
-					gameobject->name.append("BakerHouse_").append(obj);
-					gameobject->fbxname.append("BakerHouse").append(".fbx");
-				}
 			}
 			else
 			{
@@ -188,6 +165,30 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 				gameobject->name.append("_").append(obj);
 				gameobject->fbxname = App->input->name;
 				gameobject->fbxname.append(".fbx");
+			}
+			if (App->UI->cube == true)
+			{
+				std::string cub = ("Cube_");
+				gameobject->name = cub.append(obj);
+				gameobject->fbxname = cub.append(".fbx");
+			}
+			else if (App->UI->cylinder == true)
+			{
+				std::string cyl = ("Cylinder_");
+				gameobject->name = cyl.append(obj);
+				gameobject->fbxname = cyl.append(".fbx");
+			}
+			else if (App->UI->sphere == true)
+			{
+				std::string sph = ("Sphere_");
+				gameobject->name = sph.append(obj);
+				gameobject->fbxname = sph.append(".fbx");
+			}
+			else if (App->UI->pyramid == true)
+			{
+				std::string pyr = ("Pyramid_");
+				gameobject->name = pyr.append(obj);
+				gameobject->fbxname = pyr.append(".fbx");
 			}
 			LOG("GameObject %s", gameobject->name.c_str());
 			
@@ -199,17 +200,6 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			
 			Load_Mesh();
 			
-			/*if (App->renderer3D->j == 0)
-			{
-				impmesh->meshTexture = App->gameobject->texture1;
-			}
-			else if (App->renderer3D->j == 1)
-			{
-				impmesh->meshTexture = App->gameobject->texture2;
-			}*/
-			
-			//mesh->defaultex = App->renderer3D->texchec;
-
 			// Load texture if we have passed the texture path
 			compmesh->newmesh->defaultex = App->renderer3D->texchec;
 			gameobject->deftexname = "Checkers";
@@ -255,31 +245,31 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 		std::string obj = std::to_string(j);
 		if (App->input->name == "")
 		{
-			if (App->UI->cube == true) 
-			{ 
-				emptygameobject->name = "Cube";
-				App->UI->cube = false;
-			}
-			else if (App->UI->sphere == true)
-			{
-				emptygameobject->name = "Sphere";
-				App->UI->sphere = false;
-			}
-			else if (App->UI->pyramid == true)
-			{
-				emptygameobject->name = "Pyramid";
-				App->UI->pyramid = false;
-			}
-			else if (App->UI->cylinder == true)
-			{
-				emptygameobject->name = "Cylinder";
-				App->UI->cylinder = false;
-			}
-			else emptygameobject->name.append("BakerHouse_").append(obj);
+			emptygameobject->name.append("BakerHouse_").append(obj);
 		}
 		else
 		{
 			emptygameobject->name = ("%s", App->input->name);
+		}
+		if (App->UI->cube == true)
+		{
+			emptygameobject->name = "Cube";
+			App->UI->cube = false;
+		}
+		else if (App->UI->sphere == true)
+		{
+			emptygameobject->name = "Sphere";
+			App->UI->sphere = false;
+		}
+		else if (App->UI->pyramid == true)
+		{
+			emptygameobject->name = "Pyramid";
+			App->UI->pyramid = false;
+		}
+		else if (App->UI->cylinder == true)
+		{
+			emptygameobject->name = "Cylinder";
+			App->UI->cylinder = false;
 		}
 		LOG("EmptyObject %s", emptygameobject->name.c_str());
 
@@ -318,106 +308,7 @@ void ModuleFBXLoad::Load_Mesh()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->newmesh->num_tex * 2, &compmesh->newmesh->tex[0], GL_STATIC_DRAW);
 }
 
-/*void EmptyGameObject::RenderEmptyGameObject() const
-{
-	// Change size
-	if (App->fbxload->ResizeFBX == true)
-	{
-		glScaled(0.05f, 0.05f, 0.05f);
-	}
-	else
-	{
-		glScaled(1, 1, 1);
-	}
-	
-	if (gameobject_list.empty() == false)
-	{
-		for (int i = 0; i < gameobject_list.size(); i++)
-		{
-			if (gameobject_list[i]->ObjrenderActive == true)
-			{
-				if (emptytexActive == true)
-				{
-					if (gameobject_list[i]->ObjtexActive == true)
-					{
-						// Texture from Devil
-						if (gameobject_list[i]->ObjdefauTex == true || emptydefauTex == true)
-						{
-							glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->defaultex);
 
-						}
-						else 
-						{
-							glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->textgl);
-						}
-					}
-				}
-				if (emptytexActive == false && emptydefauTex == true)
-				{
-					glBindTexture(GL_TEXTURE_2D, gameobject_list[i]->defaultex);
-				}
-				//Draw Mesh
-				glEnableClientState(GL_VERTEX_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_vertex);
-				glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-				//Normals
-				glEnableClientState(GL_NORMAL_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_normals);
-				glNormalPointer(GL_FLOAT, 0, NULL);
-
-				//Uvs
-				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_tex);
-				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-				glBindBuffer(GL_ARRAY_BUFFER, gameobject_list[i]->id_normals);
-
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gameobject_list[i]->id_index);
-
-				glDrawElements(GL_TRIANGLES, gameobject_list[i]->num_index, GL_UNSIGNED_INT, NULL);
-
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				if (emptytexActive == true)
-				{
-					if (gameobject_list[i]->ObjtexActive == true)
-					{
-						glBindTexture(GL_TEXTURE_2D, 0);
-					}
-				}
-				if (emptytexActive == false && emptydefauTex == true)
-				{
-					glBindTexture(GL_TEXTURE_2D, 0);
-				}
-				glDisableClientState(GL_VERTEX_ARRAY);
-				glDisableClientState(GL_NORMAL_ARRAY);
-				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-				if (gameobject_list[i]->ObjnormActive == true)
-				{
-					glBegin(GL_LINES);
-					//glColor3f(1.0f, 0.0f, 0.0f);
-
-					for (size_t k = 0; k < gameobject_list[i]->num_vertex * 3; k += 3)
-					{
-						GLfloat v_x = gameobject_list[i]->vertex[k];
-						GLfloat v_y = gameobject_list[i]->vertex[k + 1];
-						GLfloat v_z = gameobject_list[i]->vertex[k + 2];
-
-						GLfloat n_x = gameobject_list[i]->normals[k];
-						GLfloat n_y = gameobject_list[i]->normals[k + 1];
-						GLfloat n_z = gameobject_list[i]->normals[k + 2];
-
-						glVertex3f(v_x, v_y, v_z);
-						glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
-					}
-					glEnd();
-				}
-			}
-		}
-	}
-}*/
 
 void ModuleFBXLoad::LoadTexture(char* file_path) 
 {

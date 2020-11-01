@@ -23,7 +23,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	//GameObject* CreateGameObject();
 
 public:
 

@@ -41,12 +41,6 @@ public:
 	bool showAbout;
 	bool showConfig;
 
-	// Inspector
-	/*bool insactive;
-	bool objactive;
-	bool meshactive;
-	bool texactive;
-	bool normactive;*/
 
 	// Docking
 	bool showDock;
@@ -63,29 +57,15 @@ public:
 	void showConfigWin(bool* p_open = NULL);
 	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
-	void showTextureImage();
+	
 
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;
 	bool activeHierach;
 
-
-
-	//void AddLogText(std::string incoming_text);
-
-	// WINDOW EXAMPLES
-	/*
-	// Window 3 variables
-	float f;
-	char buf[20];
-
-	// Window 4 variables
-	float my_color[4];
-	*/
-
 	void putLog(const char*);
-	//void print_commits_info(const char* username, const char* repo);
+	
 
 	std::vector<std::string> items;
 

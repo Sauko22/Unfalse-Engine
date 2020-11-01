@@ -29,12 +29,7 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(-3, 2, 1));
 	App->camera->LookAt(vec3(0.f, 0.f, 0.f));
 
-	// Create primitives
-	/*App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
-	App->primitives->CreateSphere(3, 0, 0, 1, 1, 1);*/
-	//App->primitives->CreatePlane(0, 0, 0);
-	/*App->primitives->CreateCylinder(-3, 0, 0, 1, 2);*/
-	//App->primitives->CreateLine(5, 2, 0, -2, 2, 0);
+	
 
 	std::string file_path = "Assets/Models/BakerHouse.fbx";
 	char* buffer = nullptr;

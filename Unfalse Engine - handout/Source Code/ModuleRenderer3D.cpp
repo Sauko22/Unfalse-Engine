@@ -242,7 +242,7 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->screen_surface->w, App->window->screen_surface->h);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
-	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	
 
 	//Configuring frame buffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
@@ -342,39 +342,10 @@ void ModuleRenderer3D::Draw()
 				}
 			}
 		}
-		/*std::vector<GameObject*>::iterator it;
-		for (it = App->gameobject->emptygameobject_list[i]->gameobject_list.begin(); it != App->gameobject->emptygameobject_list[i]->gameobject_list.end(); ++it)
-		{
-			(*it)->update();
-		}*/
+		
 	}
 	
-	/*if (App->gameobject->emptygameobject_list.empty() == false)
-	{
-		for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-		{
-			if (App->gameobject->emptygameobject_list[i]->emptyrenderActive == true)
-			{
-				App->gameobject->emptygameobject_list[i]->RenderEmptyGameObject();
-			}
-		}
-	}*/
-
-	// Draw lines on all the normal faces of the mesh
-	/*if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-	{
-		showlines = !showlines;
-	}
-	if (showlines)
-	{
-		if (App->gameobject->gameobject_list.empty() == false)
-		{
-			for (int i = 0; i < App->gameobject->gameobject_list.size(); i++)
-			{
-				App->gameobject->gameobject_list[i]->DrawNormalLines();
-			}
-		}
-	}*/
+	
 	
 	ImGui::End();
 }
@@ -395,28 +366,4 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 	}
 }
 
-/*void GameObject::DrawNormalLines() 
-{
-	glBegin(GL_LINES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-
-	for (int j = 0; j < comp_list.size(); j++)
-	{
-		for (size_t i = 0; i < comp_list[j]->num_vertex * 3; i += 3)
-		{
-			GLfloat v_x = comp_list[j]->vertex[i];
-			GLfloat v_y = comp_list[j]->vertex[i + 1];
-			GLfloat v_z = comp_list[j]->vertex[i + 2];
-
-			GLfloat n_x = comp_list[j]->normals[i];
-			GLfloat n_y = comp_list[j]->normals[i + 1];
-			GLfloat n_z = comp_list[j]->normals[i + 2];
-
-			glVertex3f(v_x, v_y, v_z);
-			glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
-		}
-	}
-
-	glEnd();
-}*/
 

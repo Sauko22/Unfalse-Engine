@@ -151,11 +151,6 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	/*if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN) {
-
-		showDock = !showDock;
-
-	}*/
 	if (showDock) {
 
 		showDockSpace(&showDock);
@@ -342,27 +337,10 @@ update_status ModuleUI::Update()
 				ImGuiTreeNodeFlags node_flags = base_flags;
 				const bool is_selected = (selection_mask & (1 << i)) != 0;
 
-				/*if (is_selected)
-				{
-					node_flags |= ImGuiTreeNodeFlags_Selected;
-
-					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-					{
-						App->gameobject->emptygameobject_list[i]->emptySelected = false;
-					}
-
-					App->gameobject->emptygameobject_list[i]->emptySelected = true;
-					for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-					{
-						App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
-					}
-				}*/
-
 				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "%s", App->gameobject->emptygameobject_list[i]->name.c_str());
 
 				if (ImGui::IsItemClicked())
 				{
-					//node_clicked = i;
 					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 					{
 						App->gameobject->emptygameobject_list[i]->emptySelected = false;
@@ -378,6 +356,7 @@ update_status ModuleUI::Update()
 
 				if (node_open)
 				{
+					
 					// Items 0..2 are Tree Node
 					for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 					{
@@ -507,7 +486,7 @@ void GameObject::showInspectorWin()
 		}
 		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			//ImGui::Checkbox("ActiveMesh", &meshactive);
+			
 			ImGui::Checkbox("ActiveNormals", &ObjnormActive);
 			ImGui::Text("Index: %i", index_name);
 			ImGui::Text("Normals: %i", normals_name);
@@ -949,47 +928,6 @@ void ModuleUI::showAboutWin(bool* p_open)
 
 	ImGui::End();
 }
-//
-//void ModuleUI::print_commits_info(const char* username, const char* repo) {
-//	JSON_Value* root_value;
-//	JSON_Array* commits;
-//	JSON_Object* commit;
-//	size_t i;
-//
-//	char curl_command[512];
-//	char cleanup_command[256];
-//	char output_filename[] = "commits.json";
-//
-//	/* it ain't pretty, but it's not a libcurl tutorial */
-//	sprintf(curl_command,
-//		"curl -s \"https://api.github.com/repos/%s/%s/commits\" > %s",
-//		username, repo, output_filename);
-//	sprintf(cleanup_command, "rm -f %s", output_filename);
-//	system(curl_command);
-//
-//	/* parsing json and validating output */
-//	root_value = json_parse_file(output_filename);
-//	if (json_value_get_type(root_value) != JSONArray) {
-//		system(cleanup_command);
-//		return;
-//	}
-//
-//	/* getting array from root value and printing commit info */
-//	commits = json_value_get_array(root_value);
-//	printf("%-10.10s %-10.10s %s\n", "Date", "SHA", "Author");
-//	for (i = 0; i < json_array_get_count(commits); i++) {
-//		commit = json_array_get_object(commits, i);
-//		printf("%.10s %.10s %s\n",
-//			json_object_dotget_string(commit, "commit.author.date"),
-//			json_object_get_string(commit, "sha"),
-//			json_object_dotget_string(commit, "commit.author.name"));
-//	}
-//
-//	/* cleanup code */
-//	json_value_free(root_value);
-//	system(cleanup_command);
-//}
-
 void ModuleUI::showDockSpace(bool* p_open)
 {
 	static bool opt_fullscreen_persistant = true;
@@ -1044,7 +982,3 @@ void ModuleUI::showDockSpace(bool* p_open)
 	ImGui::End();
 }
 
-void ModuleUI::showTextureImage()
-{
-	
-}

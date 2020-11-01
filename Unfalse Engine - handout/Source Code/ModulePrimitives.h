@@ -19,11 +19,9 @@ public:
 
 	// Primitives creation
 	//void CreatePoint();
-	void CreateLine(float orgnx, float orgny, float orgnz, float destx, float desty, float destz);
+	
 	void CreatePlane(float posx, float posy, float posz);
-	void CreateCube(float posx, float posy, float posz, float sizex, float sizey, float sizez);
-	void CreateSphere(float posx, float posy, float posz, float sizex, float sizey, float sizez);
-	void CreateCylinder(float posx, float posy, float posz, float rad, float height);
+	
 
 	// Primitives properties
 	void PrimitivesProp();
