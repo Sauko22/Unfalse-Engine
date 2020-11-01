@@ -74,13 +74,13 @@ update_status ModuleCamera3D::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		Position.y += camera_speed;
-		Reference.y += camera_speed;
+		Position -= Z * camera_speed;
+		Reference -= Z * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		Position.y -= camera_speed;
-		Reference.y -= camera_speed;
+		Position += Z * camera_speed;
+		Reference += Z * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
