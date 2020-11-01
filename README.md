@@ -6,8 +6,8 @@ Marc Palma & Pol Juan were the responsibles to make this project come true.
 https://github.com/Sauko22/Unfalse-Engine
 
 ## Team
-Pol Juan Santos: https://github.com/Sauko22
-Marc Palma Turon: https://github.com/marcpt98
+- Pol Juan Santos: https://github.com/Sauko22
+- Marc Palma Turon: https://github.com/marcpt98
 
 ## Introduction to Unfalse Engine
 ### Menu
