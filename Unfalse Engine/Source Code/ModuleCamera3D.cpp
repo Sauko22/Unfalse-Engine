@@ -94,7 +94,7 @@ update_status ModuleCamera3D::Update()
 		lalt = false;
 		orbit = false;
 	}
-	if (lalt== true && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if (lalt== true && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		if (orbit == false) 
 		{
