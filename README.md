@@ -73,16 +73,16 @@ If a texture is dragged to the scene, if the emptyobject is selected the texture
 Shows all the information about the selected gameobject.
 Empty gameobjects only have a transform property and active/deactive render bool.
 Gameobjects have:
-	- Activate/deactivate render
-	- Transform properties
-	- Normals visualizer
-	- Mesh properties (index, normals, vertex, faces and texture coordinates)
-	- FBX name
-	- Activate/deactivate texture
-	- Texture name with his width and height pixels
-	- Texture previsualizer 
-	- Activate/deactivate default texture
-	- Default texture previsualizer
+- Activate/deactivate render
+- Transform properties
+- Normals visualizer
+- Mesh properties (index, normals, vertex, faces and texture coordinates)
+- FBX name
+- Activate/deactivate texture
+- Texture name with his width and height pixels
+- Texture previsualizer 
+- Activate/deactivate default texture
+- Default texture previsualizer
 
 ### Console
 Shows all the logs from the code.
