@@ -103,6 +103,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			gameobject->AddComponent(Component::compType::TRANSFORM);
 			compmesh = dynamic_cast<CompMesh*>(gameobject->AddComponent(Component::compType::MESH));
 			compmesh->newmesh = new Mesh;
+			tex_path = nullptr;
 
 			aiMesh* ourMesh = scene->mMeshes[i];
 
@@ -155,9 +156,8 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			std::string obj = std::to_string(i);
 			if (App->input->name == "")
 			{
-				gameobject->name.append("BakerHouse_").append(obj);
-				gameobject->fbxname.append("BakerHouse").append(".fbx");
-				
+				gameobject->name.append("Street_").append(obj);
+				gameobject->fbxname.append("Street").append(".fbx");
 			}
 			else
 			{
@@ -204,25 +204,33 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			compmesh->newmesh->defaultex = App->renderer3D->texchec;
 			gameobject->deftexname = "Checkers";
 
-			// Material
-			if (scene->HasMaterials())
+			if (ourMesh->HasTextureCoords(0))
 			{
-				aiMaterial* texture = nullptr;
-				aiString texture_path;
-
-				texture = scene->mMaterials[ourMesh->mMaterialIndex];
-
-				aiGetMaterialTexture(texture, aiTextureType_DIFFUSE, ourMesh->mMaterialIndex, &texture_path);
-
-				std::string texturepath = "Assets/Textures/";
-				texturepath.append(texture_path.C_Str());
-				if (texturepath != "Assets/Textures/")
+				// Material
+				if (scene->HasMaterials())
 				{
+					aiMaterial* texture = nullptr;
+					aiString texture_path;
+					std::string texname;
+					std::string texname_2;
+					std::string texname_3;
+
+					texture = scene->mMaterials[ourMesh->mMaterialIndex];
+
+					//aiGetMaterialTexture(texture, aiTextureType_DIFFUSE, ourMesh->mMaterialIndex, &texture_path);
+					texture->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path);
+
+					App->filesys->SplitFilePath(texture_path.C_Str(), &texname, &texname_2, &texname_3);
+
+					texturepath = "Assets/Textures/";
+					texturepath.append(texname_2).append(".").append(texname_3);
+
 					tex_path = (char*)texturepath.c_str();
-					LOG("%s", tex_path);
+					LOG("Texture path: %s", tex_path);
 				}
 			}
-			if (tex_path != nullptr)
+			
+			if (tex_path != nullptr && texturepath != "Assets/Textures/." )
 			{
 				compmesh->newmesh->hastext = true;
 				gameobject->AddComponent(Component::compType::MATERIAL);
@@ -231,7 +239,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 				gameobject->pngname = tex_path;
 
 				LoadTexture(tex_path);
-				LOG("Texture from import Loaded");
+				LOG("Texture from import %s Loaded", tex_path);
 			}
 
 			LOG("Gameobject Components: %i", gameobject->component_list.size());
@@ -245,7 +253,7 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 		std::string obj = std::to_string(j);
 		if (App->input->name == "")
 		{
-			emptygameobject->name.append("BakerHouse_").append(obj);
+			emptygameobject->name.append("Street_").append(obj);
 		}
 		else
 		{

@@ -36,11 +36,11 @@ protected:
 
 
 // ============================================
-class Plane : public Primitive
+class Plane_Primitive : public Primitive
 {
 public:
-	Plane();
-	Plane(float x, float y, float z, float d);
+	Plane_Primitive();
+	Plane_Primitive(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
 	vec3 normal;

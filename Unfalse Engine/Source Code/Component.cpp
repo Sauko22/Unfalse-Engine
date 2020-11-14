@@ -75,6 +75,10 @@ void CompMesh::RenderMesh()
 		}
 		if (mesh_list[i]->hastext == true)
 		{
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_CULL_FACE);
+			glActiveTexture(GL_TEXTURE0);
+
 			if (texactive == true)
 			{
 				if (deftexactive == true)
@@ -123,21 +127,13 @@ void CompMesh::RenderMesh()
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		if (mesh_list[i]->hastext == true)
 		{
-			if (texactive == true)
-			{
-				glBindTexture(GL_TEXTURE_2D, 0);
-			}
-			else
-			{
-				if (deftexactive == true)
-				{
-					glBindTexture(GL_TEXTURE_2D, 0);
-				}
-			}
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glDisable(GL_TEXTURE_2D);
 		}
-		if (mesh_list[i]->hastext == false && deftexactive == true)
+		else if (mesh_list[i]->hastext == false && deftexactive == true)
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
+			glDisable(GL_TEXTURE_2D);
 		}
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);

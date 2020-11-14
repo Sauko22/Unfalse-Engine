@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-//#include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;

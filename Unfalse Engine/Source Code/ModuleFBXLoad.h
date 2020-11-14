@@ -4,7 +4,7 @@
 #include "Vector.h"
 #include "ModuleGameObject.h"
 #include "Component.h"
-#include <xstring>
+#include <string>
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
@@ -37,4 +37,6 @@ public:
 	int j;
 
 	bool ResizeFBX;
+
+	std::string texturepath;
 };

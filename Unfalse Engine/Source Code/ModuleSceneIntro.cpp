@@ -31,7 +31,9 @@ bool ModuleSceneIntro::Start()
 
 	
 
-	std::string file_path = "Assets/Models/BakerHouse.fbx";
+	std::string file_path = "Assets/Models/street2.fbx";
+	//std::string file_path = "Assets/Models/BakerHouse.fbx";
+	//std::string file_path = "Assets/Models/Blitzcrank.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
@@ -69,7 +71,7 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// Create initial plane
-	Plane plane;
+	Plane_Primitive plane;
 	plane.Render();
 
 	// Create XYZ Axis

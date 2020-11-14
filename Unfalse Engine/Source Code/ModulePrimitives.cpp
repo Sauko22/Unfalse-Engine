@@ -59,7 +59,7 @@ update_status ModulePrimitives::PostUpdate()
 
 void ModulePrimitives::CreatePlane(float posx, float posy, float posz)
 {
-	Plane* plane = new Plane;
+	Plane_Primitive* plane = new Plane_Primitive;
 	plane->SetPos(posx, posy, posz);
 	primitive_list.push_back((Primitive*)plane);
 }

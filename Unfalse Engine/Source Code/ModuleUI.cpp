@@ -453,7 +453,7 @@ void EmptyGameObject::showEmptyInspectorWin()
 	{
 		ImGui::Checkbox("ActiveObj", &emptyrenderActive); ImGui::SameLine();
 		static char str0[128] = "Hello, world!";
-		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+		ImGui::Text("%s", name.c_str());
 
 		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -472,8 +472,7 @@ void GameObject::showInspectorWin()
 	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
-		static char str0[128] = "Hello, world!";
-		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+		ImGui::Text("%s", name.c_str());
 
 		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
 		{
