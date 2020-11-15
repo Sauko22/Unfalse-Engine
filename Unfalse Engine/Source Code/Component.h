@@ -6,8 +6,6 @@
 #include <string>
 
 #include "MathGeoLib/include/MathGeoLib.h"
-#include "MathGeoLib/include/Math/float3.h"
-#include "MathGeoLib/include/Math/Quat.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
@@ -41,9 +39,9 @@ public:
 
 struct Transform
 {
-	/*math::float3 pos = { 0.f,0.f,0.f };
-	math::Quat rot = rot.identity;
-	math::float3 scl = pos.one;*/
+	float3 pos = pos.zero;
+	Quat rot = rot.identity;
+	float3 scl = scl.one;
 };
 
 class CompTransform : public Component
@@ -56,6 +54,7 @@ public:
 
 public:
 	Transform* newtransform;
+	std::vector<Transform*> transform_list;
 };
 
 struct Mesh 

@@ -29,7 +29,7 @@
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
-//#include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -108,18 +108,24 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 			compmesh->newmesh = new Mesh;
 			tex_path = nullptr;
 
-			/*aiVector3D translation, scaling;
+			aiVector3D translation, scaling;
 			aiQuaternion rotation;
 
-			node->mTransformation.Decompose(scaling, rotation, translation);
+			node->mChildren[i]->mTransformation.Decompose(scaling, rotation, translation);
 
-			float3 pos{ translation.x, translation.y, translation.z };
-			float3 scale{ scaling.x, scaling.y, scaling.z };
-			Quat rot{ rotation.x, rotation.y, rotation.z, rotation.w };
+			float3 pos(translation.x, translation.y, translation.z);
+			float3 scale(scaling.x, scaling.y, scaling.z);
+			Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
 
 			comptrans->newtransform->pos = pos;
+			comptrans->newtransform->scl = scale;
 			comptrans->newtransform->rot = rot;
-			comptrans->newtransform->scl = scale;*/
+
+			comptrans->transform_list.push_back(comptrans->newtransform);
+
+			LOG("Position: %f, %f, %f", comptrans->newtransform->pos.x, comptrans->newtransform->pos.y, comptrans->newtransform->pos.z);
+			LOG("Scale: %f, %f, %f", comptrans->newtransform->scl.x, comptrans->newtransform->scl.y, comptrans->newtransform->scl.z);
+			LOG("Rotation: %f, %f, %f, %f", comptrans->newtransform->rot.x, comptrans->newtransform->rot.y, comptrans->newtransform->rot.z, comptrans->newtransform->rot.w);
 
 			aiMesh* ourMesh = scene->mMeshes[i];
 

@@ -17,6 +17,8 @@
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
+#include "MathGeoLib/include/MathGeoLib.h"
+
 Component::Component(compType type, GameObject*) : type(type), gameObject(gameObject)
 {
 	normactive = false;
@@ -31,7 +33,7 @@ Component::~Component()
 
 CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANSFORM, gameobject)
 {
-	
+	newtransform = nullptr;
 }
 
 CompTransform::~CompTransform()
@@ -58,8 +60,6 @@ CompMesh::~CompMesh()
 void CompMesh::update()
 {
 	RenderMesh();
-
-
 }
 
 void CompMesh::RenderMesh()

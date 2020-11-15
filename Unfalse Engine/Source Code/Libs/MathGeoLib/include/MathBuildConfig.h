@@ -34,7 +34,7 @@
 #define _HAS_EXCEPTIONS 0
 #endif
 
-#define _STATIC_CPPLIB
+//#define _STATIC_CPPLIB
 
 // If MATH_ENABLE_NAMESPACE is defined, all math symbols are put inside a namespace.
 #define MATH_ENABLE_NAMESPACE
