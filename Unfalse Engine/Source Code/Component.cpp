@@ -29,11 +29,9 @@ Component::Component(compType type, GameObject*) : type(type), gameObject(gameOb
 Component::~Component()
 {}
 
-CompTransform::CompTransform(GameObject* gameobject, vec3 position, vec3 rotation, vec3 scale) : Component(compType::TRANSFORM, gameobject)
+CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANSFORM, gameobject)
 {
-	pos = position;
-	rot = rotation;
-	scl = scale;
+	
 }
 
 CompTransform::~CompTransform()

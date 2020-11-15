@@ -29,7 +29,7 @@
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
-
+//#include "MathGeoLib/include/MathGeoLib.h"
 
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -37,6 +37,7 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 	emptygameobject = nullptr;
 	gameobject = nullptr;
 	compmesh = nullptr;
+	comptrans = nullptr;
 	ResizeFBX = false;
 	j = 0;
 }
@@ -95,15 +96,30 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		emptygameobject = new EmptyGameObject;
+		aiNode* node = scene->mRootNode;
 
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
 			gameobject = new GameObject();
-			gameobject->AddComponent(Component::compType::TRANSFORM);
+			comptrans = dynamic_cast<CompTransform*>(gameobject->AddComponent(Component::compType::TRANSFORM));
+			comptrans->newtransform = new Transform;
 			compmesh = dynamic_cast<CompMesh*>(gameobject->AddComponent(Component::compType::MESH));
 			compmesh->newmesh = new Mesh;
 			tex_path = nullptr;
+
+			/*aiVector3D translation, scaling;
+			aiQuaternion rotation;
+
+			node->mTransformation.Decompose(scaling, rotation, translation);
+
+			float3 pos{ translation.x, translation.y, translation.z };
+			float3 scale{ scaling.x, scaling.y, scaling.z };
+			Quat rot{ rotation.x, rotation.y, rotation.z, rotation.w };
+
+			comptrans->newtransform->pos = pos;
+			comptrans->newtransform->rot = rot;
+			comptrans->newtransform->scl = scale;*/
 
 			aiMesh* ourMesh = scene->mMeshes[i];
 

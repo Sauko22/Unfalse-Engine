@@ -6,6 +6,8 @@
 #include <string>
 
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/Math/float3.h"
+#include "MathGeoLib/include/Math/Quat.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
@@ -37,18 +39,23 @@ public:
 	GLuint newtexgl = 0;
 };
 
+struct Transform
+{
+	/*math::float3 pos = { 0.f,0.f,0.f };
+	math::Quat rot = rot.identity;
+	math::float3 scl = pos.one;*/
+};
+
 class CompTransform : public Component
 {
 public:
-	CompTransform(GameObject* gameobject, vec3 position, vec3 rotation, vec3 scale);
+	CompTransform(GameObject* gameobject);
 	~CompTransform();
 
 	void update();
 
 public:
-	vec3 pos;
-	vec3 rot;
-	vec3 scl;
+	Transform* newtransform;
 };
 
 struct Mesh 

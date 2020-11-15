@@ -152,7 +152,7 @@ Component* GameObject::AddComponent(Component::compType type)
 	switch (type)
 	{
 	case Component::compType::TRANSFORM:
-		ret = new CompTransform(this, vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0, 0));
+		ret = new CompTransform(this);
 		break;
 	case Component::compType::MESH: 
 		ret = new CompMesh(this); 

@@ -31,6 +31,7 @@ public:
 	EmptyGameObject* emptygameobject;
 	CompMesh* compmesh;
 	GameObject* gameobject;
+	CompTransform* comptrans;
 
 	ILuint textIL;
 
