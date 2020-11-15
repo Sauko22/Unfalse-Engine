@@ -13,6 +13,8 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Position = vec3(60.0f, 60.0f, 60.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
 
+	mousepos = mousepos.zero;
+
 	camera_speed = 0;
 	lalt = false;
 	orbit = false;
@@ -151,6 +153,17 @@ update_status ModuleCamera3D::Update()
 		LookAt(Forward + Position);
 	}
 
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		mousepos.x = App->input->mouse_x;
+		mousepos.y = App->input->mouse_y;
+		
+		mousepos.Normalize();
+		LOG("Mouse pos: %f, %f ", mousepos.x, mousepos.y);
+
+		//LineSegment picking = dummy->frustum.UnProjectLineSegment(normalized_x, normalized_y);
+	}
+	
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
 

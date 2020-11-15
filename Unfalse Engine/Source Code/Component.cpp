@@ -33,7 +33,7 @@ Component::~Component()
 
 CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANSFORM, gameobject)
 {
-	newtransform = nullptr;
+	//newtransform = nullptr;
 }
 
 CompTransform::~CompTransform()
@@ -41,7 +41,6 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-
 	
 }
 
@@ -66,6 +65,9 @@ void CompMesh::RenderMesh()
 {
 	for (int i = 0; i < mesh_list.size(); i++)
 	{
+		glPushMatrix();
+		glMultMatrixf(mesh_list[i]->transform.Transposed().ptr());
+
 		if (newtexgl != 0)
 		{
 			mesh_list[i]->textgl = newtexgl;
@@ -158,6 +160,7 @@ void CompMesh::RenderMesh()
 			}
 			glEnd();
 		}
+		glPopMatrix();
 	}
 }
 

@@ -37,12 +37,10 @@ public:
 	GLuint newtexgl = 0;
 };
 
-struct Transform
+/*struct Transform
 {
-	float3 pos = pos.zero;
-	Quat rot = rot.identity;
-	float3 scl = scl.one;
-};
+	
+};*/
 
 class CompTransform : public Component
 {
@@ -53,8 +51,8 @@ public:
 	void update();
 
 public:
-	Transform* newtransform;
-	std::vector<Transform*> transform_list;
+	/*Transform* newtransform;
+	std::vector<Transform*> transform_list;*/
 };
 
 struct Mesh 
@@ -81,6 +79,13 @@ struct Mesh
 	GLuint defaultex;
 
 	bool hastext = false;
+
+
+
+	float3 pos = pos.zero;
+	Quat rot = rot.identity;
+	float3 scl = scl.one;
+	float4x4 transform = transform.zero;
 };
 
 class CompMesh : public Component

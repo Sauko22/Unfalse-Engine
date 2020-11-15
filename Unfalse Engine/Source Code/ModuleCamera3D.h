@@ -3,6 +3,8 @@
 #include "Globals.h"
 #include "glmath.h"
 
+#include "MathGeoLib/include/MathGeoLib.h"
+
 class ModuleCamera3D : public Module
 {
 public:
@@ -31,4 +33,7 @@ public:
 private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;
+
+	float2 mousepos;
+	LineSegment Ray;
 };

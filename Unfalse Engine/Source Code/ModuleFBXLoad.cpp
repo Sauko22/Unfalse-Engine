@@ -103,29 +103,45 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 		{
 			gameobject = new GameObject();
 			comptrans = dynamic_cast<CompTransform*>(gameobject->AddComponent(Component::compType::TRANSFORM));
-			comptrans->newtransform = new Transform;
+			//comptrans->newtransform = new Transform;
 			compmesh = dynamic_cast<CompMesh*>(gameobject->AddComponent(Component::compType::MESH));
 			compmesh->newmesh = new Mesh;
 			tex_path = nullptr;
-
+			
 			aiVector3D translation, scaling;
 			aiQuaternion rotation;
+			float3 pos, scale;
+			Quat rot;
 
 			node->mChildren[i]->mTransformation.Decompose(scaling, rotation, translation);
 
-			float3 pos(translation.x, translation.y, translation.z);
-			float3 scale(scaling.x, scaling.y, scaling.z);
-			Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
+			pos.Set(translation.x, translation.y, translation.z);
+			scale.Set(scaling.x, scaling.y, scaling.z);
+			rot.Set(rotation.x, rotation.y, rotation.z, rotation.w);
 
-			comptrans->newtransform->pos = pos;
-			comptrans->newtransform->scl = scale;
-			comptrans->newtransform->rot = rot;
+			/*comptrans->newtransform->pos.Set(pos.x, pos.y, pos.z);
+			comptrans->newtransform->scl.Set(scale.x, scale.y, scale.z);
+			comptrans->newtransform->rot.Set(rot.x, rot.y, rot.z, rot.w);
+			comptrans->newtransform->transform = float4x4::FromTRS(comptrans->newtransform->pos, comptrans->newtransform->rot, comptrans->newtransform->scl);
+			comptrans->newtransform->transform.Transpose();
 
 			comptrans->transform_list.push_back(comptrans->newtransform);
 
 			LOG("Position: %f, %f, %f", comptrans->newtransform->pos.x, comptrans->newtransform->pos.y, comptrans->newtransform->pos.z);
 			LOG("Scale: %f, %f, %f", comptrans->newtransform->scl.x, comptrans->newtransform->scl.y, comptrans->newtransform->scl.z);
-			LOG("Rotation: %f, %f, %f, %f", comptrans->newtransform->rot.x, comptrans->newtransform->rot.y, comptrans->newtransform->rot.z, comptrans->newtransform->rot.w);
+			LOG("Rotation: %f, %f, %f, %f", comptrans->newtransform->rot.x, comptrans->newtransform->rot.y, comptrans->newtransform->rot.z, comptrans->newtransform->rot.w);*/
+			compmesh->newmesh->pos.Set(pos.x, pos.y, pos.z);
+			compmesh->newmesh->scl.Set(scale.x, scale.y, scale.z);
+			compmesh->newmesh->rot = rot;
+			compmesh->newmesh->transform = float4x4::FromTRS(compmesh->newmesh->pos, compmesh->newmesh->rot, compmesh->newmesh->scl);
+			//compmesh->newmesh->transform.Transpose();
+
+
+
+			LOG("Position: %f, %f, %f", compmesh->newmesh->pos.x, compmesh->newmesh->pos.y, compmesh->newmesh->pos.z);
+			LOG("Scale: %f, %f, %f", compmesh->newmesh->scl.x, compmesh->newmesh->scl.y, compmesh->newmesh->scl.z);
+			LOG("Rotation: %f, %f, %f, %f", compmesh->newmesh->rot.x, compmesh->newmesh->rot.y, compmesh->newmesh->rot.z, compmesh->newmesh->rot.w);
+			
 
 			aiMesh* ourMesh = scene->mMeshes[i];
 
