@@ -10,6 +10,7 @@ typedef unsigned int ILuint;
 struct aiNode;
 struct aiScene;
 struct aiMesh;
+typedef unsigned __int64 uint64;
 
 class ModuleFBXLoad : public Module
 {
@@ -28,9 +29,11 @@ public:
 	void Load_Mesh();
 	void Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject);
 
-	void LoadTexture(char* file_path, GameObject* gameobject);
+	//uint64 Save_Texture(aiMesh* ourMesh);
+
+	void LoadTexture(char* buffer, uint filesize, GameObject* gameobject);
 	
-	void LoadTextureObject(char* file_path, GameObject* gameobject);
+	void LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, char* name);
 
 public:
 	CompMesh* compmesh;

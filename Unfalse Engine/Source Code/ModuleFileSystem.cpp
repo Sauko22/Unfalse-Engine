@@ -65,10 +65,6 @@ bool ModuleFileSystem::CleanUp()
 void ModuleFileSystem::CreateLibraryDirectories()
 {
 	CreateDir(LIBRARY_PATH);
-	CreateDir(MESHES_PATH);
-	CreateDir(TEXTURES_PATH);
-	CreateDir(MODELS_PATH);
-	CreateDir(SCENES_PATH);
 }
 
 // Add a new zip file or folder

@@ -164,9 +164,14 @@ update_status ModuleInput::PreUpdate()
 
 					char* tex_path = (char*)texturepath.c_str();
 
+					std::string file_path = texturepath;
+					char* buffer = nullptr;
+					uint fileSize = 0;
+					fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+
 					if (App->scene_intro->SelectedGameObject != nullptr)
 					{
-						App->fbxload->LoadTextureObject(tex_path, App->scene_intro->SelectedGameObject);
+						App->fbxload->LoadTextureObject(buffer, fileSize, App->scene_intro->SelectedGameObject, tex_path);
 					}
 				}
 				SDL_free(dropped_filedir);

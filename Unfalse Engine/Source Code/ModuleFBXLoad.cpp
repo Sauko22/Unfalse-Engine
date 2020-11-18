@@ -199,6 +199,8 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 		Load_Texture(ourMesh, scene, pgameobject);
 
+		//Save_Texture(ourMesh);
+
 		LOG("Mesh loaded");
 		LOG("Components: %i", pgameobject->component_list.size());
 	}
@@ -277,21 +279,23 @@ void ModuleFBXLoad::Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObje
 
 			gameobject->pngname = tex_path;
 
-			LoadTexture(tex_path, gameobject);
+			std::string file_path = tex_path;
+			char* buffer = nullptr;
+			uint fileSize = 0;
+			fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+
+			LoadTexture(buffer, fileSize, gameobject);
 			LOG("Texture from import %s Loaded", tex_path);
 		}
 	}
 }
 
-
-
-
-void ModuleFBXLoad::LoadTexture(char* file_path, GameObject* gameobject) 
+void ModuleFBXLoad::LoadTexture(char* buffer, uint filesize, GameObject* gameobject) 
 {
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
-	ilLoadImage(file_path);
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, filesize);
 
 	compmesh->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
 	compmesh->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
@@ -303,18 +307,40 @@ void ModuleFBXLoad::LoadTexture(char* file_path, GameObject* gameobject)
 	ilDeleteImages(1, &textIL);
 }
 
-void ModuleFBXLoad::LoadTextureObject(char* file_path, GameObject* gameobject)
+/*uint64 ModuleFBXLoad::Save_Texture(aiMesh* ourMesh)
+{
+	char** buffer = nullptr;
+	uint _size = 0;
+
+	ILuint size;
+	ILubyte* data;
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5); // To pick a specific DXT compression use
+	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
+	
+	if (size > 0) 
+	{
+		data = new ILubyte[size]; // allocate data buffer
+		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
+		{
+			*buffer = (char*)data;
+		}
+	}
+	return size;
+}*/
+
+void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, char* name)
 {
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
-	ilLoadImage(file_path);
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, filesize);
 
 	std::string texname;
 	std::string texname_2;
 	std::string texname_3;
 
-	App->filesys->SplitFilePath(file_path, &texname, &texname_2, &texname_3);
+	App->filesys->SplitFilePath(name, &texname, &texname_2, &texname_3);
 
 	compmesh->texname = texname_2;
 
