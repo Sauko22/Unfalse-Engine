@@ -4,7 +4,6 @@
 #include "ModuleFBXLoad.h"
 #include "ModuleWindow.h"
 #include "Component.h"
-#include "ModuleGameObject.h"
 #include "p2Defs.h"
 
 #include "Glew\include\glew.h"
@@ -153,12 +152,6 @@ update_status ModuleRenderer3D::PreUpdate()
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		App->fbxload->ResizeFBX = !App->fbxload->ResizeFBX;
-		LOG("RESIZED");
-	}
-
 	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
 	{
 		j = 1;
@@ -269,85 +262,19 @@ void ModuleRenderer3D::Draw()
 	}
 
 	// Draw any Meshes loaded into scene
-	for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-	{
-		if (App->gameobject->emptygameobject_list[i]->emptyrenderActive == true)
-		{
-			for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-			{
-				// Render active
-				if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjrenderActive == true)
-				{
-					// Normals active
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjnormActive == true)
-					{
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = true;
-						}
-					}
-					else
-					{
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = false;
-						}
-					}
-
-					// Texture active
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive == true)
-					{
-						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
-							}
-						}
-						else
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
-							}
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = true;
-							}
-						}
-					}
-					else
-					{
-						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
-							}
-						}
-						else
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
-							}
-						}
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = false;
-						}
-					}
-
-					App->gameobject->emptygameobject_list[i]->gameobject_list[j]->update();
-				}
-			}
-		}
-		
-	}
-	
-	
+	UpdateGameObjects(App->scene_intro->root);
 	
 	ImGui::End();
+}
+
+void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
+{
+	gameobject->update();
+
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		UpdateGameObjects(gameobject->children_list[i]);
+	}
 }
 
 void ModuleRenderer3D::WinResize(Vec2 newSize)

@@ -3,9 +3,9 @@
 
 #include "Globals.h"
 #include "Timer.h"
-#include "ModuleGameObject.h"
 #include "PathNode.h"
 #include <vector>
+#include "GameObject.h"
 
 #define BOUNCER_TIME 200
 #define FPS_INTERVAL 1.0 //seconds.
@@ -23,9 +23,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-
 public:
-
+	// Root gameobject
+	GameObject* root;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.

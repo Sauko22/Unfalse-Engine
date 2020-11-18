@@ -5,8 +5,8 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
-#include "ModuleGameObject.h"
 #include "ModuleFBXLoad.h"
+#include "ModuleSceneIntro.h"
 
 #include "Glew\include\glew.h"
 
@@ -238,7 +238,7 @@ update_status ModuleUI::Update()
 				uint fileSize = 0;
 				cube = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 				
 				//App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
 			}
@@ -250,7 +250,7 @@ update_status ModuleUI::Update()
 				uint fileSize = 0;
 				sphere = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 			}
 
 			if (ImGui::MenuItem("Cylinder"))
@@ -260,7 +260,7 @@ update_status ModuleUI::Update()
 				uint fileSize = 0;
 				cylinder = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 			}
 
 			if (ImGui::MenuItem("Pyramid"))
@@ -270,7 +270,7 @@ update_status ModuleUI::Update()
 				uint fileSize = 0;
 				pyramid = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 			}
 			ImGui::EndMenu();
 		}
@@ -317,77 +317,18 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	/*if (ImGui::Begin("Inspector", NULL)) 
+	if (activeHierach == true)
 	{
-		
-
-		ImGui::End();
-	}*/
-
-	if (activeHierach == true) {
 		if (ImGui::Begin("Hierarchy"))
 		{
-			static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-			static int selection_mask = (1 << 2);
-			int node_clicked = -1;
-
-			for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+			for (int i = 0; i < App->scene_intro->root->children_list.size(); i++)
 			{
-				// Disable the default "open on single-click behavior" + set Selected flag according to our selection.
-				ImGuiTreeNodeFlags node_flags = base_flags;
-				const bool is_selected = (selection_mask & (1 << i)) != 0;
-
-				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "%s", App->gameobject->emptygameobject_list[i]->name.c_str());
-
-				if (ImGui::IsItemClicked())
-				{
-					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-					{
-						App->gameobject->emptygameobject_list[i]->emptySelected = false;
-
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
-						}
-					}
-					App->gameobject->emptygameobject_list[i]->emptySelected = true;
-				}
-
-
-				if (node_open)
-				{
-					
-					// Items 0..2 are Tree Node
-					for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-					{
-						node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-						ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "%s", App->gameobject->emptygameobject_list[i]->gameobject_list[j]->name.c_str());
-
-						if (ImGui::IsItemClicked())
-						{
-							for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-							{
-								App->gameobject->emptygameobject_list[i]->emptySelected = false;
-
-								for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-								{
-									App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
-								}
-							}
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected = true;
-						}
-					}
-					ImGui::TreePop();
-				}
+				Hierarchy(App->scene_intro->root->children_list[i]);
 			}
-			if (node_clicked != -1)
-			{
-				selection_mask = (1 << node_clicked);	// Click to single-select
-			}
-
 			ImGui::End();
 		}
 	}
+
 	if (activeConsole == true) {
 		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_HorizontalScrollbar))
 		{
@@ -404,6 +345,44 @@ update_status ModuleUI::Update()
 	if (showConfig == true) { showConfigWin(&showConfig); }
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::Hierarchy(GameObject* gameobject)
+{
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+	const char* GameObjname = gameobject->name.c_str();
+
+	if (gameobject->objSelected == true)
+	{
+		node_flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	bool node_open = ImGui::TreeNodeEx(GameObjname, node_flags);
+
+	if (ImGui::IsItemClicked())
+	{
+		DeselectGameObjects(App->scene_intro->root);
+
+		gameobject->objSelected = true;
+	}
+	if (node_open)
+	{
+		for (int i = 0; i < gameobject->children_list.size(); i++)
+		{
+			Hierarchy(gameobject->children_list[i]);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void ModuleUI::DeselectGameObjects(GameObject* gameobject)
+{
+	gameobject->objSelected = false;
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		DeselectGameObjects(gameobject->children_list[i]);
+	}
 }
 
 update_status ModuleUI::PostUpdate()
@@ -446,30 +425,10 @@ void ModuleUI::putLog(const char* log)
 	items.push_back(item);
 }
 
-
-void EmptyGameObject::showEmptyInspectorWin()
-{
-	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("ActiveObj", &emptyrenderActive); ImGui::SameLine();
-		static char str0[128] = "Hello, world!";
-		ImGui::Text("%s", name.c_str());
-
-		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			static float pos[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
-			static float angle[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
-			static float scale[3] = { 1.0f, 1.0f, 1.0f };
-			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
-		}
-	}
-}
-
 void GameObject::showInspectorWin()
 {
-	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
+	LOG("INSPECTOR WINDOW");
+	/*if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
 		ImGui::Text("%s", name.c_str());
@@ -526,7 +485,7 @@ void GameObject::showInspectorWin()
 
 			ImGui::Image((ImTextureID)App->renderer3D->texchec, ImVec2(128, 128));
 		}
-	}
+	}*/
 }
 
 void ModuleUI::showConfigWin(bool* p_open)

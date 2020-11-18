@@ -2,12 +2,14 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Vector.h"
-#include "ModuleGameObject.h"
 #include "Component.h"
 #include <string>
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 
 class ModuleFBXLoad : public Module
 {
@@ -19,25 +21,25 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path, uint filesize, char* tex_path = nullptr);
+	void LoadFBX(char* file_path, uint filesize, GameObject* parent);
+
+	void Import(aiNode* node, GameObject* parent, const aiScene* scene);
 
 	void Load_Mesh();
+	void Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject);
 
-	void LoadTexture(char* file_path);
+	void LoadTexture(char* file_path, GameObject* gameobject);
 	
 	virtual void LoadTextureObject(char* file_path, int i, int k, int j);
 
 public:
-	EmptyGameObject* emptygameobject;
 	CompMesh* compmesh;
-	GameObject* gameobject;
+	/*GameObject* gameobject;*/
 	CompTransform* comptrans;
 
 	ILuint textIL;
 
 	int j;
-
-	bool ResizeFBX;
 
 	std::string texturepath;
 };

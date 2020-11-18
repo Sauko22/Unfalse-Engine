@@ -135,9 +135,6 @@
     <ClInclude Include="Source Code\PathNode.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\ModuleGameObject.h">
-      <Filter>Sources\Modules\Game\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\Component.h">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClInclude>
@@ -321,6 +318,9 @@
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Algorithm\Random\LCG.h">
       <Filter>libs\MathGeoLib\Algorithm\Random</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\GameObject.h">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -397,9 +397,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\ModuleFileSystem.cpp">
       <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\ModuleGameObject.cpp">
-      <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\Component.cpp">
       <Filter>Sources\Modules\Game\GameObject</Filter>
@@ -499,6 +496,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\Libs\MathGeoLib\include\Algorithm\Random\LCG.cpp">
       <Filter>libs\MathGeoLib\Algorithm\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GameObject.cpp">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

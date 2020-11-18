@@ -33,7 +33,10 @@ Component::~Component()
 
 CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANSFORM, gameobject)
 {
-	//newtransform = nullptr;
+	pos = pos.zero;
+	rot = rot.identity;
+	scl = scl.one;
+	transform = transform.zero;
 }
 
 CompTransform::~CompTransform()
@@ -41,16 +44,28 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	
+	int a = 1;
 }
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
-	newmesh = nullptr;
 	normactive = false;
 	texactive = false;
 	deftexactive = false;
 	newtexgl = 0;
+	id_index = 0;
+	num_index = 0;
+	id_vertex = 0;
+	num_vertex = 0;
+	vertex = nullptr;
+	id_normals = 0;
+	num_normals = 0;
+	normals = nullptr;
+	id_tex = 0;
+	num_tex = 0;
+	tex = nullptr;
+	num_faces = 0;
+	hastext = false;
 }
 
 CompMesh::~CompMesh()
@@ -63,106 +78,107 @@ void CompMesh::update()
 
 void CompMesh::RenderMesh()
 {
-	for (int i = 0; i < mesh_list.size(); i++)
+	/*glPushMatrix();
+	glMultMatrixf(mesh_list[i]->transform.Transposed().ptr());*/
+
+	// Draw textures
+	if (newtexgl != 0)
 	{
-		glPushMatrix();
-		glMultMatrixf(mesh_list[i]->transform.Transposed().ptr());
+		textgl = newtexgl;
+		hastext = true;
+	}
+	if (hastext == true)
+	{
+		glEnable(GL_TEXTURE_2D);
+		/*glEnable(GL_CULL_FACE);
+		glActiveTexture(GL_TEXTURE0);*/
 
-		if (newtexgl != 0)
+		if (texactive == true)
 		{
-			mesh_list[i]->textgl = newtexgl;
-			mesh_list[i]->hastext = true;
-		}
-		if (mesh_list[i]->hastext == true)
-		{
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_CULL_FACE);
-			glActiveTexture(GL_TEXTURE0);
-
-			if (texactive == true)
+			if (deftexactive == true)
 			{
-				if (deftexactive == true)
-				{
-					glBindTexture(GL_TEXTURE_2D, mesh_list[i]->defaultex);
-				}
-				else
-				{
-					glBindTexture(GL_TEXTURE_2D, mesh_list[i]->textgl);
-				}	
+				glBindTexture(GL_TEXTURE_2D, defaultex);
 			}
 			else
 			{
-				if (deftexactive == true)
-				{
-					glBindTexture(GL_TEXTURE_2D, mesh_list[i]->defaultex);
-				}
-			}
+				glBindTexture(GL_TEXTURE_2D, textgl);
+			}	
 		}
-		if (mesh_list[i]->hastext == false && deftexactive == true)
+		else
 		{
-			glBindTexture(GL_TEXTURE_2D, mesh_list[i]->defaultex);
-		}
-		//Draw Mesh
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh_list[i]->id_vertex);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-		//Normals
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh_list[i]->id_normals);
-		glNormalPointer(GL_FLOAT, 0, NULL);
-
-		//Uvs
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh_list[i]->id_tex);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-		glBindBuffer(GL_ARRAY_BUFFER, mesh_list[i]->id_normals);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_list[i]->id_index);
-
-		glDrawElements(GL_TRIANGLES, mesh_list[i]->num_index, GL_UNSIGNED_INT, NULL);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		if (mesh_list[i]->hastext == true)
-		{
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisable(GL_TEXTURE_2D);
-		}
-		else if (mesh_list[i]->hastext == false && deftexactive == true)
-		{
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisable(GL_TEXTURE_2D);
-		}
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		// Show normals
-		if (normactive == true)
-		{
-			glBegin(GL_LINES);
-			//glColor3f(1.0f, 0.0f, 0.0f);
-
-			for (size_t k = 0; k < mesh_list[i]->num_vertex * 3; k += 3)
+			if (deftexactive == true)
 			{
-				GLfloat v_x = mesh_list[i]->vertex[k];
-				GLfloat v_y = mesh_list[i]->vertex[k + 1];
-				GLfloat v_z = mesh_list[i]->vertex[k + 2];
-
-				GLfloat n_x = mesh_list[i]->normals[k];
-				GLfloat n_y = mesh_list[i]->normals[k + 1];
-				GLfloat n_z = mesh_list[i]->normals[k + 2];
-
-				glVertex3f(v_x, v_y, v_z);
-				glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
+				glBindTexture(GL_TEXTURE_2D, defaultex);
 			}
-			glEnd();
 		}
-		glPopMatrix();
 	}
+	if (hastext == false && deftexactive == true)
+	{
+		glBindTexture(GL_TEXTURE_2D, defaultex);
+	}
+
+	//Draw Mesh
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	//Normals
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+	glNormalPointer(GL_FLOAT, 0, NULL);
+
+	//Uvs
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, id_tex);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+
+	glDrawElements(GL_TRIANGLES, num_index, GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if (hastext == true)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+	}
+	else if (hastext == false && deftexactive == true)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+	}
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	// Show normals
+	if (normactive == true)
+	{
+		glBegin(GL_LINES);
+		//glColor3f(1.0f, 0.0f, 0.0f);
+
+		for (size_t k = 0; k < num_vertex * 3; k += 3)
+		{
+			GLfloat v_x = vertex[k];
+			GLfloat v_y = vertex[k + 1];
+			GLfloat v_z = vertex[k + 2];
+
+			GLfloat n_x = normals[k];
+			GLfloat n_y = normals[k + 1];
+			GLfloat n_z = normals[k + 2];
+
+			glVertex3f(v_x, v_y, v_z);
+			glVertex3f(v_x + n_x, v_y + n_y, v_z + n_z);
+		}
+		glEnd();
+	}
+	//glPopMatrix();
 }
+
+	
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
 {

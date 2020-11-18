@@ -57,6 +57,9 @@ public:
 	void showConfigWin(bool* p_open = NULL);
 	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
+
+	void Hierarchy(GameObject* gameobject);
+	void DeselectGameObjects(GameObject* gameobject);
 	
 
 	// Editor menu

@@ -143,7 +143,7 @@
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\ModuleFileSystem.h" />
-    <ClInclude Include="Source Code\ModuleGameObject.h" />
+    <ClInclude Include="Source Code\GameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />
     <ClInclude Include="Source Code\Globals.h" />
     <ClInclude Include="Source Code\Libs\Imgui\imconfig.h" />
@@ -209,7 +209,7 @@
     <ClCompile Include="Source Code\Libs\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Libs\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\ModuleFileSystem.cpp" />
-    <ClCompile Include="Source Code\ModuleGameObject.cpp" />
+    <ClCompile Include="Source Code\GameObject.cpp" />
     <ClCompile Include="Source Code\glmath.cpp" />
     <ClCompile Include="Source Code\Libs\Imgui\imgui.cpp" />
     <ClCompile Include="Source Code\Libs\Imgui\imgui_demo.cpp" />

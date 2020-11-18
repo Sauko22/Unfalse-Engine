@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleFBXLoad.h"
 #include "ModuleFileSystem.h"
+#include "ModuleSceneIntro.h"
 
 #include "Glew/include/glew.h"
 
@@ -148,8 +149,8 @@ update_status ModuleInput::PreUpdate()
 				fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
 
 				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
-					App->fbxload->Import(buffer, fileSize);
-				else
+					App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
+				/*else
 				{
 					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
 					{
@@ -174,7 +175,7 @@ update_status ModuleInput::PreUpdate()
 							}
 						}
 					}
-				}
+				}*/
 					
 				SDL_free(dropped_filedir);
 			}

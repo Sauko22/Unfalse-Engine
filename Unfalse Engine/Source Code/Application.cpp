@@ -12,7 +12,6 @@ Application::Application()
 	UI = new ModuleUI(this);
 	primitives = new ModulePrimitives(this);
 	fbxload = new ModuleFBXLoad(this);
-	gameobject = new ModuleGameObject(this);
 	filesys = new ModuleFileSystem(this);
 
 	// The order of calls is very important!
@@ -38,7 +37,6 @@ Application::Application()
 
 	// Render last
 	AddModule(UI);
-	AddModule(gameobject);
 	AddModule(renderer3D);
 
 	title = TITLE;

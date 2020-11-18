@@ -159,7 +159,7 @@ update_status ModuleCamera3D::Update()
 		mousepos.y = App->input->mouse_y;
 		
 		mousepos.Normalize();
-		LOG("Mouse pos: %f, %f ", mousepos.x, mousepos.y);
+		//LOG("Mouse pos: %f, %f ", mousepos.x, mousepos.y);
 
 		//LineSegment picking = dummy->frustum.UnProjectLineSegment(normalized_x, normalized_y);
 	}

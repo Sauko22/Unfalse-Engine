@@ -3,6 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 #include "ModuleFileSystem.h"
+#include "GameObject.h"
 
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -12,6 +13,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	fps_frames = 0;
 	FRAMES_PER_SECOND = 120;
 	frame = 0;
+	root = nullptr;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -29,15 +31,13 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(-3, 2, 1));
 	App->camera->LookAt(vec3(0.f, 0.f, 0.f));
 
-	
+	root = new GameObject(nullptr);
 
 	std::string file_path = "Assets/Models/street2.fbx";
-	//std::string file_path = "Assets/Models/BakerHouse.fbx";
-	//std::string file_path = "Assets/Models/Blitzcrank.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->Import(buffer, fileSize);
+	App->fbxload->LoadFBX(buffer, fileSize, root);
 
 	return ret;
 }
@@ -79,4 +79,6 @@ update_status ModuleSceneIntro::Update()
 
 	return UPDATE_CONTINUE;
 }
+
+
 

@@ -37,11 +37,6 @@ public:
 	GLuint newtexgl = 0;
 };
 
-/*struct Transform
-{
-	
-};*/
-
 class CompTransform : public Component
 {
 public:
@@ -51,41 +46,10 @@ public:
 	void update();
 
 public:
-	/*Transform* newtransform;
-	std::vector<Transform*> transform_list;*/
-};
-
-struct Mesh 
-{
-	uint id_index = 0; // index in VRAM
-	uint num_index = 0;
-	uint* index = nullptr;
-
-	uint id_vertex = 0; // unique vertex in VRAM
-	uint num_vertex = 0;
-	float* vertex = nullptr;
-
-	uint id_normals = 0; // unique normals in VRAM
-	uint num_normals = 0;
-	float* normals = nullptr;
-
-	uint id_tex = 0; // unique tex coords in VRAM
-	uint num_tex = 0;
-	float* tex = nullptr;
-
-	uint num_faces = 0;
-
-	GLuint textgl;
-	GLuint defaultex;
-
-	bool hastext = false;
-
-
-
-	float3 pos = pos.zero;
-	Quat rot = rot.identity;
-	float3 scl = scl.one;
-	float4x4 transform = transform.zero;
+	float3 pos;
+	Quat rot;
+	float3 scl;
+	float4x4 transform;
 };
 
 class CompMesh : public Component
@@ -98,8 +62,28 @@ public:
 	void RenderMesh();
 
 public:
-	Mesh* newmesh;
-	std::vector<Mesh*> mesh_list;
+	uint id_index; // index in VRAM
+	uint num_index;
+	uint* index = nullptr;
+
+	uint id_vertex; // unique vertex in VRAM
+	uint num_vertex;
+	float* vertex;
+
+	uint id_normals; // unique normals in VRAM
+	uint num_normals;
+	float* normals;
+
+	uint id_tex; // unique tex coords in VRAM
+	uint num_tex;
+	float* tex;
+
+	uint num_faces;
+
+	GLuint textgl;
+	GLuint defaultex;
+
+	bool hastext;
 };
 
 class CompMaterial : public Component

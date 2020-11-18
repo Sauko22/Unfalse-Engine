@@ -6,6 +6,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
 #include "ModuleFBXLoad.h"
+#include "GameObject.h"
 
 #include "Glew\include\glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
@@ -34,26 +35,24 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	emptygameobject = nullptr;
-	gameobject = nullptr;
+	/*gameobject = nullptr;*/
 	compmesh = nullptr;
 	comptrans = nullptr;
-	ResizeFBX = false;
 	j = 0;
 }
 
 // Destructor
 ModuleFBXLoad::~ModuleFBXLoad()
 {
-	glDeleteBuffers(1, &compmesh->newmesh->id_index);
-	glDeleteBuffers(1, &compmesh->newmesh->id_vertex);
-	glDeleteBuffers(1, &compmesh->newmesh->id_normals);
-	glDeleteBuffers(1, &compmesh->newmesh->id_tex);
+	glDeleteBuffers(1, &compmesh->id_index);
+	glDeleteBuffers(1, &compmesh->id_vertex);
+	glDeleteBuffers(1, &compmesh->id_normals);
+	glDeleteBuffers(1, &compmesh->id_tex);
 
-	delete[] compmesh->newmesh->index;
-	delete[] compmesh->newmesh->normals;
-	delete[] compmesh->newmesh->vertex;
-	delete[] compmesh->newmesh->tex;
+	delete[] compmesh->index;
+	delete[] compmesh->normals;
+	delete[] compmesh->vertex;
+	delete[] compmesh->tex;
 }
 
 // Called before render is available
@@ -87,242 +86,14 @@ bool ModuleFBXLoad::CleanUp()
 	return true;
 }
 
-// PostUpdate present buffer to screen
-void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
+void ModuleFBXLoad::LoadFBX(char* file_path, uint filesize, GameObject* parent)
 {
 	const aiScene* scene = aiImportFileFromMemory(file_path, filesize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		emptygameobject = new EmptyGameObject;
-		aiNode* node = scene->mRootNode;
-
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
-		for (int i = 0; i < scene->mNumMeshes; i++)
-		{
-			gameobject = new GameObject();
-			comptrans = dynamic_cast<CompTransform*>(gameobject->AddComponent(Component::compType::TRANSFORM));
-			//comptrans->newtransform = new Transform;
-			compmesh = dynamic_cast<CompMesh*>(gameobject->AddComponent(Component::compType::MESH));
-			compmesh->newmesh = new Mesh;
-			tex_path = nullptr;
-			
-			aiVector3D translation, scaling;
-			aiQuaternion rotation;
-			float3 pos, scale;
-			Quat rot;
-
-			node->mChildren[i]->mTransformation.Decompose(scaling, rotation, translation);
-
-			pos.Set(translation.x, translation.y, translation.z);
-			scale.Set(scaling.x, scaling.y, scaling.z);
-			rot.Set(rotation.x, rotation.y, rotation.z, rotation.w);
-
-			/*comptrans->newtransform->pos.Set(pos.x, pos.y, pos.z);
-			comptrans->newtransform->scl.Set(scale.x, scale.y, scale.z);
-			comptrans->newtransform->rot.Set(rot.x, rot.y, rot.z, rot.w);
-			comptrans->newtransform->transform = float4x4::FromTRS(comptrans->newtransform->pos, comptrans->newtransform->rot, comptrans->newtransform->scl);
-			comptrans->newtransform->transform.Transpose();
-
-			comptrans->transform_list.push_back(comptrans->newtransform);
-
-			LOG("Position: %f, %f, %f", comptrans->newtransform->pos.x, comptrans->newtransform->pos.y, comptrans->newtransform->pos.z);
-			LOG("Scale: %f, %f, %f", comptrans->newtransform->scl.x, comptrans->newtransform->scl.y, comptrans->newtransform->scl.z);
-			LOG("Rotation: %f, %f, %f, %f", comptrans->newtransform->rot.x, comptrans->newtransform->rot.y, comptrans->newtransform->rot.z, comptrans->newtransform->rot.w);*/
-			compmesh->newmesh->pos.Set(pos.x, pos.y, pos.z);
-			compmesh->newmesh->scl.Set(scale.x, scale.y, scale.z);
-			compmesh->newmesh->rot = rot;
-			compmesh->newmesh->transform = float4x4::FromTRS(compmesh->newmesh->pos, compmesh->newmesh->rot, compmesh->newmesh->scl);
-			//compmesh->newmesh->transform.Transpose();
-
-
-
-			LOG("Position: %f, %f, %f", compmesh->newmesh->pos.x, compmesh->newmesh->pos.y, compmesh->newmesh->pos.z);
-			LOG("Scale: %f, %f, %f", compmesh->newmesh->scl.x, compmesh->newmesh->scl.y, compmesh->newmesh->scl.z);
-			LOG("Rotation: %f, %f, %f, %f", compmesh->newmesh->rot.x, compmesh->newmesh->rot.y, compmesh->newmesh->rot.z, compmesh->newmesh->rot.w);
-			
-
-			aiMesh* ourMesh = scene->mMeshes[i];
-
-			// copy vertices
-			compmesh->newmesh->num_vertex = ourMesh->mNumVertices;
-			compmesh->newmesh->vertex = new float[compmesh->newmesh->num_vertex * 3];
-			memcpy(compmesh->newmesh->vertex, ourMesh->mVertices, sizeof(float) * compmesh->newmesh->num_vertex * 3);
-			LOG("New mesh with %d vertices", compmesh->newmesh->num_vertex);
-
-			// copy faces
-			if (ourMesh->HasFaces())
-			{
-				compmesh->newmesh->num_faces = ourMesh->mNumFaces;
-				compmesh->newmesh->num_index = ourMesh->mNumFaces * 3;
-				compmesh->newmesh->index = new uint[compmesh->newmesh->num_index]; // assume each face is a triangle
-				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
-				{
-					if (ourMesh->mFaces[i].mNumIndices != 3)
-					{
-						LOG("WARNING, geometry face with != 3 indices!");
-					}
-					else
-					{
-						memcpy(&compmesh->newmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
-					}
-				}
-			}
-			if (ourMesh->HasNormals()) 
-			{
-				compmesh->newmesh->num_normals = ourMesh->mNumVertices;
-				compmesh->newmesh->normals = new float[compmesh->newmesh->num_normals * 3];
-				memcpy(compmesh->newmesh->normals, ourMesh->mNormals, sizeof(float) * compmesh->newmesh->num_normals * 3);
-				LOG("New mesh with %d normal", compmesh->newmesh->num_normals);
-				LOG("New mesh with %d idnormal", compmesh->newmesh->id_normals);
-			}
-			if (ourMesh->HasTextureCoords(0)) 
-			{
-				compmesh->newmesh->num_tex = ourMesh->mNumVertices;
-				compmesh->newmesh->tex = new float[ourMesh->mNumVertices * 2];
-
-				for (unsigned int i= 0; i < compmesh->newmesh->num_tex; i++)
-				{
-					compmesh->newmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
-					compmesh->newmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
-
-				}
-				LOG("New mesh with %d uvs", compmesh->newmesh->num_tex);
-			}
-
-			std::string obj = std::to_string(i);
-			if (App->input->name == "")
-			{
-				gameobject->name.append("Street_").append(obj);
-				gameobject->fbxname.append("Street").append(".fbx");
-			}
-			else
-			{
-				gameobject->name = App->input->name;
-				gameobject->name.append("_").append(obj);
-				gameobject->fbxname = App->input->name;
-				gameobject->fbxname.append(".fbx");
-			}
-			if (App->UI->cube == true)
-			{
-				std::string cub = ("Cube_");
-				gameobject->name = cub.append(obj);
-				gameobject->fbxname = cub.append(".fbx");
-			}
-			else if (App->UI->cylinder == true)
-			{
-				std::string cyl = ("Cylinder_");
-				gameobject->name = cyl.append(obj);
-				gameobject->fbxname = cyl.append(".fbx");
-			}
-			else if (App->UI->sphere == true)
-			{
-				std::string sph = ("Sphere_");
-				gameobject->name = sph.append(obj);
-				gameobject->fbxname = sph.append(".fbx");
-			}
-			else if (App->UI->pyramid == true)
-			{
-				std::string pyr = ("Pyramid_");
-				gameobject->name = pyr.append(obj);
-				gameobject->fbxname = pyr.append(".fbx");
-			}
-			LOG("GameObject %s", gameobject->name.c_str());
-			
-			gameobject->faces_name = compmesh->newmesh->num_faces;
-			gameobject->texturescoords_name = compmesh->newmesh->num_tex;
-			gameobject->normals_name = compmesh->newmesh->num_normals;
-			gameobject->vertex_name = compmesh->newmesh->num_vertex;
-			gameobject->index_name = compmesh->newmesh->num_index;
-			
-			Load_Mesh();
-			
-			// Load texture if we have passed the texture path
-			compmesh->newmesh->defaultex = App->renderer3D->texchec;
-			gameobject->deftexname = "Checkers";
-
-			if (ourMesh->HasTextureCoords(0))
-			{
-				// Material
-				if (scene->HasMaterials())
-				{
-					aiMaterial* texture = nullptr;
-					aiString texture_path;
-					std::string texname;
-					std::string texname_2;
-					std::string texname_3;
-
-					texture = scene->mMaterials[ourMesh->mMaterialIndex];
-
-					//aiGetMaterialTexture(texture, aiTextureType_DIFFUSE, ourMesh->mMaterialIndex, &texture_path);
-					texture->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path);
-
-					App->filesys->SplitFilePath(texture_path.C_Str(), &texname, &texname_2, &texname_3);
-
-					texturepath = "Assets/Textures/";
-					texturepath.append(texname_2).append(".").append(texname_3);
-
-					tex_path = (char*)texturepath.c_str();
-					LOG("Texture path: %s", tex_path);
-				}
-			}
-			
-			if (tex_path != nullptr && texturepath != "Assets/Textures/." )
-			{
-				compmesh->newmesh->hastext = true;
-				gameobject->AddComponent(Component::compType::MATERIAL);
-				gameobject->ObjtexActive = true;
-
-				gameobject->pngname = tex_path;
-
-				LoadTexture(tex_path);
-				LOG("Texture from import %s Loaded", tex_path);
-			}
-
-			LOG("Gameobject Components: %i", gameobject->component_list.size());
-
-			compmesh->mesh_list.push_back(compmesh->newmesh);
-			
-			App->gameobject->temp_gameobj_list.push_back(gameobject);
-			emptygameobject->gameObjects++;
-		}
-		j++;
-		std::string obj = std::to_string(j);
-		if (App->input->name == "")
-		{
-			emptygameobject->name.append("Street_").append(obj);
-		}
-		else
-		{
-			emptygameobject->name = ("%s", App->input->name);
-		}
-		if (App->UI->cube == true)
-		{
-			emptygameobject->name = "Cube";
-			App->UI->cube = false;
-		}
-		else if (App->UI->sphere == true)
-		{
-			emptygameobject->name = "Sphere";
-			App->UI->sphere = false;
-		}
-		else if (App->UI->pyramid == true)
-		{
-			emptygameobject->name = "Pyramid";
-			App->UI->pyramid = false;
-		}
-		else if (App->UI->cylinder == true)
-		{
-			emptygameobject->name = "Cylinder";
-			App->UI->cylinder = false;
-		}
-		LOG("EmptyObject %s", emptygameobject->name.c_str());
-
-		emptygameobject->CreateEmptyGameObject();
-		
-		App->gameobject->temp_gameobj_list.clear();
-
+		Import(scene->mRootNode, parent, scene);
+		j = 0;
 		aiReleaseImport(scene);
 	}
 	else
@@ -331,32 +102,182 @@ void ModuleFBXLoad::Import(char* file_path, uint filesize, char* tex_path)
 	}
 }
 
+// PostUpdate present buffer to screen
+void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scene)
+{
+	GameObject* pgameobject = new GameObject(parent);
+
+	std::string obj = std::to_string(j);
+
+	pgameobject->name.append("GameObject").append(obj);
+
+	j++;
+
+	LOG("GameObject: %s", pgameobject->name.c_str());
+
+	comptrans = (CompTransform*)pgameobject->AddComponent(Component::compType::TRANSFORM);
+
+	aiVector3D translation, scaling;
+	aiQuaternion rotation;
+	float3 pos, scale;
+	Quat rot; 
+
+	node->mTransformation.Decompose(scaling, rotation, translation);
+
+	pos.Set(translation.x, translation.y, translation.z);
+	rot.Set(rotation.x, rotation.y, rotation.z, rotation.w);
+	scale.Set(scaling.x, scaling.y, scaling.z);
+
+	comptrans->pos.Set(pos.x, pos.y, pos.z);
+	comptrans->rot.Set(rot.x, rot.y, rot.z, rot.w);
+	comptrans->scl.Set(scale.x, scale.y, scale.z);
+	/*comptrans->transform = float4x4::FromTRS(pos, rot, scale);
+	comptrans->transform.Transpose();*/
+
+	LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
+	LOG("Rotation: %f, %f, %f, %f", comptrans->rot.x, comptrans->rot.y, comptrans->rot.z, comptrans->rot.w);
+	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);
+
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		compmesh = (CompMesh*)pgameobject->AddComponent(Component::compType::MESH);
+		
+		aiMesh* ourMesh = scene->mMeshes[node->mMeshes[i]];
+
+		// copy vertices
+		compmesh->num_vertex = ourMesh->mNumVertices;
+		compmesh->vertex = new float[compmesh->num_vertex * 3];
+		memcpy(compmesh->vertex, ourMesh->mVertices, sizeof(float) * compmesh->num_vertex * 3);
+		LOG("New mesh with %d vertices", compmesh->num_vertex);
+
+		// copy faces
+		if (ourMesh->HasFaces())
+		{
+			compmesh->num_faces = ourMesh->mNumFaces;
+			compmesh->num_index = ourMesh->mNumFaces * 3;
+			compmesh->index = new uint[compmesh->num_index]; // assume each face is a triangle
+			for (uint i = 0; i < ourMesh->mNumFaces; ++i)
+			{
+				if (ourMesh->mFaces[i].mNumIndices != 3)
+				{
+					LOG("WARNING, geometry face with != 3 indices!");
+				}
+				else
+				{
+					memcpy(&compmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
+				}
+			}
+		}
+		if (ourMesh->HasNormals())
+		{
+			compmesh->num_normals = ourMesh->mNumVertices;
+			compmesh->normals = new float[compmesh->num_normals * 3];
+			memcpy(compmesh->normals, ourMesh->mNormals, sizeof(float) * compmesh->num_normals * 3);
+			LOG("New mesh with %d normal", compmesh->num_normals);
+			LOG("New mesh with %d idnormal", compmesh->id_normals);
+		}
+		if (ourMesh->HasTextureCoords(0))
+		{
+			compmesh->num_tex = ourMesh->mNumVertices;
+			compmesh->tex = new float[ourMesh->mNumVertices * 2];
+
+			for (unsigned int i = 0; i < compmesh->num_tex; i++)
+			{
+				compmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
+				compmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
+
+			}
+			LOG("New mesh with %d uvs", compmesh->num_tex);
+		}
+
+		Load_Mesh();
+
+		Load_Texture(ourMesh, scene, pgameobject);
+
+		LOG("Mesh loaded");
+		LOG("Components: %i", pgameobject->component_list.size());
+	}
+	
+	for (int i = 0; i < node->mNumChildren; i++)
+	{
+		Import(node->mChildren[i], pgameobject, scene);
+	}
+}
+
 void ModuleFBXLoad::Load_Mesh()
 {
 	//Vertex of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->newmesh->id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->newmesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->newmesh->num_vertex * 3, &compmesh->newmesh->vertex[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&compmesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->id_vertex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->num_vertex * 3, &compmesh->vertex[0], GL_STATIC_DRAW);
 
 	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->newmesh->id_normals);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->newmesh->id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->newmesh->num_normals * 3, &compmesh->newmesh->normals[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&compmesh->id_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_normals * 3, &compmesh->normals[0], GL_STATIC_DRAW);
 
 	//Indices of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->newmesh->id_index);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->newmesh->id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->newmesh->num_index, &compmesh->newmesh->index[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&compmesh->id_index);
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->num_index, &compmesh->index[0], GL_STATIC_DRAW);
 
 	//Uvs of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->newmesh->id_tex);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->newmesh->id_tex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->newmesh->num_tex * 2, &compmesh->newmesh->tex[0], GL_STATIC_DRAW);
+	glGenBuffers(1, (GLuint*)&compmesh->id_tex);
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_tex * 2, &compmesh->tex[0], GL_STATIC_DRAW);
+}
+
+void ModuleFBXLoad::Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject)
+{
+	// Load texture if we have passed the texture path
+	compmesh->defaultex = App->renderer3D->texchec;
+
+	char* tex_path = nullptr;
+
+	if (ourMesh->HasTextureCoords(0))
+	{
+		// Material
+		if (scene->HasMaterials())
+		{
+			aiMaterial* texture = nullptr;
+			aiString texture_path;
+			std::string texname;
+			std::string texname_2;
+			std::string texname_3;
+
+			texture = scene->mMaterials[ourMesh->mMaterialIndex];
+
+			//aiGetMaterialTexture(texture, aiTextureType_DIFFUSE, ourMesh->mMaterialIndex, &texture_path);
+			texture->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path);
+
+			App->filesys->SplitFilePath(texture_path.C_Str(), &texname, &texname_2, &texname_3);
+
+			texturepath = "Assets/Textures/";
+			texturepath.append(texname_2).append(".").append(texname_3);
+
+			tex_path = (char*)texturepath.c_str();
+			LOG("Texture path: %s", tex_path);
+		}
+
+		if (tex_path != nullptr && texturepath != "Assets/Textures/.")
+		{
+			compmesh->hastext = true;
+			gameobject->AddComponent(Component::compType::MATERIAL);
+			gameobject->ObjtexActive = true;
+			compmesh->texactive = true;
+
+			gameobject->pngname = tex_path;
+
+			LoadTexture(tex_path, gameobject);
+			LOG("Texture from import %s Loaded", tex_path);
+		}
+	}
 }
 
 
 
-void ModuleFBXLoad::LoadTexture(char* file_path) 
+
+void ModuleFBXLoad::LoadTexture(char* file_path, GameObject* gameobject) 
 {
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
@@ -366,10 +287,10 @@ void ModuleFBXLoad::LoadTexture(char* file_path)
 	gameobject->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
 	gameobject->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
 
-	compmesh->newmesh->textgl = ilutGLBindTexImage();
+	compmesh->textgl = ilutGLBindTexImage();
 
-	gameobject->actualtexgl = compmesh->newmesh->textgl;
-
+	gameobject->actualtexgl = compmesh->textgl;
+	
 	ilDeleteImages(1, &textIL);
 }
 
@@ -380,10 +301,10 @@ void ModuleFBXLoad::LoadTextureObject(char* file_path, int i, int k, int j)
 
 	ilLoadImage(file_path);
 
-	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	/*App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
 	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
 
-	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->component_list[j]->newtexgl = ilutGLBindTexImage();
+	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->component_list[j]->newtexgl = ilutGLBindTexImage();*/
 
 	ilDeleteImages(1, &textIL);
 }
