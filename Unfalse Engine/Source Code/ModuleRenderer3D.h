@@ -32,6 +32,7 @@ public:
 
 	// Update gameobjects
 	void UpdateGameObjects(GameObject* gameobject);
+	void DeleteGameObjects(GameObject* gameobject);
 
 public:
 

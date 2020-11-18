@@ -34,11 +34,11 @@ bool ModuleSceneIntro::Start()
 
 	root = new GameObject(nullptr);
 
-	/*std::string file_path = "Assets/Models/street2.fbx";
+	std::string file_path = "Assets/Models/Megaman.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->LoadFBX(buffer, fileSize, root);*/
+	App->fbxload->LoadFBX(buffer, fileSize, root);
 
 	return ret;
 }

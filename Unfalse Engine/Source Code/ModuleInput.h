@@ -79,5 +79,4 @@ public:
 
 	std::string name;
 	std::size_t texname;
-	std::string texname_2;
 };

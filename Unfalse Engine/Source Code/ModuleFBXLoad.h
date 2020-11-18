@@ -30,7 +30,7 @@ public:
 
 	void LoadTexture(char* file_path, GameObject* gameobject);
 	
-	virtual void LoadTextureObject(char* file_path, int i, int k, int j);
+	void LoadTextureObject(char* file_path, GameObject* gameobject);
 
 public:
 	CompMesh* compmesh;

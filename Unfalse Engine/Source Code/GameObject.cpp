@@ -32,12 +32,13 @@ GameObject::GameObject(GameObject* parent)
 
 GameObject::~GameObject()
 {
-	for (int i = 0; children_list.size(); i++)
+	for (int i = 0; i < component_list.size(); i++)
 	{
-		delete children_list[i];
-		children_list[i] = nullptr;
+		if (component_list[i] != nullptr)
+		{
+			delete component_list[i];
+		}
 	}
-	children_list.clear();
 	component_list.clear();
 }
 
@@ -52,7 +53,7 @@ void GameObject::update()
 
 void GameObject::Inspector()
 {
-	/*ImGui::Checkbox("DeleteObj", &Objdelete);*/
+	ImGui::Checkbox("DeleteObj", &Objdelete);
 	ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
 	ImGui::Text("%s", name.c_str());
 

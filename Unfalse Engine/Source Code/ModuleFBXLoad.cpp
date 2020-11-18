@@ -44,15 +44,7 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 // Destructor
 ModuleFBXLoad::~ModuleFBXLoad()
 {
-	glDeleteBuffers(1, &compmesh->id_index);
-	glDeleteBuffers(1, &compmesh->id_vertex);
-	glDeleteBuffers(1, &compmesh->id_normals);
-	glDeleteBuffers(1, &compmesh->id_tex);
-
-	delete[] compmesh->index;
-	delete[] compmesh->normals;
-	delete[] compmesh->vertex;
-	delete[] compmesh->tex;
+	
 }
 
 // Called before render is available
@@ -140,14 +132,14 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	scale.Set(scaling.x, scaling.y, scaling.z);
 
 	comptrans->pos.Set(pos.x, pos.y, pos.z);
-	comptrans->rot.Set(rot.x, rot.y, rot.z, rot.w);
+	comptrans->rot = rot;
 	comptrans->scl.Set(scale.x, scale.y, scale.z);
-	/*comptrans->transform = float4x4::FromTRS(pos, rot, scale);
-	comptrans->transform.Transpose();*/
+	comptrans->transform = float4x4::FromTRS(pos, rot, scale);
+	//comptrans->transform.Transpose();
 
-	/*LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
+	LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
 	LOG("Rotation: %f, %f, %f, %f", comptrans->rot.x, comptrans->rot.y, comptrans->rot.z, comptrans->rot.w);
-	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);*/
+	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);
 
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -311,17 +303,28 @@ void ModuleFBXLoad::LoadTexture(char* file_path, GameObject* gameobject)
 	ilDeleteImages(1, &textIL);
 }
 
-void ModuleFBXLoad::LoadTextureObject(char* file_path, int i, int k, int j)
+void ModuleFBXLoad::LoadTextureObject(char* file_path, GameObject* gameobject)
 {
 	ilGenImages(1, &textIL);
 	ilBindImage(textIL);
 
 	ilLoadImage(file_path);
 
-	/*App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+	std::string texname;
+	std::string texname_2;
+	std::string texname_3;
 
-	App->gameobject->emptygameobject_list[i]->gameobject_list[k]->component_list[j]->newtexgl = ilutGLBindTexImage();*/
+	App->filesys->SplitFilePath(file_path, &texname, &texname_2, &texname_3);
+
+	compmesh->texname = texname_2;
+
+	for (int i = 0; i < gameobject->component_list.size(); i++)
+	{
+		gameobject->component_list[i]->newtexgl = ilutGLBindTexImage();
+		gameobject->component_list[i]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+		gameobject->component_list[i]->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+		gameobject->component_list[i]->texname = texname_2;
+	}
 
 	ilDeleteImages(1, &textIL);
 }

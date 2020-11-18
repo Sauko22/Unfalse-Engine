@@ -30,6 +30,9 @@ Component::Component(compType type, GameObject*) : type(type), gameObject(gameOb
 	newtexgl = 0;
 	gameobject_selected = false;
 	renderactive = true;
+	texture_h = 0;
+	texture_w = 0;
+	texname = " ";
 }
 
 Component::~Component()
@@ -114,35 +117,40 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	meshactive = true;
 	texactive = false;
 	deftexactive = false;
-	texture_h = 0;
-	texture_w = 0;
 	name = " ";
-	texname = " ";
 	deftexname = " ";
 	gameobject_selected = false;
 }
 
 CompMesh::~CompMesh()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &id_vertex);
-	delete vertex;
-	vertex = nullptr;
+	if (index != nullptr)
+	{
+		delete[] index;
+		index = nullptr;
+		glDeleteBuffers(1, &id_index);
+	}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &id_index);
-	delete index;
-	index = nullptr;
+	if (vertex != nullptr)
+	{
+		delete[] vertex;
+		vertex = nullptr;
+		glDeleteBuffers(1, &id_vertex);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &id_normals);
-	delete normals;
-	normals = nullptr;
+	if (normals != nullptr)
+	{
+		delete[] normals;
+		normals = nullptr;
+		glDeleteBuffers(1, &id_normals);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &id_tex);
-	delete tex;
-	tex = nullptr;
+	if (tex != nullptr)
+	{
+		delete[] tex;
+		tex = nullptr;
+		glDeleteBuffers(1, &id_tex);
+	}
 }
 
 void CompMesh::update()
@@ -177,22 +185,7 @@ void CompMesh::inspector()
 			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
 			ImGui::Text("Height: %i", texture_h);
 
-			/*ImTextureID texture = 0;
-			for (int k = 0; k < component_list.size(); k++)
-			{
-				if (component_list[k]->newtexgl != 0)
-				{
-					texture = (ImTextureID)component_list[k]->newtexgl;
-				}
-			}
-			if (texture != 0)
-			{
-				ImGui::Image(texture, ImVec2(128, 128));
-			}
-			else
-			{*/
 			ImGui::Image((ImTextureID)textgl, ImVec2(128, 128));
-			//}
 		}
 		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
 		{

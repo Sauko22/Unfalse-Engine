@@ -38,6 +38,9 @@ public:
 	bool deftexactive;
 	GLuint newtexgl = 0;
 	bool gameobject_selected;
+	int texture_h;
+	int texture_w;
+	std::string texname;
 };
 
 class CompTransform : public Component
@@ -93,10 +96,7 @@ public:
 	bool texactive;
 	bool deftexactive;
 	std::string name;
-	std::string texname;
 	std::string deftexname;
-	int texture_h;
-	int texture_w;
 };
 
 class CompMaterial : public Component

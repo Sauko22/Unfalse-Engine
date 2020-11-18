@@ -153,29 +153,22 @@ update_status ModuleInput::PreUpdate()
 					App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 				else
 				{
-					std::string texturepath = "Assets/Textures/";
-					texturepath.append(texname_2).append(".").append(filetype);
+					std::string texname_2;
 
-					char* tex_path = (char*)texturepath.c_str();
+					std::string texturepath = "Assets/Textures";
+					texturepath.append(texname_2);
 					
 					texname = norm_load_directory.find_last_of("/");
 					texname_2 = norm_load_directory.substr(texname);
-					App->fbxload->LoadTexture(tex_path, App->scene_intro->SelectedGameObject);
-						
-						
-						/*for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-						{
-							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
-							{
-								texname = norm_load_directory.find_last_of("/");
-								texname_2 = norm_load_directory.substr(texname);
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
-								texture_obj_dropped = true;
-							}
-						}
-					}*/
+					texturepath.append(texname_2);
+
+					char* tex_path = (char*)texturepath.c_str();
+
+					if (App->scene_intro->SelectedGameObject != nullptr)
+					{
+						App->fbxload->LoadTextureObject(tex_path, App->scene_intro->SelectedGameObject);
+					}
 				}
-					
 				SDL_free(dropped_filedir);
 			}
 			break;

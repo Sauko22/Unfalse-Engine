@@ -269,18 +269,52 @@ void ModuleRenderer3D::Draw()
 
 void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 {
-	if (gameobject->Objdelete == true)
+	if (gameobject != nullptr)
 	{
-		delete gameobject;
-	}
-	if (gameobject->ObjrenderActive == true)
-	{
-		gameobject->update();
-
-		for (int i = 0; i < gameobject->children_list.size(); i++)
+		if (gameobject->Objdelete == true)
 		{
-			UpdateGameObjects(gameobject->children_list[i]);
+			DeleteGameObjects(gameobject);
 		}
+
+		if (gameobject->ObjrenderActive == true)
+		{
+			gameobject->update();
+
+			for (int i = 0; i < gameobject->children_list.size(); i++)
+			{
+				UpdateGameObjects(gameobject->children_list[i]);
+			}
+		}
+	}
+}
+
+void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
+{
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		DeleteGameObjects(gameobject->children_list[i]);
+	}
+	
+	if (gameobject->parentGameObject != nullptr)
+	{
+		for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
+		{
+			if (gameobject->parentGameObject->children_list[i] == gameobject)
+			{
+				gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
+				i--;
+			}
+		}
+	}
+	if (gameobject != nullptr)
+	{
+		if (App->scene_intro->SelectedGameObject = gameobject)
+		{
+			App->scene_intro->SelectedGameObject = nullptr;
+		}
+
+		delete gameobject;
+		gameobject = nullptr;
 	}
 }
 
