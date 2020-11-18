@@ -93,7 +93,7 @@ void ModuleFBXLoad::LoadFBX(char* file_path, uint filesize, GameObject* parent)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		Import(scene->mRootNode, parent, scene);
-		j = 0;
+		j++;
 		aiReleaseImport(scene);
 	}
 	else
@@ -107,11 +107,22 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 {
 	GameObject* pgameobject = new GameObject(parent);
 
+	/*std::string obj = std::to_string(j);
+
+	pgameobject->name.append("GameObject").append(obj);*/
+
 	std::string obj = std::to_string(j);
 
-	pgameobject->name.append("GameObject").append(obj);
+	std::string rootnode = "RootNode";
 
-	j++;
+	if (node->mName.C_Str() == rootnode)
+	{
+		pgameobject->name.append("GameObject_").append(obj);
+	}
+	else
+	{
+		pgameobject->name = node->mName.C_Str();
+	}
 
 	LOG("GameObject: %s", pgameobject->name.c_str());
 
@@ -134,15 +145,17 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	/*comptrans->transform = float4x4::FromTRS(pos, rot, scale);
 	comptrans->transform.Transpose();*/
 
-	LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
+	/*LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
 	LOG("Rotation: %f, %f, %f, %f", comptrans->rot.x, comptrans->rot.y, comptrans->rot.z, comptrans->rot.w);
-	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);
+	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);*/
 
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
 		compmesh = (CompMesh*)pgameobject->AddComponent(Component::compType::MESH);
 		
 		aiMesh* ourMesh = scene->mMeshes[node->mMeshes[i]];
+
+		compmesh->name = node->mName.C_Str();
 
 		// copy vertices
 		compmesh->num_vertex = ourMesh->mNumVertices;
@@ -231,6 +244,7 @@ void ModuleFBXLoad::Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObje
 {
 	// Load texture if we have passed the texture path
 	compmesh->defaultex = App->renderer3D->texchec;
+	compmesh->deftexname = "Checkers";
 
 	char* tex_path = nullptr;
 
@@ -252,10 +266,13 @@ void ModuleFBXLoad::Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObje
 
 			App->filesys->SplitFilePath(texture_path.C_Str(), &texname, &texname_2, &texname_3);
 
+			compmesh->texname = texname_2;
+
 			texturepath = "Assets/Textures/";
 			texturepath.append(texname_2).append(".").append(texname_3);
 
 			tex_path = (char*)texturepath.c_str();
+			
 			LOG("Texture path: %s", tex_path);
 		}
 
@@ -284,8 +301,8 @@ void ModuleFBXLoad::LoadTexture(char* file_path, GameObject* gameobject)
 
 	ilLoadImage(file_path);
 
-	gameobject->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-	gameobject->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+	compmesh->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	compmesh->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
 
 	compmesh->textgl = ilutGLBindTexImage();
 

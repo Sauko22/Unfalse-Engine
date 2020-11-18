@@ -19,6 +19,8 @@
 
 #include "MathGeoLib/include/MathGeoLib.h"
 
+#include "ImGui/imgui.h"
+
 Component::Component(compType type, GameObject*) : type(type), gameObject(gameObject)
 {
 	normactive = false;
@@ -26,6 +28,8 @@ Component::Component(compType type, GameObject*) : type(type), gameObject(gameOb
 	texactive = false;
 	deftexactive = false;
 	newtexgl = 0;
+	gameobject_selected = false;
+	renderactive = true;
 }
 
 Component::~Component()
@@ -37,6 +41,7 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	rot = rot.identity;
 	scl = scl.one;
 	transform = transform.zero;
+	gameobject_selected = false;
 }
 
 CompTransform::~CompTransform()
@@ -44,8 +49,48 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	int a = 1;
+	
 }
+
+void CompTransform::inspector()
+{
+	if (gameobject_selected == true)
+	{
+		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			float position[4] = { pos.x, pos.y, pos.z, 1.0f };
+			if (ImGui::DragFloat3("Position", position, 0.1f, -500.0f, 500.0f))
+			{
+				pos.x = position[0];
+				pos.y = position[1];
+				pos.z = position[2];
+
+				// Update position
+			}
+			
+			float angle[4] = { rot.x, rot.y, rot.z, 1.0f };
+			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f))
+			{
+				rot.x = angle[0];
+				rot.y = angle[1];
+				rot.z = angle[2];
+
+				// Update rotation
+			}
+
+			float scale[4] = { scl.x, scl.y, scl.z, 1.0f };
+			if (ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f))
+			{
+				scl.x = scale[0];
+				scl.y = scale[1];
+				scl.z = scale[2];
+
+				// Update scale
+			}
+		}
+	}
+}
+
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
@@ -66,14 +111,97 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	tex = nullptr;
 	num_faces = 0;
 	hastext = false;
+	meshactive = true;
+	texactive = false;
+	deftexactive = false;
+	texture_h = 0;
+	texture_w = 0;
+	name = " ";
+	texname = " ";
+	deftexname = " ";
+	gameobject_selected = false;
 }
 
 CompMesh::~CompMesh()
-{}
+{
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &id_vertex);
+	delete vertex;
+	vertex = nullptr;
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &id_index);
+	delete index;
+	index = nullptr;
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &id_normals);
+	delete normals;
+	normals = nullptr;
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &id_tex);
+	delete tex;
+	tex = nullptr;
+}
 
 void CompMesh::update()
 {
-	RenderMesh();
+	if (meshactive == true)
+	{
+		RenderMesh();
+	}
+}
+
+void CompMesh::inspector()
+{
+	if (gameobject_selected == true)
+	{
+		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Active Mesh", &meshactive);
+			ImGui::Checkbox("ActiveNormals", &normactive);
+			ImGui::Text("Index: %i", num_index);
+			ImGui::Text("Normals: %i", num_normals);
+			ImGui::Text("Vertex: %i", num_vertex);
+			ImGui::Text("Faces: %i", num_faces);
+			ImGui::Text("Text coords: %i", num_tex);
+			ImGui::Text("Gameobject: %s", name.c_str());
+		}
+
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("ActiveMat", &texactive);
+			ImGui::Text("%s", texname.c_str());
+
+			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
+			ImGui::Text("Height: %i", texture_h);
+
+			/*ImTextureID texture = 0;
+			for (int k = 0; k < component_list.size(); k++)
+			{
+				if (component_list[k]->newtexgl != 0)
+				{
+					texture = (ImTextureID)component_list[k]->newtexgl;
+				}
+			}
+			if (texture != 0)
+			{
+				ImGui::Image(texture, ImVec2(128, 128));
+			}
+			else
+			{*/
+			ImGui::Image((ImTextureID)textgl, ImVec2(128, 128));
+			//}
+		}
+		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Defaultext", &deftexactive);
+			ImGui::Text("%s", deftexname.c_str());
+
+			ImGui::Image((ImTextureID)defaultex, ImVec2(128, 128));
+		}
+	}
 }
 
 void CompMesh::RenderMesh()
@@ -182,6 +310,7 @@ void CompMesh::RenderMesh()
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
 {
+
 }
 
 CompMaterial::~CompMaterial()
@@ -190,6 +319,10 @@ CompMaterial::~CompMaterial()
 void CompMaterial::update()
 {
 	RenderTexture();
+}
+
+void CompMaterial::inspector()
+{
 }
 
 void CompMaterial::RenderTexture()

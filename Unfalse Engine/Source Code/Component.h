@@ -27,14 +27,17 @@ public:
 	virtual ~Component();
 
 	virtual void update() {};
+	virtual void inspector() {};
 
 public:
 	compType type;
 	GameObject* gameObject;
+	bool renderactive;
 	bool normactive;
 	bool texactive;
 	bool deftexactive;
 	GLuint newtexgl = 0;
+	bool gameobject_selected;
 };
 
 class CompTransform : public Component
@@ -44,6 +47,7 @@ public:
 	~CompTransform();
 
 	void update();
+	void inspector();
 
 public:
 	float3 pos;
@@ -59,6 +63,7 @@ public:
 	~CompMesh();
 
 	void update();
+	void inspector();
 	void RenderMesh();
 
 public:
@@ -84,6 +89,14 @@ public:
 	GLuint defaultex;
 
 	bool hastext;
+	bool meshactive;
+	bool texactive;
+	bool deftexactive;
+	std::string name;
+	std::string texname;
+	std::string deftexname;
+	int texture_h;
+	int texture_w;
 };
 
 class CompMaterial : public Component
@@ -93,8 +106,10 @@ public:
 	~CompMaterial();
 
 	void update();
+	void inspector();
 	virtual void RenderTexture();
 
 public:
+
 
 };

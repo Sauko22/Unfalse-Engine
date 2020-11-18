@@ -15,7 +15,6 @@ GameObject::GameObject(GameObject* parent)
 	name = " ";
 	fbxname = " ";
 	pngname = " ";
-	deftexname = " ";
 	index_name = 0;
 	normals_name = 0;
 	vertex_name = 0;
@@ -25,12 +24,10 @@ GameObject::GameObject(GameObject* parent)
 
 	objSelected = false;
 	ObjrenderActive = true;
+	Objdelete = false;
 	ObjtexActive = false;
 	ObjnormActive = false;
 	ObjdefauTex = false;
-
-	texture_h = 0;
-	texture_w = 0;
 }
 
 GameObject::~GameObject()
@@ -38,7 +35,10 @@ GameObject::~GameObject()
 	for (int i = 0; children_list.size(); i++)
 	{
 		delete children_list[i];
+		children_list[i] = nullptr;
 	}
+	children_list.clear();
+	component_list.clear();
 }
 
 void GameObject::update()
@@ -47,6 +47,19 @@ void GameObject::update()
 	for (int i = 0; i < component_list.size(); i++)
 	{
 		component_list[i]->update();
+	}
+}
+
+void GameObject::Inspector()
+{
+	/*ImGui::Checkbox("DeleteObj", &Objdelete);*/
+	ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
+	ImGui::Text("%s", name.c_str());
+
+	// Update components
+	for (int i = 0; i < component_list.size(); i++)
+	{
+		component_list[i]->inspector();
 	}
 }
 

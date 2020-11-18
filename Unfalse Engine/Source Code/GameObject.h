@@ -16,9 +16,8 @@ public:
 	std::vector<GameObject*> children_list;
 	std::vector<Component*> component_list;
 
-	virtual void showInspectorWin();
-
 	void update();
+	void Inspector();
 
 	Component* AddComponent(Component::compType type);
 
@@ -28,7 +27,6 @@ public:
 	std::string name;
 	std::string fbxname;
 	std::string pngname;
-	std::string deftexname;
 	uint index_name;
 	uint normals_name;
 	uint vertex_name;
@@ -36,11 +34,9 @@ public:
 	uint texturescoords_name;
 	GLuint actualtexgl;
 
-	int texture_h;
-	int texture_w;
-
 	bool objSelected;
 	bool ObjrenderActive;
+	bool Objdelete;
 	bool ObjtexActive;
 	bool ObjnormActive;
 	bool ObjdefauTex;

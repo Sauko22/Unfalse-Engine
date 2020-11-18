@@ -269,11 +269,18 @@ void ModuleRenderer3D::Draw()
 
 void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 {
-	gameobject->update();
-
-	for (int i = 0; i < gameobject->children_list.size(); i++)
+	if (gameobject->Objdelete == true)
 	{
-		UpdateGameObjects(gameobject->children_list[i]);
+		delete gameobject;
+	}
+	if (gameobject->ObjrenderActive == true)
+	{
+		gameobject->update();
+
+		for (int i = 0; i < gameobject->children_list.size(); i++)
+		{
+			UpdateGameObjects(gameobject->children_list[i]);
+		}
 	}
 }
 

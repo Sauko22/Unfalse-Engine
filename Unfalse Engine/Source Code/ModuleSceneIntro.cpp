@@ -14,6 +14,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	FRAMES_PER_SECOND = 120;
 	frame = 0;
 	root = nullptr;
+	SelectedGameObject = nullptr;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -33,11 +34,11 @@ bool ModuleSceneIntro::Start()
 
 	root = new GameObject(nullptr);
 
-	std::string file_path = "Assets/Models/street2.fbx";
+	/*std::string file_path = "Assets/Models/street2.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->LoadFBX(buffer, fileSize, root);
+	App->fbxload->LoadFBX(buffer, fileSize, root);*/
 
 	return ret;
 }

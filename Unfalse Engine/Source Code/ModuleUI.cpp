@@ -40,7 +40,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	 activeConsole = true;
 	 activeHierach = true;
 	
-
 	// Docking
 	showDock = false;
 
@@ -329,6 +328,16 @@ update_status ModuleUI::Update()
 		}
 	}
 
+	if (activeInspec == true)
+	{
+		if (ImGui::Begin("Inspector"))
+		{
+			showInspectorWin();
+			
+			ImGui::End();
+		}
+	}
+
 	if (activeConsole == true) {
 		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_HorizontalScrollbar))
 		{
@@ -364,7 +373,14 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 	{
 		DeselectGameObjects(App->scene_intro->root);
 
+		App->scene_intro->SelectedGameObject = gameobject;
+
+		
 		gameobject->objSelected = true;
+		for (int i = 0; i < gameobject->component_list.size(); i++)
+		{
+			gameobject->component_list[i]->gameobject_selected = true;
+		}
 	}
 	if (node_open)
 	{
@@ -382,6 +398,10 @@ void ModuleUI::DeselectGameObjects(GameObject* gameobject)
 	for (int i = 0; i < gameobject->children_list.size(); i++)
 	{
 		DeselectGameObjects(gameobject->children_list[i]);
+	}
+	for (int i = 0; i < gameobject->component_list.size(); i++)
+	{
+		gameobject->component_list[i]->gameobject_selected = false;
 	}
 }
 
@@ -425,9 +445,12 @@ void ModuleUI::putLog(const char* log)
 	items.push_back(item);
 }
 
-void GameObject::showInspectorWin()
+void ModuleUI::showInspectorWin()
 {
-	LOG("INSPECTOR WINDOW");
+	if (App->scene_intro->SelectedGameObject != nullptr)
+	{
+		App->scene_intro->SelectedGameObject->Inspector();
+	}
 	/*if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();

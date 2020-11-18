@@ -134,7 +134,8 @@ update_status ModuleInput::PreUpdate()
 				// Get Object name
 				std::string fileDir = "";
 				std::string extDir = "";
-				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir);
+				std::string filetype = "";
+				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir, &filetype);
 				LOG("OBJECT NAME: %s", extDir.c_str());
 				name = extDir;
 
@@ -150,21 +151,19 @@ update_status ModuleInput::PreUpdate()
 
 				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
 					App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
-				/*else
+				else
 				{
-					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-					{
-						if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
-						{
-							for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-							{
-								texname = norm_load_directory.find_last_of("/");
-								texname_2 = norm_load_directory.substr(texname);
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
-							}
-							texture_dropped = true;
-						}
-						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+					std::string texturepath = "Assets/Textures/";
+					texturepath.append(texname_2).append(".").append(filetype);
+
+					char* tex_path = (char*)texturepath.c_str();
+					
+					texname = norm_load_directory.find_last_of("/");
+					texname_2 = norm_load_directory.substr(texname);
+					App->fbxload->LoadTexture(tex_path, App->scene_intro->SelectedGameObject);
+						
+						
+						/*for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
 						{
 							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
 							{
@@ -174,8 +173,8 @@ update_status ModuleInput::PreUpdate()
 								texture_obj_dropped = true;
 							}
 						}
-					}
-				}*/
+					}*/
+				}
 					
 				SDL_free(dropped_filedir);
 			}
