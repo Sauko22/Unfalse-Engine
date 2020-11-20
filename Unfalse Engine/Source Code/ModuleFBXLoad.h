@@ -26,23 +26,25 @@ public:
 
 	void Import(aiNode* node, GameObject* parent, const aiScene* scene);
 
+	// Meshes
 	void Load_Mesh();
-	void Load_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject);
+	//void ImportMesh(CompMesh* mesh);
+	void Save_Mesh(CompMesh* mesh);
+	//void LoadMesh(CompMesh* mesh);
 
-	//uint64 Save_Texture(aiMesh* ourMesh);
-
+	// Textures
+	void Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject, CompMesh* compmesh);
+	void ImportTexture(std::string texname_2, std::string texname_3);
+	uint64 SaveTexture(aiMesh* ourMesh, char** fileBuffer);
 	void LoadTexture(char* buffer, uint filesize, GameObject* gameobject);
-	
 	void LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, char* name);
 
 public:
 	CompMesh* compmesh;
-	/*GameObject* gameobject;*/
 	CompTransform* comptrans;
-
-	ILuint textIL;
 
 	int j;
 
-	std::string texturepath;
+	std::string file_path;
+	std::string mesh_path;
 };
