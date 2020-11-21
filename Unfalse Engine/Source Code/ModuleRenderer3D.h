@@ -1,11 +1,9 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "ModuleFBXLoad.h"
 #include "glmath.h"
 #include "Light.h"
 #include "Vec2.h"
-#include "ModuleFBXLoad.h"
 
 #define MAX_LIGHTS 8
 

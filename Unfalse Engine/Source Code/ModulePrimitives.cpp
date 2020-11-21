@@ -1,6 +1,5 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleSceneIntro.h"
 #include "Primitive.h"
 #include "p2Defs.h"
 #include "Glew/include/glew.h"

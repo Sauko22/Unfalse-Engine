@@ -1,22 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleUI.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleWindow.h"
 #include "ModuleFBXLoad.h"
-#include "GameObject.h"
 
 #include "Glew\include\glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -144,16 +134,16 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 		compmesh->name = node->mName.C_Str();
 
-		// Mesh importer ////////////////////////////////////////
+		// Mesh importer 
 		file_path = "";
 		uint64 filesize = 0;
 		char* buffer = nullptr;
 
-		// The texture is in the library
+		// The mesh is in the library
 		file_path.append("Library/Meshes/").append(compmesh->name);
 		filesize = App->filesys->Load(file_path.c_str(), &buffer);
 
-		// The texture is not in the library
+		// The mesh is not in the library
 		if (filesize == 0)
 		{
 			// copy vertices

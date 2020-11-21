@@ -1,27 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
-#include "ModuleFBXLoad.h"
-#include "ModuleWindow.h"
-#include "Component.h"
-#include "p2Defs.h"
 
 #include "Glew\include\glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
-
-#include "Devil\include\ilu.h"
-#include "Devil\include\ilut.h"
-
-#pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#pragma comment( lib, "Devil/libx86/ILU.lib" )
-#pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {

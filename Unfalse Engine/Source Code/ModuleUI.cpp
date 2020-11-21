@@ -1,27 +1,10 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleWindow.h"
 #include "ModuleUI.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleWindow.h"
-#include "ModuleFBXLoad.h"
-#include "ModuleSceneIntro.h"
 
 #include "Glew\include\glew.h"
 
-#include "SDL\include\SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-
-//ImGui
-
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib */
-
-
-//// JSON Header 
+// JSON Header 
 //#include "JSON\parson.h" 
 
 //#include "MathGeoLib/include/MathGeoLib.h"
