@@ -1,5 +1,5 @@
 #include "Component.h"
-
+#include "GameObject.h"
 #include "Glew\include\glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
@@ -43,7 +43,7 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	pos = pos.zero;
 	rot = rot.identity;
 	scl = scl.one;
-	transform = transform.zero;
+	local_transform = local_transform.zero;
 	gameobject_selected = false;
 }
 
@@ -52,7 +52,7 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	
+
 }
 
 void CompTransform::inspector()
@@ -70,7 +70,7 @@ void CompTransform::inspector()
 
 				// Update position
 			}
-			
+
 			float angle[4] = { rot.x, rot.y, rot.z, 1.0f };
 			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f))
 			{
@@ -120,6 +120,7 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	name = " ";
 	deftexname = " ";
 	gameobject_selected = false;
+	gameObject = gameobject;
 }
 
 CompMesh::~CompMesh()
@@ -157,6 +158,7 @@ void CompMesh::update()
 {
 	if (meshactive == true)
 	{
+
 		RenderMesh();
 	}
 }
@@ -199,8 +201,19 @@ void CompMesh::inspector()
 
 void CompMesh::RenderMesh()
 {
-	/*glPushMatrix();
-	glMultMatrixf(mesh_list[i]->transform.Transposed().ptr());*/
+	CompTransform* transform = nullptr;
+
+	for (int i = 0; i < gameObject->component_list.size(); i++)
+	{
+
+		if (gameObject->component_list[i]->type == Component::compType::TRANSFORM)
+		{
+			transform = (CompTransform*)gameObject->component_list[i];
+		}
+	}
+	glPushMatrix();
+	glMultMatrixf(transform->local_transform.Transposed().ptr());
+
 
 	// Draw textures
 	if (newtexgl != 0)
@@ -223,7 +236,7 @@ void CompMesh::RenderMesh()
 			else
 			{
 				glBindTexture(GL_TEXTURE_2D, textgl);
-			}	
+			}
 		}
 		else
 		{
@@ -296,10 +309,10 @@ void CompMesh::RenderMesh()
 		}
 		glEnd();
 	}
-	//glPopMatrix();
+	glPopMatrix();
 }
 
-	
+
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
 {

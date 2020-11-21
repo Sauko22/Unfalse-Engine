@@ -56,7 +56,7 @@ public:
 	float3 pos;
 	Quat rot;
 	float3 scl;
-	float4x4 transform;
+	float4x4 local_transform;
 };
 
 class CompMesh : public Component
