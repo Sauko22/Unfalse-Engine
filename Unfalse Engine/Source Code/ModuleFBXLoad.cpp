@@ -114,28 +114,27 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 	LOG("GameObject: %s", pgameobject->name.c_str());
 
-	comptrans = (CompTransform*)pgameobject->AddComponent(Component::compType::TRANSFORM);
+	CompTransform* comptrans = (CompTransform*)pgameobject->AddComponent(Component::compType::TRANSFORM);
 
 	aiVector3D translation, scaling;
 	aiQuaternion rotation;
-	float3 pos, scale;
-	Quat rot; 
+
+	float3 posate, scalete;
+	Quat rotate;
 
 	node->mTransformation.Decompose(scaling, rotation, translation);
 
-	pos.Set(translation.x, translation.y, translation.z);
-	rot.Set(rotation.x, rotation.y, rotation.z, rotation.w);
-	scale.Set(scaling.x, scaling.y, scaling.z);
 
-	comptrans->pos.Set(pos.x, pos.y, pos.z);
-	comptrans->rot = rot;
-	comptrans->scl.Set(scale.x, scale.y, scale.z);
-	comptrans->transform = float4x4::FromTRS(pos, rot, scale);
-	//comptrans->transform.Transpose();
+	posate.Set(translation.x, translation.y, translation.z);
+	rotate.Set(rotation.x, rotation.y, rotation.z, rotation.w);
+	scalete.Set(scaling.x, scaling.y, scaling.z);
 
-	/*LOG("Position: %f, %f, %f", comptrans->pos.x, comptrans->pos.y, comptrans->pos.z);
-	LOG("Rotation: %f, %f, %f, %f", comptrans->rot.x, comptrans->rot.y, comptrans->rot.z, comptrans->rot.w);
-	LOG("Scale: %f, %f, %f", comptrans->scl.x, comptrans->scl.y, comptrans->scl.z);*/
+	comptrans->pos.Set(posate.x, posate.y, posate.z);
+	comptrans->rot = rotate;
+	comptrans->scl.Set(scalete.x, scalete.y, scalete.z);
+
+	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
+	//comptrans->local_transform.Transpose();
 
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
