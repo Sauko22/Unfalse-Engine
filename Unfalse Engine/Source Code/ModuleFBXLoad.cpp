@@ -145,56 +145,72 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 		compmesh->name = node->mName.C_Str();
 
-		// copy vertices
-		compmesh->num_vertex = ourMesh->mNumVertices;
-		compmesh->vertex = new float[compmesh->num_vertex * 3];
-		memcpy(compmesh->vertex, ourMesh->mVertices, sizeof(float) * compmesh->num_vertex * 3);
-		LOG("New mesh with %d vertices", compmesh->num_vertex);
+		// Mesh importer ////////////////////////////////////////
+		file_path = "";
+		uint64 filesize = 0;
+		char* buffer = nullptr;
 
-		// copy faces
-		if (ourMesh->HasFaces())
+		// The texture is in the library
+		file_path.append("Library/Meshes/").append(compmesh->name);
+		filesize = App->filesys->Load(file_path.c_str(), &buffer);
+
+		// The texture is not in the library
+		if (filesize == 0)
 		{
-			compmesh->num_faces = ourMesh->mNumFaces;
-			compmesh->num_index = ourMesh->mNumFaces * 3;
-			compmesh->index = new uint[compmesh->num_index]; // assume each face is a triangle
-			for (uint i = 0; i < ourMesh->mNumFaces; ++i)
+			// copy vertices
+			compmesh->num_vertex = ourMesh->mNumVertices;
+			compmesh->vertex = new float[compmesh->num_vertex * 3];
+			memcpy(compmesh->vertex, ourMesh->mVertices, sizeof(float) * compmesh->num_vertex * 3);
+			LOG("New mesh with %d vertices", compmesh->num_vertex);
+
+			// copy faces
+			if (ourMesh->HasFaces())
 			{
-				if (ourMesh->mFaces[i].mNumIndices != 3)
+				compmesh->num_faces = ourMesh->mNumFaces;
+				compmesh->num_index = ourMesh->mNumFaces * 3;
+				compmesh->index = new uint[compmesh->num_index]; // assume each face is a triangle
+				for (uint i = 0; i < ourMesh->mNumFaces; ++i)
 				{
-					LOG("WARNING, geometry face with != 3 indices!");
-				}
-				else
-				{
-					memcpy(&compmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
+					if (ourMesh->mFaces[i].mNumIndices != 3)
+					{
+						LOG("WARNING, geometry face with != 3 indices!");
+					}
+					else
+					{
+						memcpy(&compmesh->index[i * 3], ourMesh->mFaces[i].mIndices, 3 * sizeof(uint));
+					}
 				}
 			}
-		}
-		if (ourMesh->HasNormals())
-		{
-			compmesh->num_normals = ourMesh->mNumVertices;
-			compmesh->normals = new float[compmesh->num_normals * 3];
-			memcpy(compmesh->normals, ourMesh->mNormals, sizeof(float) * compmesh->num_normals * 3);
-			LOG("New mesh with %d normal", compmesh->num_normals);
-			LOG("New mesh with %d idnormal", compmesh->id_normals);
-		}
-		if (ourMesh->HasTextureCoords(0))
-		{
-			compmesh->num_tex = ourMesh->mNumVertices;
-			compmesh->tex = new float[ourMesh->mNumVertices * 2];
-
-			for (unsigned int i = 0; i < compmesh->num_tex; i++)
+			if (ourMesh->HasNormals())
 			{
-				compmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
-				compmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
-
+				compmesh->num_normals = ourMesh->mNumVertices;
+				compmesh->normals = new float[compmesh->num_normals * 3];
+				memcpy(compmesh->normals, ourMesh->mNormals, sizeof(float) * compmesh->num_normals * 3);
+				LOG("New mesh with %d normal", compmesh->num_normals);
+				LOG("New mesh with %d idnormal", compmesh->id_normals);
 			}
-			LOG("New mesh with %d uvs", compmesh->num_tex);
-		}
-		
-		Load_Mesh();
+			if (ourMesh->HasTextureCoords(0))
+			{
+				compmesh->num_tex = ourMesh->mNumVertices;
+				compmesh->tex = new float[ourMesh->mNumVertices * 2];
 
-		//ImportMesh(compmesh);
-		//Save_Mesh(compmesh);
+				for (unsigned int i = 0; i < compmesh->num_tex; i++)
+				{
+					compmesh->tex[i * 2] = ourMesh->mTextureCoords[0][i].x;
+					compmesh->tex[i * 2 + 1] = ourMesh->mTextureCoords[0][i].y;
+
+				}
+				LOG("New mesh with %d uvs", compmesh->num_tex);
+			}
+			Load_Mesh_Assets();
+
+			Save_Mesh(compmesh->name);
+		}
+		else
+		{
+			LoadMesh(compmesh->name, buffer);
+			Load_Mesh_Assets();
+		}
 
 		// Texture importer
 		Import_Texture(ourMesh, scene, pgameobject, compmesh);
@@ -209,183 +225,105 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	}
 }
 
-// Mesh importer
-
-//void ModuleFBXLoad::ImportMesh(CompMesh* mesh)
-//{
-//	//Save_Mesh(mesh);
-//
-//	//LoadMesh(mesh);
-//
-//	// Save Mesh //////////////////////////////////
-//	// amount of indices / vertices / colors / normals / texture_coords / AABB
-//	uint ranges[2] = { mesh->num_index, mesh->num_vertex };
-//	uint size = sizeof(ranges) + sizeof(uint) * mesh->num_index + sizeof(float) * mesh->num_vertex * 3;
-//	char* fileBuffer = new char[size]; // Allocate
-//	char* cursor = fileBuffer;
-//	uint bytes = sizeof(ranges); // First store ranges
-//	memcpy(cursor, ranges, bytes);
-//	cursor += bytes;
-//	/*std::string texname;
-//	std::string texname_2;
-//	std::string texname_3;*/
-//	std::string path = "";
-//
-//	// Store indices
-//	bytes = sizeof(uint) * mesh->num_index;
-//	memcpy(cursor, mesh->index, bytes);
-//	cursor += bytes;
-//
-//	// Store vertex
-//	bytes = sizeof(float) * mesh->num_vertex * 3;
-//	memcpy(cursor, mesh->vertex, bytes);
-//	cursor += bytes;
-//
-//	// Store normals
-//	bytes = sizeof(float) * mesh->num_normals * 3;
-//	memcpy(cursor, mesh->normals, bytes);
-//	cursor += bytes;
-//
-//	// Store textures
-//	bytes = sizeof(float) * mesh->num_tex;
-//	memcpy(cursor, mesh->tex, bytes);
-//
-//	//App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
-//	path.append("Library/Meshes/Baker_house")/*.append(texname_2)*/;
-//
-//	App->filesys->Save(path.c_str(), fileBuffer, size);
-//	//////////////////////////////////////////////
-//
-//	// Load Mesh /////////////////////////////////
-//	/*file_path = "";*/
-//	uint64 filesize = 0;
-//	char* buffer = nullptr;
-//
-//	// The mesh is in the library
-//	/*file_path.append("Library/Meshes/").append("Baker_house");*/
-//	filesize = App->filesys->Load(path.c_str(), &buffer);
-//
-//	// The mesh is not in the library
-//	/*if (filesize == 0)
-//	{
-//		file_path = "";
-//		file_path.append("Assets/Models/").append("BakerHouse").append(".").append("fbx");
-//		filesize = App->filesys->Load(path.c_str(), &buffer);
-//	}*/
-//
-//	char* _cursor = buffer;
-//	// amount of indices / vertices / colors / normals / texture_coords
-//	uint _ranges[5];
-//	uint _bytes = sizeof(_ranges);
-//	memcpy(_ranges, _cursor, _bytes);
-//	_cursor += _bytes;
-//
-//	mesh->num_index = _ranges[0];
-//	mesh->num_vertex = _ranges[1];
-//	mesh->num_normals = _ranges[2];
-//	mesh->num_tex = _ranges[3];
-//
-//	// Load indices
-//	_bytes = sizeof(uint) * mesh->num_index;
-//	mesh->index = new uint[mesh->num_index];
-//	memcpy(mesh->index, _cursor, _bytes);
-//	_cursor += _bytes;
-//
-//	// Load vertexs
-//	_bytes = sizeof(float) * mesh->num_vertex * 3;
-//	mesh->vertex = new float[mesh->num_vertex * 3];
-//	memcpy(mesh->vertex, _cursor, _bytes);
-//	_cursor += _bytes;
-//
-//	// Load normals
-//	_bytes = sizeof(float) * mesh->num_normals * 3;
-//	mesh->normals = new float[mesh->num_normals * 3];
-//	memcpy(mesh->normals, _cursor, _bytes);
-//	_cursor += _bytes;
-//
-//	// Load textures
-//	_bytes = sizeof(float) * mesh->num_tex * 3;
-//	mesh->tex = new float[mesh->num_tex * 3];
-//	memcpy(mesh->tex, _cursor, _bytes);
-//	/////////////////////////////////////////////
-//}
-//
-//void ModuleFBXLoad::LoadMesh(CompMesh* mesh)
-//{
-//	/*char* cursor = buffer;
-//	// amount of indices / vertices / colors / normals / texture_coords
-//	uint ranges[5];
-//	uint bytes = sizeof(ranges);
-//	memcpy(ranges, cursor, bytes);
-//	cursor += bytes;
-//	mesh->num_indices = ranges[0];
-//	mesh->num_vertices = ranges[1];
-//	// Load indices
-//	bytes = sizeof(uint) * resource->num_indices;
-//	resource->indices = new uint[resource->num_indices];
-//	memcpy(resource->indices, cursor, bytes);
-//	cursor += bytes;*/
-//}
-
-void ModuleFBXLoad::Load_Mesh()
+void ModuleFBXLoad::LoadMesh(std::string name, char* buffer)
 {
-	//Vertex of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->num_vertex * 3, &compmesh->vertex[0], GL_STATIC_DRAW);
+	char* _cursor = buffer;
+	// amount of indices / vertices / colors / normals / texture_coords
+	uint _ranges[4];
+	uint _bytes = sizeof(_ranges);
+	memcpy(_ranges, _cursor, _bytes);
+	_cursor += _bytes;
 
-	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->id_normals);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_normals * 3, &compmesh->normals[0], GL_STATIC_DRAW);
+	compmesh->num_index = _ranges[0];
+	compmesh->num_vertex = _ranges[1];
+	compmesh->num_normals = _ranges[2];
+	compmesh->num_tex = _ranges[3];
 
-	//Indices of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->id_index);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->num_index, &compmesh->index[0], GL_STATIC_DRAW);
+	// Load indices
+	_bytes = sizeof(uint) * compmesh->num_index;
+	compmesh->index = new uint[compmesh->num_index];
+	memcpy(compmesh->index, _cursor, _bytes);
+	_cursor += _bytes;
 
-	//Uvs of the mesh
-	glGenBuffers(1, (GLuint*)&compmesh->id_tex);
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_tex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_tex * 2, &compmesh->tex[0], GL_STATIC_DRAW);
+	// Load vertexs
+	_bytes = sizeof(float) * compmesh->num_vertex * 3;
+	compmesh->vertex = new float[compmesh->num_vertex * 3];
+	memcpy(compmesh->vertex, _cursor, _bytes);
+	_cursor += _bytes;
+
+	// Load normals
+	_bytes = sizeof(float) * compmesh->num_normals * 3;
+	compmesh->normals = new float[compmesh->num_normals * 3];
+	memcpy(compmesh->normals, _cursor, _bytes);
+	_cursor += _bytes;
+
+	// Load textures
+	_bytes = sizeof(float) * compmesh->num_tex * 2;
+	compmesh->tex = new float[compmesh->num_tex * 2];
+	memcpy(compmesh->tex, _cursor, _bytes);
 }
 
-void ModuleFBXLoad::Save_Mesh(CompMesh* mesh)
+void ModuleFBXLoad::Load_Mesh_Assets()
+{
+	//Vertex of the mesh
+	glGenBuffers(1, (GLuint*)&(compmesh->id_vertex));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->id_vertex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->num_vertex * 3, compmesh->vertex, GL_STATIC_DRAW);
+
+	//Normal faces of the mesh
+	glGenBuffers(1, (GLuint*)&(compmesh->id_normals));
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_normals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_normals * 3, compmesh->normals, GL_STATIC_DRAW);
+
+	//Indices of the mesh
+	glGenBuffers(1, (GLuint*)&(compmesh->id_index));
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_index);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->num_index, compmesh->index, GL_STATIC_DRAW);
+
+	//Uvs of the mesh
+	glGenBuffers(1, (GLuint*)&(compmesh->id_tex));
+	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_tex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_tex * 2, compmesh->tex, GL_STATIC_DRAW);
+}
+
+void ModuleFBXLoad::Save_Mesh(std::string name)
 {
 	// amount of indices / vertices / colors / normals / texture_coords / AABB
-	uint ranges[2] = { mesh->num_index, mesh->num_vertex };
-	uint size = sizeof(ranges) + sizeof(uint) * mesh->num_index + sizeof(float) * mesh->num_vertex * 3;
+	uint ranges[4] = { compmesh->num_index, compmesh->num_vertex, compmesh->num_normals, compmesh->num_tex };
+	uint size = sizeof(ranges) + sizeof(uint) * compmesh->num_index + sizeof(float) * compmesh->num_vertex * 3 + sizeof(float) * compmesh->num_normals * 3 + sizeof(float) * compmesh->num_tex * 2;
+
 	char* fileBuffer = new char[size]; // Allocate
 	char* cursor = fileBuffer;
 	uint bytes = sizeof(ranges); // First store ranges
 	memcpy(cursor, ranges, bytes);
 	cursor += bytes;
-	std::string texname;
+
+	/*std::string texname;
 	std::string texname_2;
-	std::string texname_3;
+	std::string texname_3;*/
 	std::string path;
-	
+
 	// Store indices
-	bytes = sizeof(uint) * mesh->num_index;
-	memcpy(cursor, mesh->index, bytes);
+	bytes = sizeof(uint) * compmesh->num_index;
+	memcpy(cursor, compmesh->index, bytes);
 	cursor += bytes;
 
 	// Store vertex
-	bytes = sizeof(float) * mesh->num_vertex;
-	memcpy(cursor, mesh->vertex, bytes);
+	bytes = sizeof(float) * compmesh->num_vertex * 3;
+	memcpy(cursor, compmesh->vertex, bytes);
 	cursor += bytes;
 
 	// Store normals
-	bytes = sizeof(float) * mesh->num_normals;
-	memcpy(cursor, mesh->normals, bytes);
+	bytes = sizeof(float) * compmesh->num_normals * 3;
+	memcpy(cursor, compmesh->normals, bytes);
 	cursor += bytes;
 
 	// Store textures
-	bytes = sizeof(float) * mesh->num_tex;
-	memcpy(cursor, mesh->tex, bytes);
+	bytes = sizeof(float) * compmesh->num_tex * 2;
+	memcpy(cursor, compmesh->tex, bytes);
 
-	App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
-	path.append("Library/Meshes/").append(texname_2);
+	//App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+	path.append("Library/Meshes/").append(name);
 
 	App->filesys->Save(path.c_str(), fileBuffer, size);
 }
@@ -424,7 +362,6 @@ void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameOb
 			// Texture Import 
 			ImportTexture(texname_2, texname_3);
 			
-
 			// Texture save
 			uint filesize = 0;
 			char* buffer = nullptr;

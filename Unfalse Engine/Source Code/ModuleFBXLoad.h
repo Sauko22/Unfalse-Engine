@@ -27,10 +27,9 @@ public:
 	void Import(aiNode* node, GameObject* parent, const aiScene* scene);
 
 	// Meshes
-	void Load_Mesh();
-	//void ImportMesh(CompMesh* mesh);
-	void Save_Mesh(CompMesh* mesh);
-	//void LoadMesh(CompMesh* mesh);
+	void Load_Mesh_Assets();
+	void Save_Mesh(std::string name);
+	void LoadMesh(std::string name, char* buffer);
 
 	// Textures
 	void Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject, CompMesh* compmesh);
