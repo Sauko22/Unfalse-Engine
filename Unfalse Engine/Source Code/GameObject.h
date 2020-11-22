@@ -20,6 +20,7 @@ public:
 	void Inspector();
 
 	Component* AddComponent(Component::compType type);
+	Component* GetComponent(Component::compType type);
 
 	GameObject* parentGameObject;
 

@@ -112,6 +112,10 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	float3 posate, scalete;
 	Quat rotate;
 
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			comptrans->local_transform[i][j] = node->mTransformation[i][j];
+
 	node->mTransformation.Decompose(scaling, rotation, translation);
 
 
@@ -124,6 +128,7 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	comptrans->scl.Set(scalete.x, scalete.y, scalete.z);
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
+	
 	//comptrans->local_transform.Transpose();
 
 	for (int i = 0; i < node->mNumMeshes; i++)
