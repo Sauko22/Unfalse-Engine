@@ -124,7 +124,6 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	comptrans->scl.Set(scalete.x, scalete.y, scalete.z);
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
-	//comptrans->local_transform.Transpose();
 
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -191,14 +190,14 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 				}
 				LOG("New mesh with %d uvs", compmesh->num_tex);
 			}
-			Load_Mesh_Assets();
+			Load_Mesh();
 
 			Save_Mesh(compmesh->name);
 		}
 		else
 		{
 			LoadMesh(compmesh->name, buffer);
-			Load_Mesh_Assets();
+			Load_Mesh();
 		}
 
 		// Texture importer
@@ -252,7 +251,7 @@ void ModuleFBXLoad::LoadMesh(std::string name, char* buffer)
 	memcpy(compmesh->tex, _cursor, _bytes);
 }
 
-void ModuleFBXLoad::Load_Mesh_Assets()
+void ModuleFBXLoad::Load_Mesh()
 {
 	//Vertex of the mesh
 	glGenBuffers(1, (GLuint*)&(compmesh->id_vertex));
@@ -287,9 +286,6 @@ void ModuleFBXLoad::Save_Mesh(std::string name)
 	memcpy(cursor, ranges, bytes);
 	cursor += bytes;
 
-	/*std::string texname;
-	std::string texname_2;
-	std::string texname_3;*/
 	std::string path;
 
 	// Store indices
@@ -311,7 +307,6 @@ void ModuleFBXLoad::Save_Mesh(std::string name)
 	bytes = sizeof(float) * compmesh->num_tex * 2;
 	memcpy(cursor, compmesh->tex, bytes);
 
-	//App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
 	path.append("Library/Meshes/").append(name);
 
 	App->filesys->Save(path.c_str(), fileBuffer, size);

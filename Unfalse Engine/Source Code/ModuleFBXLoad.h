@@ -27,7 +27,7 @@ public:
 	void Import(aiNode* node, GameObject* parent, const aiScene* scene);
 
 	// Meshes
-	void Load_Mesh_Assets();
+	void Load_Mesh();
 	void Save_Mesh(std::string name);
 	void LoadMesh(std::string name, char* buffer);
 

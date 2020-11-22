@@ -14,6 +14,7 @@
 #include "ModulePrimitives.h"
 #include "ModuleFBXLoad.h"
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 #include <string>
 #include <vector>
@@ -34,6 +35,7 @@ public:
 	ModulePrimitives* primitives;
 	ModuleFBXLoad* fbxload;
 	ModuleFileSystem* filesys;
+	ModuleResources* resource;
 
 private:
 

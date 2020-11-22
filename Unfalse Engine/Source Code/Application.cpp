@@ -13,6 +13,7 @@ Application::Application()
 	primitives = new ModulePrimitives(this);
 	fbxload = new ModuleFBXLoad(this);
 	filesys = new ModuleFileSystem(this);
+	resource = new ModuleResources(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -31,6 +32,7 @@ Application::Application()
 
 	// File System
 	AddModule(filesys);
+	AddModule(resource);
 
 	// Scenes
 	AddModule(scene_intro);

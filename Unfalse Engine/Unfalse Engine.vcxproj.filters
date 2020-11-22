@@ -321,6 +321,9 @@
     <ClInclude Include="Source Code\GameObject.h">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModuleResources.h">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -498,6 +501,9 @@
       <Filter>libs\MathGeoLib\Algorithm\Random</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\GameObject.cpp">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleResources.cpp">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
