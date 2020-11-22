@@ -61,13 +61,18 @@ void CompTransform::inspector()
 				// Update position
 				UpdateTrans();
 			}
-
-			float angle[4] = { rot.x, rot.y, rot.z };
-			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f))
+			euler = rot.ToEulerXYZ() * RADTODEG;
+			float angle[3] = { euler.x,euler.y,euler.z};
+			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -500.0f, 500.0f))
 			{
-				rot.x = angle[0];
-				rot.y = angle[1];
-				rot.z = angle[2];
+				//euler = rot.ToEulerXYZ();
+				
+
+				euler.x = angle[0];
+				euler.y = angle[1];
+				euler.z = angle[2];
+
+				rot = Quat::FromEulerXYZ(euler.x * DEGTORAD, euler.y * DEGTORAD, euler.z * DEGTORAD);
 
 				UpdateTrans();
 			}

@@ -128,7 +128,7 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	comptrans->scl.Set(scalete.x, scalete.y, scalete.z);
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
-	
+	comptrans->euler = comptrans->rot.ToEulerXYZ() * RADTODEG;
 	//comptrans->local_transform.Transpose();
 
 	for (int i = 0; i < node->mNumMeshes; i++)
