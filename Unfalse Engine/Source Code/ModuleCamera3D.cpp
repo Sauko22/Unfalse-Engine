@@ -55,13 +55,13 @@ update_status ModuleCamera3D::Update()
 	// Camera zoom
 	if (App->input->mouse_z > 0) 
 	{
-		Position -= Z * 0.8f;
-		Reference -= Z * 0.8f;
+		Position -= Z * 4;
+		Reference -= Z * 4;
 	}
 	if (App->input->mouse_z < 0)
 	{
-		Position += Z * 0.8f;
-		Reference += Z * 0.8f;
+		Position += Z * 4;
+		Reference += Z * 4;
 	}
 
 	// Camera 2D movement

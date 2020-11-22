@@ -85,3 +85,16 @@ Component* GameObject::AddComponent(Component::compType type)
 
 	return ret;
 }
+
+Component* GameObject::GetComponent(Component::compType type)
+{
+	Component* ret = nullptr;
+
+	for (int i = 0; i < component_list.size(); i++)
+	{
+		if (type == component_list[i]->type)
+			return component_list[i];
+	}
+
+	return ret;
+}

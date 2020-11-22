@@ -1,6 +1,6 @@
 #include "Component.h"
+#include "Application.h"
 #include "GameObject.h"
-
 #include "Glew\include\glew.h"
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
@@ -34,6 +34,7 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	scl = scl.one;
 	local_transform = local_transform.zero;
 	gameobject_selected = false;
+	gameObject = gameobject;
 }
 
 CompTransform::~CompTransform()
@@ -41,7 +42,7 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-
+	
 }
 
 void CompTransform::inspector()
@@ -56,18 +57,24 @@ void CompTransform::inspector()
 				pos.x = position[0];
 				pos.y = position[1];
 				pos.z = position[2];
-
+			
 				// Update position
+				UpdateTrans();
 			}
-
-			float angle[4] = { rot.x, rot.y, rot.z, 1.0f };
-			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f))
+			euler = rot.ToEulerXYZ() * RADTODEG;
+			float angle[3] = { euler.x,euler.y,euler.z};
+			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -500.0f, 500.0f))
 			{
-				rot.x = angle[0];
-				rot.y = angle[1];
-				rot.z = angle[2];
+				//euler = rot.ToEulerXYZ();
+				
 
-				// Update rotation
+				euler.x = angle[0];
+				euler.y = angle[1];
+				euler.z = angle[2];
+
+				rot = Quat::FromEulerXYZ(euler.x * DEGTORAD, euler.y * DEGTORAD, euler.z * DEGTORAD);
+
+				UpdateTrans();
 			}
 
 			float scale[4] = { scl.x, scl.y, scl.z, 1.0f };
@@ -78,11 +85,49 @@ void CompTransform::inspector()
 				scl.z = scale[2];
 
 				// Update scale
+				UpdateTrans();
 			}
 		}
 	}
 }
 
+void CompTransform::UpdateTrans()
+{
+	if (gameObject->children_list.size() == 0)
+	{
+		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
+		local_transform = float4x4::FromTRS(pos, rot, scl);
+		local_transform = parent_transform->local_transform * local_transform;
+
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
+			{
+				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM)
+				{
+					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
+					children_transform->UpdateTrans();
+				}
+			}
+		}
+	}
+	else
+	{
+		local_transform = float4x4::FromTRS(pos, rot, scl);
+
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
+			{
+				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM) 
+				{
+					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
+					children_transform->UpdateTrans();
+				}
+			}
+		}
+	}
+}
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
@@ -200,10 +245,10 @@ void CompMesh::RenderMesh()
 			transform = (CompTransform*)gameObject->component_list[i];
 		}
 	}
+	
 	glPushMatrix();
 	glMultMatrixf(transform->local_transform.Transposed().ptr());
-
-
+	
 	// Draw textures
 	if (newtexgl != 0)
 	{

@@ -51,12 +51,15 @@ public:
 
 	void update();
 	void inspector();
-
+	void UpdateTrans();
+	
 public:
 	float3 pos;
 	Quat rot;
 	float3 scl;
 	float4x4 local_transform;
+
+	float3 euler;
 };
 
 class CompMesh : public Component
