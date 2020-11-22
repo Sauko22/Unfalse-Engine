@@ -1,6 +1,6 @@
 #include "Component.h"
-#include "GameObject.h"
 #include "Application.h"
+#include "GameObject.h"
 #include "Glew\include\glew.h"
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
@@ -30,17 +30,11 @@ Component::~Component()
 CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANSFORM, gameobject)
 {
 	pos = pos.zero;
-	newpos = newpos.zero;
 	rot = rot.identity;
-	newrot = newrot.identity;
 	scl = scl.one;
-	newscl = newscl.one;
 	local_transform = local_transform.zero;
-	global_transform = global_transform.zero;
-	cons_transform = cons_transform.zero;
 	gameobject_selected = false;
 	gameObject = gameobject;
-
 }
 
 CompTransform::~CompTransform()
@@ -48,13 +42,11 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	UpdateTrans();
+	
 }
 
 void CompTransform::inspector()
 {
-
-	
 	if (gameobject_selected == true)
 	{
 		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
@@ -66,21 +58,17 @@ void CompTransform::inspector()
 				pos.y = position[1];
 				pos.z = position[2];
 			
-				UpdateTrans();
-				//LOG("Position: %f", newpos.x );
-				//SetPos(position[0], position[1], position[2]);
 				// Update position
+				UpdateTrans();
 			}
 
-			float angle[4] = { rot.x, rot.y, rot.z, 1.0f };
+			float angle[4] = { rot.x, rot.y, rot.z };
 			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f))
 			{
 				rot.x = angle[0];
 				rot.y = angle[1];
 				rot.z = angle[2];
 
-				// Update rotation
-				
 				UpdateTrans();
 			}
 
@@ -92,37 +80,49 @@ void CompTransform::inspector()
 				scl.z = scale[2];
 
 				// Update scale
-				
 				UpdateTrans();
 			}
-			
 		}
 	}
 }
+
 void CompTransform::UpdateTrans()
 {
-
-	CompTransform* parent_transform = (CompTransform*)gameObject->GetComponent(Component::compType::TRANSFORM);
-	global_transform = float4x4::FromTRS(pos, rot, scl);
-	parent_transform->local_transform = global_transform;
-	cons_transform = parent_transform->local_transform;
-	for (int i = 0; i < gameObject->children_list.size(); i++)
+	if (gameObject->children_list.size() == 0)
 	{
-		for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
-		{
-			if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM) {
-				CompTransform* transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
-				global_transform = float4x4::FromTRS(pos, rot, scl);
-				transform->local_transform =global_transform + cons_transform;
+		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
+		local_transform = float4x4::FromTRS(pos, rot, scl);
+		local_transform = parent_transform->local_transform * local_transform;
 
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
+			{
+				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM)
+				{
+					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
+					children_transform->UpdateTrans();
+				}
 			}
 		}
 	}
+	else
+	{
+		local_transform = float4x4::FromTRS(pos, rot, scl);
 
-	
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
+			{
+				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM) 
+				{
+					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
+					children_transform->UpdateTrans();
+				}
+			}
+		}
+	}
 }
-
-
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
@@ -241,13 +241,9 @@ void CompMesh::RenderMesh()
 		}
 	}
 	
-	
 	glPushMatrix();
-
-	
 	glMultMatrixf(transform->local_transform.Transposed().ptr());
 	
-
 	// Draw textures
 	if (newtexgl != 0)
 	{

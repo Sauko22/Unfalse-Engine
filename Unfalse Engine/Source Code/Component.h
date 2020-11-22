@@ -52,19 +52,14 @@ public:
 	void update();
 	void inspector();
 	void UpdateTrans();
-	void SetPosition(float x, float y, float z);
 	
 public:
 	float3 pos;
-	float3 newpos;
 	Quat rot;
-	Quat newrot;
 	float3 scl;
-	float3 newscl;
 	float4x4 local_transform;
 
-	float4x4 global_transform;
-	float4x4 cons_transform;
+	float3 euler;
 };
 
 class CompMesh : public Component
