@@ -89,9 +89,10 @@ void ModulePrimitives::DeleteBBOX()
 		{
 			delete bbox_list[i];
 			bbox_list[i] = nullptr;
+
+			bbox_list.erase(bbox_list.begin() + i);
+			i--;
 		}
-		bbox_list.erase(bbox_list.begin() + i);
-		i--;
 	}
 }
 

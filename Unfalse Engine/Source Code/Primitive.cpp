@@ -16,7 +16,7 @@
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
 {
-	bbox_delete = false;;
+	bbox_delete = false;
 }
 
 // ------------------------------------------------------------

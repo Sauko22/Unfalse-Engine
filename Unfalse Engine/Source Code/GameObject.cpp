@@ -63,16 +63,6 @@ void GameObject::Inspector()
 	}
 }
 
-const AABB& GameObject::GetAABB() const
-{
-	return aabb;
-}
-
-const OBB& GameObject::GetOBB() const
-{
-	return obb;
-}
-
 void GameObject::UpdateAABB()
 {
 	CompMesh* mesh = (CompMesh*)GetComponent(Component::compType::MESH);

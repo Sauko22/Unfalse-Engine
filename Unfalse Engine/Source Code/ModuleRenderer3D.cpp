@@ -284,11 +284,9 @@ void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
 	{
 		for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
 		{
-			if (gameobject->parentGameObject->children_list[i] == gameobject)
-			{
-				gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
-				i--;
-			}
+			
+			gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
+			i--;
 		}
 	}
 	if (gameobject != nullptr)
