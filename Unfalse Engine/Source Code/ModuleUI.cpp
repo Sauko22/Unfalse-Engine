@@ -9,8 +9,6 @@
 
 //#include "MathGeoLib/include/MathGeoLib.h"
 
-
-
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	// Toolbar
@@ -434,64 +432,6 @@ void ModuleUI::showInspectorWin()
 	{
 		App->scene_intro->SelectedGameObject->Inspector();
 	}
-	/*if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
-		ImGui::Text("%s", name.c_str());
-
-		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			static float pos[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
-			static float angle[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
-			static float scale[3] = { 1.0f, 1.0f, 1.0f };
-			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
-		}
-		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			
-			ImGui::Checkbox("ActiveNormals", &ObjnormActive);
-			ImGui::Text("Index: %i", index_name);
-			ImGui::Text("Normals: %i", normals_name);
-			ImGui::Text("Vertex: %i", vertex_name);
-			ImGui::Text("Faces: %i", faces_name);
-			ImGui::Text("Text coords: %i", texturescoords_name);
-			ImGui::Text("Gameobject: %s", fbxname.c_str());
-		}
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("ActiveMat", &ObjtexActive);
-			ImGui::Text("%s", pngname.c_str());
-
-			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
-			ImGui::Text("Height: %i", texture_h);
-
-			ImTextureID texture = 0;
-			for (int k = 0; k < component_list.size(); k++)
-			{
-				if (component_list[k]->newtexgl != 0)
-				{
-					texture = (ImTextureID)component_list[k]->newtexgl;
-				}
-			}
-			if (texture != 0)
-			{
-				ImGui::Image(texture, ImVec2(128, 128));
-			}
-			else
-			{
-				ImGui::Image((ImTextureID)actualtexgl, ImVec2(128, 128));
-			}
-		}
-		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("Defaultext", &ObjdefauTex);
-			ImGui::Text("%s", deftexname.c_str());
-
-			ImGui::Image((ImTextureID)App->renderer3D->texchec, ImVec2(128, 128));
-		}
-	}*/
 }
 
 void ModuleUI::showConfigWin(bool* p_open)
@@ -945,4 +885,3 @@ void ModuleUI::showDockSpace(bool* p_open)
 	
 	ImGui::End();
 }
-

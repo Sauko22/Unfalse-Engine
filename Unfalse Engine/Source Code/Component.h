@@ -60,6 +60,9 @@ public:
 	float4x4 local_transform;
 
 	float3 euler;
+
+	OBB obb;
+	AABB aabb;
 };
 
 class CompMesh : public Component
@@ -71,6 +74,7 @@ public:
 	void update();
 	void inspector();
 	void RenderMesh();
+	AABB GetAABB();
 
 public:
 	uint id_index; // index in VRAM
@@ -100,6 +104,8 @@ public:
 	bool deftexactive;
 	std::string name;
 	std::string deftexname;
+
+	AABB bbox;
 };
 
 class CompMaterial : public Component
