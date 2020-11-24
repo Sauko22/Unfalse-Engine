@@ -30,6 +30,8 @@ public:
 	void Load_Mesh();
 	void Save_Mesh(std::string name);
 	void LoadMesh(std::string name, char* buffer);
+	void GenerateAABB(CompMesh* compmesh);
+	void GenerateLines(CompMesh* compmesh);
 
 	// Textures
 	void Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject, CompMesh* compmesh);

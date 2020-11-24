@@ -8,7 +8,7 @@ enum PrimitiveTypes
 {
 	Primitive_Point,
 	Primitive_Plane,
-	
+	Primitive_Line,
 };
 
 class Primitive
@@ -29,6 +29,7 @@ public:
 	Color color;
 	mat4x4 transform;
 	bool axis,wire;
+	bool bbox_delete;
 
 protected:
 	PrimitiveTypes type;
@@ -45,4 +46,16 @@ public:
 public:
 	vec3 normal;
 	float constant;
+};
+
+// ============================================
+class Line_Primitive : public Primitive
+{
+public:
+	Line_Primitive();
+	Line_Primitive(float x, float y, float z);
+	void InnerRender() const;
+public:
+	vec3 origin;
+	vec3 destination;
 };

@@ -26,8 +26,6 @@ GameObject::GameObject(GameObject* parent)
 	ObjrenderActive = true;
 	Objdelete = false;
 	ObjtexActive = false;
-	ObjnormActive = false;
-	ObjdefauTex = false;
 }
 
 GameObject::~GameObject()
@@ -49,6 +47,7 @@ void GameObject::update()
 	{
 		component_list[i]->update();
 	}
+	UpdateAABB();
 }
 
 void GameObject::Inspector()
@@ -61,6 +60,45 @@ void GameObject::Inspector()
 	for (int i = 0; i < component_list.size(); i++)
 	{
 		component_list[i]->inspector();
+	}
+}
+
+const AABB& GameObject::GetAABB() const
+{
+	return aabb;
+}
+
+const OBB& GameObject::GetOBB() const
+{
+	return obb;
+}
+
+void GameObject::UpdateAABB()
+{
+	CompMesh* mesh = (CompMesh*)GetComponent(Component::compType::MESH);
+	CompTransform* transform = (CompTransform*)GetComponent(Component::compType::TRANSFORM);
+	
+	if (mesh != nullptr)
+	{
+		App->fbxload->GenerateAABB(mesh);
+
+		obb = mesh->GetAABB();
+		obb.Transform(transform->local_transform);
+
+		aabb.SetNegativeInfinity();
+		aabb.Enclose(obb);
+
+		mesh->bbox = aabb;
+
+		if (App->primitives->bbox_list.empty() == false)
+		{
+			for (int i = 0; i < App->primitives->bbox_list.size(); i++)
+			{
+				App->primitives->bbox_list[i]->bbox_delete = true;
+			}
+		}
+
+		App->fbxload->GenerateLines(mesh);
 	}
 }
 

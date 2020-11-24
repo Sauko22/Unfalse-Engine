@@ -21,6 +21,8 @@ public:
 	//void CreatePoint();
 	
 	void CreatePlane(float posx, float posy, float posz);
+	void CreateLine(vec3 origin, vec3 destination);
+	void DeleteBBOX();
 	
 
 	// Primitives properties
@@ -28,4 +30,5 @@ public:
 
 	// Primitives list
 	std::vector<Primitive*> primitive_list;
+	std::vector<Primitive*> bbox_list;
 };

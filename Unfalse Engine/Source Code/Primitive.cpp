@@ -15,7 +15,9 @@
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
-{}
+{
+	bbox_delete = false;;
+}
 
 // ------------------------------------------------------------
 PrimitiveTypes Primitive::GetType() const
@@ -105,7 +107,42 @@ void Primitive::Scale(float x, float y, float z)
 	transform.scale(x, y, z);
 }
 
-// CUBE ============================================
+// LINE ==================================================
+Line_Primitive::Line_Primitive() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
+{
+	type = PrimitiveTypes::Primitive_Line;
+}
+
+Line_Primitive::Line_Primitive(float x, float y, float z) : Primitive(), origin(0, 0, 0), destination(x, y, z)
+{
+	type = PrimitiveTypes::Primitive_Line;
+}
+
+void Line_Primitive::InnerRender() const
+{
+	glLineWidth(2.0f);
+
+	if (App->UI->wireframe == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	// Primitive color
+	glColor4ub(255, 255, 0, 255);
+
+	glBegin(GL_LINES);
+
+	glVertex3f(origin.x, origin.y, origin.z);
+	glVertex3f(destination.x, destination.y, destination.z);
+
+	glEnd();
+
+	glLineWidth(1.0f);
+}
 
 
 // PLANE ==================================================

@@ -129,7 +129,6 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
 	comptrans->euler = comptrans->rot.ToEulerXYZ() * RADTODEG;
-	//comptrans->local_transform.Transpose();
 
 
 	for (int i = 0; i < node->mNumMeshes; i++)
@@ -460,3 +459,69 @@ void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* g
 	ilDeleteImages(1, &textIL);
 }
 
+// LOCAL SPACE
+void ModuleFBXLoad::GenerateAABB(CompMesh* compmesh)
+{
+	compmesh->bbox.SetNegativeInfinity();
+	compmesh->bbox.Enclose((float3*)compmesh->vertex, compmesh->num_vertex);
+}
+
+void ModuleFBXLoad::GenerateLines(CompMesh* compmesh)
+{
+	float3 cube_vertex[8];
+
+	compmesh->bbox.GetCornerPoints(cube_vertex);
+
+	vec3 origin, destination;
+
+	// Base
+	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
+	destination.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
+	destination.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
+	destination.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
+	destination.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
+	App->primitives->CreateLine(origin, destination);
+
+	// Pilars
+	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
+	destination.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
+	destination.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
+	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
+	destination.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
+	App->primitives->CreateLine(origin, destination);
+
+	// Top
+	origin.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
+	destination.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
+	destination.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
+	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
+	App->primitives->CreateLine(origin, destination);
+
+	origin.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
+	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
+	App->primitives->CreateLine(origin, destination);
+}

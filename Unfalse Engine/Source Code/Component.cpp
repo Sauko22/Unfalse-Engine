@@ -61,13 +61,11 @@ void CompTransform::inspector()
 				// Update position
 				UpdateTrans();
 			}
+			
 			euler = rot.ToEulerXYZ() * RADTODEG;
-			float angle[3] = { euler.x,euler.y,euler.z};
-			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -500.0f, 500.0f))
+			float angle[3] = { euler.x,euler.y,euler.z };
+			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -1000.0f, 1000.0f))
 			{
-				//euler = rot.ToEulerXYZ();
-				
-
 				euler.x = angle[0];
 				euler.y = angle[1];
 				euler.z = angle[2];
@@ -98,18 +96,6 @@ void CompTransform::UpdateTrans()
 		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 		local_transform = float4x4::FromTRS(pos, rot, scl);
 		local_transform = parent_transform->local_transform * local_transform;
-
-		for (int i = 0; i < gameObject->children_list.size(); i++)
-		{
-			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
-			{
-				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM)
-				{
-					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
-					children_transform->UpdateTrans();
-				}
-			}
-		}
 	}
 	else
 	{
@@ -192,7 +178,6 @@ void CompMesh::update()
 {
 	if (meshactive == true)
 	{
-
 		RenderMesh();
 	}
 }
@@ -248,7 +233,7 @@ void CompMesh::RenderMesh()
 	
 	glPushMatrix();
 	glMultMatrixf(transform->local_transform.Transposed().ptr());
-	
+
 	// Draw textures
 	if (newtexgl != 0)
 	{
@@ -346,7 +331,10 @@ void CompMesh::RenderMesh()
 	glPopMatrix();
 }
 
-
+AABB CompMesh::GetAABB()
+{
+	return bbox;
+}
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
 {
