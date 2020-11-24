@@ -53,16 +53,6 @@ update_status ModulePrimitives::PostUpdate()
 		}
 	}
 
-	// Render all Bounding Boxes
-	if (bbox_list.empty() == false)
-	{
-		for (int i = 0; i < bbox_list.size(); i++)
-		{
-			bbox_list[i]->Render();
-		}
-		DeleteBBOX();
-	}
-
 	return UPDATE_CONTINUE;
 }
 
@@ -78,22 +68,7 @@ void ModulePrimitives::CreateLine(vec3 origin, vec3 destination)
 	Line_Primitive* line = new Line_Primitive;
 	line->origin = origin;
 	line->destination = destination;
-	bbox_list.push_back((Primitive*)line);
-}
-
-void ModulePrimitives::DeleteBBOX()
-{
-	for (int i = 0; i < bbox_list.size(); i++)
-	{
-		if (bbox_list[i]->bbox_delete == true)
-		{
-			delete bbox_list[i];
-			bbox_list[i] = nullptr;
-
-			bbox_list.erase(bbox_list.begin() + i);
-			i--;
-		}
-	}
+	primitive_list.push_back((Primitive*)line);
 }
 
 void ModulePrimitives::PrimitivesProp()

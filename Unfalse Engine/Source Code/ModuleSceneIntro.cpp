@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
+#include "GameObject.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -31,7 +32,7 @@ bool ModuleSceneIntro::Start()
 	root = new GameObject(nullptr);
 
 	//std::string file_path = "Assets/Models/BakerHouse.fbx";
-	std::string file_path = "Assets/Models/Street environment_V01.fbx";
+	std::string file_path = "Assets/Models/Megaman.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);

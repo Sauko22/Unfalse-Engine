@@ -29,7 +29,6 @@ public:
 	Color color;
 	mat4x4 transform;
 	bool axis,wire;
-	bool bbox_delete;
 
 protected:
 	PrimitiveTypes type;

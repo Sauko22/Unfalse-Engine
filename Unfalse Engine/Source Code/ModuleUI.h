@@ -84,4 +84,5 @@ public:
 	bool color;
 	bool texture2d;
 	bool vsync;
+	int j;
 };

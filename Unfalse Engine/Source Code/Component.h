@@ -20,7 +20,8 @@ public:
 		NO_TYPE,
 		TRANSFORM,
 		MESH,
-		MATERIAL
+		MATERIAL,
+		CAMERA
 	};
 
 	Component(compType type, GameObject*);
@@ -121,4 +122,24 @@ public:
 public:
 
 
+};
+
+class CompCamera : public Component
+{
+public:
+	CompCamera(GameObject* gameobject);
+	~CompCamera();
+
+	void update();
+	void Render();
+	void init();
+
+public:
+	Frustum frustum;
+	float4x4 rotation;
+	float aspectRatio;
+	float3 initpos;
+	float3 initrot;
+	float3 rot;
+	float horizontalFOV;
 };

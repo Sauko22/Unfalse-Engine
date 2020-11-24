@@ -1,6 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleUI.h"
+#include "Component.h"
+#include "GameObject.h"
 
 #include "Glew\include\glew.h"
 
@@ -47,9 +49,10 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 
 	// Primitives
 	cube = false;
-	 pyramid = false;
-	 sphere = false;
-	 cylinder = false;
+	pyramid = false;
+	sphere = false;
+	cylinder = false;
+	j = 0;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -219,8 +222,6 @@ update_status ModuleUI::Update()
 				cube = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
-				
-				//App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
 			}
 			
 			if (ImGui::MenuItem("Sphere"))
@@ -252,6 +253,21 @@ update_status ModuleUI::Update()
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
 			}
+
+			if (ImGui::MenuItem("Camera"))
+			{
+				std::string obj = std::to_string(j);
+
+				GameObject* camera_gameobject = new GameObject(App->scene_intro->root);
+				camera_gameobject->name.append("Camera_").append(obj);
+				(CompTransform*)camera_gameobject->AddComponent(Component::compType::TRANSFORM);
+				GameObject* camera = new GameObject(camera_gameobject);
+				camera->name.append("Camera_").append(obj);
+				(CompTransform*)camera->AddComponent(Component::compType::TRANSFORM);
+				(CompCamera*)camera->AddComponent(Component::compType::CAMERA);
+				j++;
+			}
+
 			ImGui::EndMenu();
 		}
 		

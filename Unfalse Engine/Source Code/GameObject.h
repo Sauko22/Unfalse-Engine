@@ -19,8 +19,6 @@ public:
 	void update();
 	void Inspector();
 	void UpdateAABB();
-	const AABB& GetAABB() const;
-	const OBB& GetOBB() const;
 
 	Component* AddComponent(Component::compType type);
 	Component* GetComponent(Component::compType type);

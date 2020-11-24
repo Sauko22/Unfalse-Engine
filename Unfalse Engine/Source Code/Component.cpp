@@ -32,7 +32,7 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	pos = pos.zero;
 	rot = rot.identity;
 	scl = scl.one;
-	local_transform = local_transform.zero;
+	local_transform = local_transform.identity;
 	gameobject_selected = false;
 	gameObject = gameobject;
 }
@@ -355,3 +355,95 @@ void CompMaterial::inspector()
 
 void CompMaterial::RenderTexture()
 {}
+
+CompCamera::CompCamera(GameObject* gameobject) : Component(compType::CAMERA, gameobject)
+{
+	gameObject = gameobject;
+
+	rot = rot.zero;
+	rotation = rotation.identity;
+	aspectRatio = 0;
+	initpos = initpos.zero;
+	initrot = initrot.zero;
+	horizontalFOV = 0;
+
+	init();
+}
+
+CompCamera::~CompCamera()
+{}
+
+void CompCamera::init()
+{
+	frustum.type = FrustumType::PerspectiveFrustum;
+
+	aspectRatio = 1.77777777f;
+	frustum.nearPlaneDistance = 4;
+	frustum.farPlaneDistance = 500;
+
+	frustum.pos = initpos;
+
+	rot = initrot;
+	rot *= DEGTORAD;
+	rotation = float4x4::FromEulerXYZ(rot.x, rot.y, rot.z);
+	frustum.SetWorldMatrix(rotation.Float3x4Part());
+
+	horizontalFOV = 65 * DEGTORAD;
+	frustum.horizontalFov = horizontalFOV;
+	frustum.verticalFov = horizontalFOV / aspectRatio;
+}
+
+void CompCamera::update()
+{
+	Render();
+}
+
+void CompCamera::Render()
+{
+	float3 cube_vertex[8];
+
+	frustum.GetCornerPoints(cube_vertex);
+		
+	glBegin(GL_LINES);
+		
+	// Base
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[4].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[5].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	// Pilars
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[2].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[1].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	// Top
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	glVertex3fv(cube_vertex[6].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[3].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glEnd();
+}

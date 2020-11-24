@@ -80,14 +80,6 @@ void GameObject::UpdateAABB()
 
 		mesh->bbox = aabb;
 
-		if (App->primitives->bbox_list.empty() == false)
-		{
-			for (int i = 0; i < App->primitives->bbox_list.size(); i++)
-			{
-				App->primitives->bbox_list[i]->bbox_delete = true;
-			}
-		}
-
 		App->fbxload->GenerateLines(mesh);
 	}
 }
@@ -106,6 +98,9 @@ Component* GameObject::AddComponent(Component::compType type)
 		break;
 	case Component::compType::MATERIAL:
 		ret = new CompMaterial(this);
+		break;
+	case Component::compType::CAMERA:
+		ret = new CompCamera(this);
 		break;
 	}
 

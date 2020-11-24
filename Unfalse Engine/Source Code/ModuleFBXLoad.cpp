@@ -472,56 +472,46 @@ void ModuleFBXLoad::GenerateLines(CompMesh* compmesh)
 
 	compmesh->bbox.GetCornerPoints(cube_vertex);
 
-	vec3 origin, destination;
+	glBegin(GL_LINES);
 
 	// Base
-	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
-	destination.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[0].ptr()); 
+	glVertex3fv(cube_vertex[1].ptr());
 
-	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
-	destination.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[4].ptr());
 
-	origin.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
-	destination.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[5].ptr());
 
-	origin.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
-	destination.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
 
 	// Pilars
-	origin.Set(cube_vertex[0].x, cube_vertex[0].y, cube_vertex[0].z);
-	destination.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[2].ptr());
 
-	origin.Set(cube_vertex[4].x, cube_vertex[4].y, cube_vertex[4].z);
-	destination.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
 
-	origin.Set(cube_vertex[5].x, cube_vertex[5].y, cube_vertex[5].z);
-	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
 
-	origin.Set(cube_vertex[1].x, cube_vertex[1].y, cube_vertex[1].z);
-	destination.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[1].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
 
 	// Top
-	origin.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
-	destination.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
 
-	origin.Set(cube_vertex[2].x, cube_vertex[2].y, cube_vertex[2].z);
-	destination.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
 
-	origin.Set(cube_vertex[6].x, cube_vertex[6].y, cube_vertex[6].z);
-	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[6].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
 
-	origin.Set(cube_vertex[3].x, cube_vertex[3].y, cube_vertex[3].z);
-	destination.Set(cube_vertex[7].x, cube_vertex[7].y, cube_vertex[7].z);
-	App->primitives->CreateLine(origin, destination);
+	glVertex3fv(cube_vertex[3].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glEnd();
 }
