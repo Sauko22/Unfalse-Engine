@@ -125,6 +125,8 @@ char* Resource::GenLibraryPath(Resource* resource)
 {
 	// Create the path of the resource to library
 	// Libraryfile = "Assets/Library/..."
+
+	return nullptr;
 }
 
 uint Resource::GetID()

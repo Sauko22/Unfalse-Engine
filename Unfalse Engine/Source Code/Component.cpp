@@ -72,6 +72,7 @@ void CompTransform::inspector()
 
 				rot = Quat::FromEulerXYZ(euler.x * DEGTORAD, euler.y * DEGTORAD, euler.z * DEGTORAD);
 
+				// Update rotation
 				UpdateTrans();
 			}
 
@@ -95,7 +96,20 @@ void CompTransform::UpdateTrans()
 	{
 		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 		local_transform = float4x4::FromTRS(pos, rot, scl);
-		local_transform = parent_transform->local_transform * local_transform;
+		if (parent_transform != nullptr)
+		{
+			local_transform = parent_transform->local_transform * local_transform;
+		}
+
+		// Update camera position
+		CompCamera* camera_transform = (CompCamera*)gameObject->GetComponent(Component::compType::CAMERA);
+		if (camera_transform != nullptr)
+		{
+			euler = rot.ToEulerXYZ() * RADTODEG;
+			float4x4 rotation = float4x4::FromEulerXYZ(rot.x, rot.y, rot.z);
+			camera_transform->frustum.SetWorldMatrix(rotation.Float3x4Part());
+		}
+
 	}
 	else
 	{
@@ -381,7 +395,9 @@ void CompCamera::init()
 	frustum.nearPlaneDistance = 4;
 	frustum.farPlaneDistance = 500;
 
-	frustum.pos = initpos;
+	float3 cpose;
+	cpose.Set(100.f, 100.f, 100.f);
+	frustum.pos = cpose;
 
 	rot = initrot;
 	rot *= DEGTORAD;
@@ -395,6 +411,13 @@ void CompCamera::init()
 
 void CompCamera::update()
 {
+	// Update camera position
+	CompTransform* transform = (CompTransform*)gameObject->GetComponent(Component::compType::TRANSFORM);
+	if (transform != nullptr)
+	{
+		frustum.pos = transform->pos;
+	}
+
 	Render();
 }
 

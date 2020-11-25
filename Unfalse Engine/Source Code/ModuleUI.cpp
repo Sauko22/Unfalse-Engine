@@ -258,10 +258,7 @@ update_status ModuleUI::Update()
 			{
 				std::string obj = std::to_string(j);
 
-				GameObject* camera_gameobject = new GameObject(App->scene_intro->root);
-				camera_gameobject->name.append("Camera_").append(obj);
-				(CompTransform*)camera_gameobject->AddComponent(Component::compType::TRANSFORM);
-				GameObject* camera = new GameObject(camera_gameobject);
+				GameObject* camera = new GameObject(App->scene_intro->root);
 				camera->name.append("Camera_").append(obj);
 				(CompTransform*)camera->AddComponent(Component::compType::TRANSFORM);
 				(CompCamera*)camera->AddComponent(Component::compType::CAMERA);
