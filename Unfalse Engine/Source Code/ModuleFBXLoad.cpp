@@ -128,8 +128,6 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	comptrans->scl.Set(scalete.x, scalete.y, scalete.z);
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
-	comptrans->euler = comptrans->rot.ToEulerXYZ() * RADTODEG;
-
 
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -457,61 +455,4 @@ void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* g
 	}
 
 	ilDeleteImages(1, &textIL);
-}
-
-// LOCAL SPACE
-void ModuleFBXLoad::GenerateAABB(CompMesh* compmesh)
-{
-	compmesh->bbox.SetNegativeInfinity();
-	compmesh->bbox.Enclose((float3*)compmesh->vertex, compmesh->num_vertex);
-}
-
-void ModuleFBXLoad::GenerateLines(CompMesh* compmesh)
-{
-	float3 cube_vertex[8];
-
-	compmesh->bbox.GetCornerPoints(cube_vertex);
-
-	glBegin(GL_LINES);
-
-	// Base
-	glVertex3fv(cube_vertex[0].ptr()); 
-	glVertex3fv(cube_vertex[1].ptr());
-
-	glVertex3fv(cube_vertex[0].ptr());
-	glVertex3fv(cube_vertex[4].ptr());
-
-	glVertex3fv(cube_vertex[4].ptr());
-	glVertex3fv(cube_vertex[5].ptr());
-
-	glVertex3fv(cube_vertex[5].ptr());
-	glVertex3fv(cube_vertex[1].ptr());
-
-	// Pilars
-	glVertex3fv(cube_vertex[0].ptr());
-	glVertex3fv(cube_vertex[2].ptr());
-
-	glVertex3fv(cube_vertex[4].ptr());
-	glVertex3fv(cube_vertex[6].ptr());
-
-	glVertex3fv(cube_vertex[5].ptr());
-	glVertex3fv(cube_vertex[7].ptr());
-
-	glVertex3fv(cube_vertex[1].ptr());
-	glVertex3fv(cube_vertex[3].ptr());
-
-	// Top
-	glVertex3fv(cube_vertex[2].ptr());
-	glVertex3fv(cube_vertex[6].ptr());
-
-	glVertex3fv(cube_vertex[2].ptr());
-	glVertex3fv(cube_vertex[3].ptr());
-
-	glVertex3fv(cube_vertex[6].ptr());
-	glVertex3fv(cube_vertex[7].ptr());
-
-	glVertex3fv(cube_vertex[3].ptr());
-	glVertex3fv(cube_vertex[7].ptr());
-
-	glEnd();
 }

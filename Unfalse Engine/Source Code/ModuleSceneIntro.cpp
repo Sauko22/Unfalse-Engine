@@ -31,12 +31,20 @@ bool ModuleSceneIntro::Start()
 
 	root = new GameObject(nullptr);
 
-	//std::string file_path = "Assets/Models/BakerHouse.fbx";
-	std::string file_path = "Assets/Models/Megaman.fbx";
+	// Load street
+	std::string file_path = "Assets/Models/Street environment_V01.fbx";
+	//std::string file_path = "Assets/Models/Megaman.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 	App->fbxload->LoadFBX(buffer, fileSize, root);
+
+	// Camera
+	GameObject* camera = new GameObject(App->scene_intro->root);
+	camera->name.append("Camera_");
+	(CompTransform*)camera->AddComponent(Component::compType::TRANSFORM);
+	(CompCamera*)camera->AddComponent(Component::compType::CAMERA);
+	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	return ret;
 }

@@ -4,6 +4,7 @@
 #include "glmath.h"
 #include "Light.h"
 #include "Vec2.h"
+#include "Component.h"
 
 #define MAX_LIGHTS 8
 
@@ -31,6 +32,11 @@ public:
 	// Update gameobjects
 	void UpdateGameObjects(GameObject* gameobject);
 	void DeleteGameObjects(GameObject* gameobject);
+	void GenerateAABB(CompMesh* compmesh);
+	void GenerateLines(CompMesh* compmesh);
+
+	void MainCamera(CompCamera* camera);
+	bool ContainsAaBox_2(AABB aabb);
 
 public:
 
@@ -57,4 +63,8 @@ public:
 	int j;
 
 	GLuint texchec;
+
+	CompCamera* main_camera;
+	bool culling;
+
 };

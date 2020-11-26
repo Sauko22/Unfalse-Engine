@@ -59,11 +59,6 @@ public:
 	Quat rot;
 	float3 scl;
 	float4x4 local_transform;
-
-	float3 euler;
-
-	OBB obb;
-	AABB aabb;
 };
 
 class CompMesh : public Component
@@ -133,6 +128,9 @@ public:
 	void update();
 	void Render();
 	void init();
+	void inspector();
+	bool ContainsAaBox(const AABB& refBox) const;
+	void UpdateTransform();
 
 public:
 	Frustum frustum;

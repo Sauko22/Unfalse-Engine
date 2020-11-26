@@ -20,6 +20,9 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	win_size = { 0,0 };
 
 	j = 0;
+
+	main_camera = nullptr;
+	culling = false;
 }
 
 // Destructor
@@ -318,6 +321,72 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 	{
 		img_size /= (img_size.y / (win_size.y));
 	}
+}
+
+bool ModuleRenderer3D::ContainsAaBox_2(AABB aabb)
+{
+	bool ret = false;
+
+	ret = main_camera->ContainsAaBox(aabb);
+
+	return ret;
+}
+
+// LOCAL SPACE
+void ModuleRenderer3D::GenerateAABB(CompMesh* compmesh)
+{
+	compmesh->bbox.SetNegativeInfinity();
+	compmesh->bbox.Enclose((float3*)compmesh->vertex, compmesh->num_vertex);
+}
+
+void ModuleRenderer3D::GenerateLines(CompMesh* compmesh)
+{
+	float3 cube_vertex[8];
+
+	compmesh->bbox.GetCornerPoints(cube_vertex);
+
+	glBegin(GL_LINES);
+
+	// Base
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[4].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[5].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	// Pilars
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[2].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[1].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	// Top
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	glVertex3fv(cube_vertex[6].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[3].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glEnd();
 }
 
 

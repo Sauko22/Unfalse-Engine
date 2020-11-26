@@ -45,7 +45,27 @@ void GameObject::update()
 	// Update components
 	for (int i = 0; i < component_list.size(); i++)
 	{
-		component_list[i]->update();
+
+		if (component_list[i]->type == Component::compType::MESH)
+		{
+			CompMesh* mesh = (CompMesh*)this->GetComponent(Component::compType::MESH);
+
+			if (App->renderer3D->culling == true)
+			{
+				if (App->renderer3D->ContainsAaBox_2(aabb) == true)
+				{
+					mesh->update();
+				}
+			}
+			else
+			{
+				mesh->update();
+			}
+		}
+		else
+		{
+			component_list[i]->update();
+		}
 	}
 	UpdateAABB();
 }
@@ -70,7 +90,7 @@ void GameObject::UpdateAABB()
 	
 	if (mesh != nullptr)
 	{
-		App->fbxload->GenerateAABB(mesh);
+		App->renderer3D->GenerateAABB(mesh);
 
 		obb = mesh->GetAABB();
 		obb.Transform(transform->local_transform);
@@ -80,7 +100,7 @@ void GameObject::UpdateAABB()
 
 		mesh->bbox = aabb;
 
-		App->fbxload->GenerateLines(mesh);
+		App->renderer3D->GenerateLines(mesh);
 	}
 }
 

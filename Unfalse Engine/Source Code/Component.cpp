@@ -61,16 +61,42 @@ void CompTransform::inspector()
 				// Update position
 				UpdateTrans();
 			}
-			
-			euler = rot.ToEulerXYZ() * RADTODEG;
-			float angle[3] = { euler.x,euler.y,euler.z };
-			if (ImGui::DragFloat3("Degrees", angle, 0.1f, -1000.0f, 1000.0f))
-			{
-				euler.x = angle[0];
-				euler.y = angle[1];
-				euler.z = angle[2];
 
-				rot = Quat::FromEulerXYZ(euler.x * DEGTORAD, euler.y * DEGTORAD, euler.z * DEGTORAD);
+			ImGui::Text("Rotations");
+
+			float3 _rot = rot.ToEulerXYZ();
+			_rot *= RADTODEG;
+			float anglex = _rot.x;
+			if (ImGui::DragFloat("x", &anglex, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = anglex - _rot.x;
+				float3 axis(1, 0, 0);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
+
+				// Update rotation
+				UpdateTrans();
+			}
+
+			float angley = _rot.y;
+			if (ImGui::DragFloat("y", &angley, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = angley - _rot.y;
+				float3 axis(0, 1, 0);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
+
+				// Update rotation
+				UpdateTrans();
+			}
+
+			float anglez = _rot.z;
+			if (ImGui::DragFloat("z", &anglez, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = anglez - _rot.z;
+				float3 axis(0, 0, 1);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
 
 				// Update rotation
 				UpdateTrans();
@@ -100,16 +126,6 @@ void CompTransform::UpdateTrans()
 		{
 			local_transform = parent_transform->local_transform * local_transform;
 		}
-
-		// Update camera position
-		CompCamera* camera_transform = (CompCamera*)gameObject->GetComponent(Component::compType::CAMERA);
-		if (camera_transform != nullptr)
-		{
-			euler = rot.ToEulerXYZ() * RADTODEG;
-			float4x4 rotation = float4x4::FromEulerXYZ(rot.x, rot.y, rot.z);
-			camera_transform->frustum.SetWorldMatrix(rotation.Float3x4Part());
-		}
-
 	}
 	else
 	{
@@ -396,7 +412,7 @@ void CompCamera::init()
 	frustum.farPlaneDistance = 500;
 
 	float3 cpose;
-	cpose.Set(100.f, 100.f, 100.f);
+	cpose.Set(0.f, 0.f, 0.f);
 	frustum.pos = cpose;
 
 	rot = initrot;
@@ -411,14 +427,63 @@ void CompCamera::init()
 
 void CompCamera::update()
 {
+	UpdateTransform();
+	Render();
+}
+
+void CompCamera::UpdateTransform()
+{
 	// Update camera position
 	CompTransform* transform = (CompTransform*)gameObject->GetComponent(Component::compType::TRANSFORM);
-	if (transform != nullptr)
-	{
-		frustum.pos = transform->pos;
-	}
 
-	Render();
+	frustum.pos = transform->pos;
+
+	frustum.up = transform->local_transform.WorldY();
+	frustum.front = transform->local_transform.WorldZ();
+}
+
+void CompCamera::inspector()
+{
+	if (gameobject_selected == true)
+	{
+		if (ImGui::CollapsingHeader("Camera Properties", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			static bool culling = false;
+			ImGui::Checkbox("Culling", &culling);
+			if (culling == true)
+			{
+				App->renderer3D->culling = true;
+			}
+			else
+			{
+				App->renderer3D->culling = false;
+			}
+
+			ImGui::Text("Planes");
+
+			float nearplane[1] = { frustum.nearPlaneDistance };
+			if (ImGui::DragFloat("Near", nearplane, 0.1f, 0.f, 2000.0f))
+			{
+				frustum.nearPlaneDistance = nearplane[0];
+			}
+			float farplane[1] = { frustum.farPlaneDistance };
+			if (ImGui::DragFloat("Far", farplane, 0.1f, 0.f, 2000.0f))
+			{
+				frustum.farPlaneDistance = farplane[0];
+			}
+
+			ImGui::Text("FOV");
+			float FOV[1] = { frustum.verticalFov };
+			if (ImGui::DragFloat(" ", FOV, 0.01f, 0.f, 2000.0f))
+			{
+				frustum.verticalFov = FOV[0];
+				frustum.horizontalFov = 2 * Atan(tan((frustum.verticalFov / 2)) * aspectRatio);
+			}
+			ImGui::Text("Horizontal FOV: %f", frustum.horizontalFov * RADTODEG);
+			ImGui::Text("Vertical FOV: %f", frustum.verticalFov * RADTODEG);
+			ImGui::Text("Aspect ratio: %f", aspectRatio);
+		}
+	}
 }
 
 void CompCamera::Render()
@@ -469,4 +534,57 @@ void CompCamera::Render()
 	glVertex3fv(cube_vertex[7].ptr());
 
 	glEnd();
+}
+
+// tests if a AaBox is within the frustrum
+bool CompCamera::ContainsAaBox(const AABB& refBox) const
+{
+	float3 vCorner[8];
+	Plane* m_plane = new Plane [6];
+	int iTotalIn = 0;
+	refBox.GetCornerPoints(vCorner); // get the corners of the box into the vCorner array
+	frustum.GetPlanes(m_plane);
+
+	// test all 8 corners against the 6 sides
+	// if all points are behind 1 specific plane, we are out
+	// if we are in with all points, then we are fully in
+	for (int p = 0; p < 6; ++p) 
+	{
+		int iInCount = 8;
+		int iPtIn = 1;
+
+		for (int i = 0; i < 8; ++i) 
+		{
+			// test this point against the planes
+			if (m_plane[p].IsOnPositiveSide(vCorner[i]) == true) //<-- “IsOnPositiveSide” from MathGeoLib
+			{ 
+				iPtIn = 0;
+				--iInCount;
+			}
+		}
+	
+		// were all the points outside of plane p?
+		if (iInCount == 0)
+		{
+			delete m_plane;
+			m_plane = nullptr;
+			return false;
+		}
+			
+		// check if they were all on the right side of the plane
+		iTotalIn += iPtIn;
+	}
+
+	// so if iTotalIn is 6, then all are inside the view
+	if (iTotalIn == 6)
+	{
+		delete m_plane;
+		m_plane = nullptr;
+		return true;
+	}
+
+	// we must be partly in then otherwise
+	delete m_plane;
+	m_plane = nullptr;
+	return true;
 }
