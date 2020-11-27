@@ -12,6 +12,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	frame = 0;
 	root = nullptr;
 	SelectedGameObject = nullptr;
+	camera = nullptr;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -39,11 +40,11 @@ bool ModuleSceneIntro::Start()
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 	App->fbxload->LoadFBX(buffer, fileSize, root);
 
-	// Camera
-	GameObject* camera = new GameObject(App->scene_intro->root);
-	camera->name.append("Camera_");
-	(CompTransform*)camera->AddComponent(Component::compType::TRANSFORM);
-	(CompCamera*)camera->AddComponent(Component::compType::CAMERA);
+	// Scene Camera
+	camera = new GameObject(App->scene_intro->root);
+	camera->name.append("Scene Camera");
+	camera->AddComponent(Component::compType::TRANSFORM);
+	camera->AddComponent(Component::compType::CAMERA);
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	return ret;

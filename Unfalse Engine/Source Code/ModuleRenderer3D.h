@@ -35,7 +35,7 @@ public:
 	void GenerateAABB(CompMesh* compmesh);
 	void GenerateLines(CompMesh* compmesh);
 
-	void MainCamera(CompCamera* camera);
+	void UpdateCameraView();
 	bool ContainsAaBox_2(AABB aabb);
 
 public:

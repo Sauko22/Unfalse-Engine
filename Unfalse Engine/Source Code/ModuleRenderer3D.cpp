@@ -127,12 +127,17 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate()
 {
+	if (App->camera->scene_camera != nullptr)
+	{
+		UpdateCameraView();
+	}
+
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	glLoadMatrixf(App->camera->GetViewMatrixCamera());
 
 	// light 0 on cam pos
 	lights[0].SetPos(5, 5, 5);
@@ -164,12 +169,29 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+void ModuleRenderer3D::UpdateCameraView()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	static float4x4 viewMatrix;
+
+	viewMatrix = App->camera->scene_camera->frustum.ProjectionMatrix();
+	viewMatrix.Transpose();
+
+	glLoadMatrixf((GLfloat*)viewMatrix.v);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
 	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 

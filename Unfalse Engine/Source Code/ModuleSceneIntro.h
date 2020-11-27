@@ -27,6 +27,7 @@ public:
 	// Root gameobject
 	GameObject* root;
 	GameObject* SelectedGameObject;
+	GameObject* camera;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.

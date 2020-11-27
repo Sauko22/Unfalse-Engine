@@ -50,9 +50,16 @@ void GameObject::update()
 		{
 			CompMesh* mesh = (CompMesh*)this->GetComponent(Component::compType::MESH);
 
-			if (App->renderer3D->culling == true)
+			if (App->renderer3D->main_camera != nullptr)
 			{
-				if (App->renderer3D->ContainsAaBox_2(aabb) == true)
+				if (App->renderer3D->culling == true)
+				{
+					if (App->renderer3D->ContainsAaBox_2(aabb) == true)
+					{
+						mesh->update();
+					}
+				}
+				else
 				{
 					mesh->update();
 				}
