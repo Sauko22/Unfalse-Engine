@@ -66,5 +66,4 @@ public:
 
 	CompCamera* main_camera;
 	bool culling;
-
 };

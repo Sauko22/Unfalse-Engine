@@ -39,7 +39,8 @@ public:
 private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;
-
-	float2 mousepos;
-	LineSegment Ray;
+	
+	float3 origin;
+	float3 dest;
+	float offsetx;
 };

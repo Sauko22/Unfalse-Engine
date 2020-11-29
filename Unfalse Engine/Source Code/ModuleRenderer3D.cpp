@@ -335,13 +335,13 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 
 	img_size = App->window->windowSize;
 
-	if (img_size.x > win_size.x)
+	if (img_size.x > win_size.x - 10.0f)
 	{
-		img_size /= (img_size.x / (win_size.x));
+		img_size /= (img_size.x / (win_size.x - 10.0f));
 	}
-	if (img_size.y > win_size.y)
+	if (img_size.y > win_size.y - 10.0f)
 	{
-		img_size /= (img_size.y / (win_size.y));
+		img_size /= (img_size.y / (win_size.y - 10.0f));
 	}
 }
 

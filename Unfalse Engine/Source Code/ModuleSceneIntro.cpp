@@ -32,6 +32,13 @@ bool ModuleSceneIntro::Start()
 
 	root = new GameObject(nullptr);
 
+	// Scene Camera
+	camera = new GameObject(App->scene_intro->root);
+	camera->name.append("Scene Camera");
+	camera->AddComponent(Component::compType::TRANSFORM);
+	camera->AddComponent(Component::compType::CAMERA);
+	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
+
 	// Load street
 	std::string file_path = "Assets/Models/Street environment_V01.fbx";
 	//std::string file_path = "Assets/Models/Megaman.fbx";
@@ -39,13 +46,6 @@ bool ModuleSceneIntro::Start()
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 	App->fbxload->LoadFBX(buffer, fileSize, root);
-
-	// Scene Camera
-	camera = new GameObject(App->scene_intro->root);
-	camera->name.append("Scene Camera");
-	camera->AddComponent(Component::compType::TRANSFORM);
-	camera->AddComponent(Component::compType::CAMERA);
-	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	return ret;
 }

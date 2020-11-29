@@ -1,6 +1,11 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "Glew\include\glew.h"
+
+#include "SDL\include\SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -11,14 +16,16 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Position = float3(60.0f, 60.0f, 60.0f);
 	Reference = float3(0.0f, 0.0f, 0.0f);
 
-	mousepos = mousepos.zero;
-
 	camera_speed = 0;
 	lalt = false;
 	orbit = false;
 
 	scene_camera = nullptr;
 	_scene_camera = nullptr;
+
+	origin = origin.zero;
+	dest = dest.zero;
+	offsetx = 0.091;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -57,50 +64,40 @@ update_status ModuleCamera3D::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
-		camera_speed = 4;
+		camera_speed = 2;
 	}
 	else
 	{
-		camera_speed = 2;
+		camera_speed = 0.5;
 	}
 
 	// Camera zoom
 	if (App->input->mouse_z > 0) 
 	{
-		_scene_transform->pos.z += Z * camera_speed;
-		_scene_camera->frustum.pos.z = _scene_transform->pos.z;
-		Reference.z += Z * 4;
+		_scene_transform->pos += _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->mouse_z < 0)
 	{
-		_scene_transform->pos.z -= Z * camera_speed;
-		_scene_camera->frustum.pos.z = _scene_transform->pos.z;
-		Reference.z -= Z * 4;
+		_scene_transform->pos -= _scene_camera->frustum.front * camera_speed;
 	}
 
 	// Camera 2D movement
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		_scene_transform->pos.x += X * camera_speed;
-		_scene_camera->frustum.pos.x = _scene_transform->pos.x;
-		Reference.x += X * camera_speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
+	{
+		_scene_transform->pos -= _scene_camera->frustum.WorldRight() * camera_speed;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		_scene_transform->pos.x -= X * camera_speed;
-		_scene_camera->frustum.pos.x = _scene_transform->pos.x;
-		Reference.x -= X * camera_speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+	{
+		_scene_transform->pos += _scene_camera->frustum.WorldRight() * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		_scene_transform->pos.y += Y * camera_speed;
-		_scene_camera->frustum.pos.y = _scene_transform->pos.y;
-		Reference.y += Y * camera_speed;
+		_scene_transform->pos += _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		_scene_transform->pos.y -= Y * camera_speed;
-		_scene_camera->frustum.pos.y = _scene_transform->pos.y;
-		Reference.y -= Y * camera_speed;
+		_scene_transform->pos -= _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
@@ -170,16 +167,28 @@ update_status ModuleCamera3D::Update()
 		//LookAt(Forward + Position);
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
-		mousepos.x = App->input->mouse_x;
-		mousepos.y = App->input->mouse_y;
-		
-		mousepos.Normalize();
-		//LOG("Mouse pos: %f, %f ", mousepos.x, mousepos.y);
+		float normalized_x = (App->renderer3D->win_size.x - App->input->GetMouseX()) / App->renderer3D->img_size.x;
+		float normalized_y = (App->renderer3D->win_size.y - App->input->GetMouseY()) / App->renderer3D->img_size.y;
 
-		//LineSegment picking = dummy->frustum.UnProjectLineSegment(normalized_x, normalized_y);
+		normalized_x = -(normalized_x - 0.5) / 0.5;
+		normalized_y = (normalized_y - 0.5) / 0.5;
+
+		normalized_x -=  App->renderer3D->img_size.x / App->renderer3D->win_size.x;
+		normalized_x += offsetx;
+
+		LineSegment picking = _scene_camera->frustum.UnProjectLineSegment(normalized_x, normalized_y);
+
+		origin = picking.a;
+		dest = picking.b;
 	}
+
+	// Draw pickup line
+	glBegin(GL_LINES);
+	glVertex3fv(origin.ptr());
+	glVertex3fv(dest.ptr());
+	glEnd();
 
 	return UPDATE_CONTINUE;
 }

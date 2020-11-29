@@ -82,7 +82,7 @@ void CompTransform::inspector()
 			if (ImGui::DragFloat("y", &angley, 0.1f, -1000.0f, 1000.0f))
 			{
 				float newrot = angley - _rot.y;
-				float3 axis(0, 1, 0);
+				float3 axis(0, -1, 0);
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
