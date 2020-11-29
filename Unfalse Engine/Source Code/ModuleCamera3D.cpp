@@ -26,6 +26,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	origin = origin.zero;
 	dest = dest.zero;
 	offsetx = 0.091;
+	first_it = false;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -62,6 +63,18 @@ update_status ModuleCamera3D::PreUpdate()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update()
 {
+	if (first_it == false)
+	{
+		_scene_transform->pos = float3(0, 10, 30);
+		float3 _rot = _scene_transform->rot.ToEulerXYZ();
+		_rot *= RADTODEG;
+		float anglex = 180.f;
+		float newrotx = anglex - _rot.x;
+		float3 axisx(0, 1, 0);
+		Quat _newrotx = Quat::RotateAxisAngle(axisx, newrotx * DEGTORAD);
+		_scene_transform->rot = _scene_transform->rot * _newrotx;
+		first_it = true;
+	}
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
 		camera_speed = 2;
@@ -182,15 +195,74 @@ update_status ModuleCamera3D::Update()
 
 		origin = picking.a;
 		dest = picking.b;
+
+		ObjPicked(picking);
 	}
 
 	// Draw pickup line
-	glBegin(GL_LINES);
+	/*glBegin(GL_LINES);
 	glVertex3fv(origin.ptr());
 	glVertex3fv(dest.ptr());
-	glEnd();
+	glEnd();*/
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleCamera3D::ObjPicked(LineSegment my_ray)
+{
+	std::map<float, GameObject*> objects_crossed;
+
+	App->scene_intro->GetAllGameObjects();
+
+	for (int i = 0; i < App->scene_intro->gameobject_list.size(); i++)
+	{
+		bool hit = my_ray.Intersects(App->scene_intro->gameobject_list[i]->aabb); // ray vs. AABB
+
+		if (hit == true)
+		{
+			float hit_near;
+			float hit_far;
+
+			hit = my_ray.Intersects(App->scene_intro->gameobject_list[i]->aabb, hit_near, hit_far);
+			objects_crossed[hit_near] = App->scene_intro->gameobject_list[i];
+		}
+	}
+	
+	for (std::map<float, GameObject*>::iterator it = objects_crossed.begin(); it != objects_crossed.end(); it++)
+	{
+		CompMesh* mesh = (CompMesh*)it->second->GetComponent(Component::compType::MESH);
+
+		if (mesh != nullptr)
+		{
+			CompTransform* transform = (CompTransform*)it->second->GetComponent(Component::compType::TRANSFORM);
+			my_ray.Transform(transform->local_transform.Inverted());
+
+			for (int i = 0; i < mesh->num_index; i += 3)
+			{
+				// Triangle vertex
+				float3 vertex1(mesh->vertex[mesh->index[i] * 3], mesh->vertex[mesh->index[i] * 3 + 1], mesh->vertex[mesh->index[i] * 3 + 2]);
+				float3 vertex2(mesh->vertex[mesh->index[i + 1] * 3], mesh->vertex[mesh->index[i + 1] * 3 + 1], mesh->vertex[mesh->index[i + 1] * 3 + 2]);
+				float3 vertex3(mesh->vertex[mesh->index[i + 2] * 3], mesh->vertex[mesh->index[i + 2] * 3 + 1], mesh->vertex[mesh->index[i + 2] * 3 + 2]);
+
+				Triangle triangle(vertex1, vertex2, vertex3);
+
+				// Object selected
+				if (my_ray.Intersects(triangle, nullptr, nullptr))
+				{
+					App->UI->DeselectGameObjects(App->scene_intro->root);
+
+					App->scene_intro->SelectedGameObject = it->second;
+
+					it->second->objSelected = true;
+					
+					for (int i = 0; i < it->second->component_list.size(); i++)
+					{
+						it->second->component_list[i]->gameobject_selected = true;
+					}
+				}
+			}
+		}
+	}
 }
 
 // -----------------------------------------------------------------

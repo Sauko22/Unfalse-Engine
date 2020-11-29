@@ -22,7 +22,7 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrixCamera();
-
+	void ObjPicked(LineSegment ray_local_space);
 
 public:
 	
@@ -43,4 +43,5 @@ private:
 	float3 origin;
 	float3 dest;
 	float offsetx;
+	bool first_it;
 };

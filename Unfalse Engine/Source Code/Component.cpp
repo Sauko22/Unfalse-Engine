@@ -35,6 +35,7 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	local_transform = local_transform.identity;
 	gameobject_selected = false;
 	gameObject = gameobject;
+	first_it = false;
 }
 
 CompTransform::~CompTransform()
@@ -42,7 +43,11 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	
+	if(first_it == false)
+	{
+		UpdateTrans();
+		first_it = true;
+	}
 }
 
 void CompTransform::inspector()

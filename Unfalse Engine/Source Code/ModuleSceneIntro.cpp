@@ -40,8 +40,7 @@ bool ModuleSceneIntro::Start()
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	// Load street
-	std::string file_path = "Assets/Models/Street environment_V01.fbx";
-	//std::string file_path = "Assets/Models/Megaman.fbx";
+	std::string file_path = "Assets/Models/Street environment_V02.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
@@ -86,6 +85,28 @@ update_status ModuleSceneIntro::Update()
 	App->renderer3D->Draw_Axis();
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneIntro::GetAllGameObjects()
+{
+	// Clear list with every click (gameobjects can be added or deleted)
+	gameobject_list.clear();
+
+	AllGameObjects(App->scene_intro->root, gameobject_list);
+}
+
+void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects)
+{
+	if (gameObject->name != "Plane001" && gameObject->name != "Line002")
+	{
+		gameObjects.push_back(gameObject);
+
+
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			AllGameObjects(gameObject->children_list[i], gameObjects);
+		}
+	}
 }
 
 

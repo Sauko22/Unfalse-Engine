@@ -23,11 +23,15 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void GetAllGameObjects();
+	void AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
+
 public:
 	// Root gameobject
 	GameObject* root;
 	GameObject* SelectedGameObject;
 	GameObject* camera;
+	std::vector<GameObject*> gameobject_list;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.
