@@ -433,7 +433,11 @@ void CompCamera::init()
 void CompCamera::update()
 {
 	UpdateTransform();
-	Render();
+
+	if (gameobject_selected == true)
+	{
+		Render();
+	}
 }
 
 void CompCamera::UpdateTransform()

@@ -57,7 +57,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	cameradirection = { 0,0,0 };
+	cameradirection = vec3(0.f, 0.f, -1.f);
 }
 
 ModuleUI::~ModuleUI()

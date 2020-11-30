@@ -9,12 +9,13 @@
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	X = 0.1;
-	Y = 0.1;
-	Z = 1;
+	X = vec3(1.f, 0.f, 0.f);
+	Y = vec3(0.f, 1.f, 0.f);
+	Z = vec3(0.f, 0.f, 1.f);
 
-	Position = float3(60.0f, 60.0f, 60.0f);
-	Reference = float3(0.0f, 0.0f, 0.0f);
+	Position = vec3(0.f, 0.f, 0.f);
+	_Position = vec3(0.f, 0.f, 0.f);
+	Reference = vec3(0.f, 0.f, 0.f);
 
 	camera_speed = 0;
 	lalt = false;
@@ -65,14 +66,8 @@ update_status ModuleCamera3D::Update()
 {
 	if (first_it == false)
 	{
-		_scene_transform->pos = float3(0, 10, 30);
-		float3 _rot = _scene_transform->rot.ToEulerXYZ();
-		_rot *= RADTODEG;
-		float anglex = 180.f;
-		float newrotx = anglex - _rot.x;
-		float3 axisx(0, 1, 0);
-		Quat _newrotx = Quat::RotateAxisAngle(axisx, newrotx * DEGTORAD);
-		_scene_transform->rot = _scene_transform->rot * _newrotx;
+		_scene_transform->pos = float3(0, 10, -30);
+		
 		first_it = true;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
@@ -114,7 +109,12 @@ update_status ModuleCamera3D::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
-		LookAt(App->UI->cameradirection);
+		if (App->scene_intro->SelectedGameObject != nullptr)
+		{
+			CompTransform* objselect_pos = (CompTransform*)App->scene_intro->SelectedGameObject->GetComponent(Component::compType::TRANSFORM);
+			App->UI->cameradirection = (objselect_pos->pos.x, objselect_pos->pos.y, objselect_pos->pos.z);
+			Look(App->UI->cameradirection);
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN) lalt = true;
@@ -127,7 +127,7 @@ update_status ModuleCamera3D::Update()
 	{
 		if (orbit == false) 
 		{
-			LookAt(App->UI->cameradirection);
+			Look(App->UI->cameradirection);
 			orbit = true;
 		}
 		int dx = -App->input->GetMouseXMotion();
@@ -141,35 +141,33 @@ update_status ModuleCamera3D::Update()
 		{
 			float DeltaX = (float)dx * Sensitivity;
 
-			/*X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));*/
+			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 		}
 
 		if (dy != 0)
 		{
 			float DeltaY = (float)dy * Sensitivity;
 
-			/*Y = rotate(Y, DeltaY, X);
+			Y = rotate(Y, DeltaY, X);
 			Z = rotate(Z, DeltaY, X);
 
 			if (Y.y < 0.0f)
 			{
 				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
 				Y = cross(Z, X);
-			}*/
+			}
 		}
 
-		//Position = Reference + Z * length(Position);
+		Position = Reference + Z * length(Position);
 	}
-
 
 	// Mouse motion ----------------
 	if(lalt == false && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		
 		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
+		int dy = App->input->GetMouseYMotion();
 
 		// TODO (Homework): Rotate the camera with the mouse
 		vec3 Forward = -Z;
@@ -177,10 +175,10 @@ update_status ModuleCamera3D::Update()
 		Forward = rotate(Forward, dx, Y);
 		Forward = rotate(Forward, dy, X);
 
-		//LookAt(Forward + Position);
+		Look(Forward);
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
 		float normalized_x = (App->renderer3D->win_size.x - App->input->GetMouseX()) / App->renderer3D->img_size.x;
 		float normalized_y = (App->renderer3D->win_size.y - App->input->GetMouseY()) / App->renderer3D->img_size.y;
@@ -266,44 +264,14 @@ void ModuleCamera3D::ObjPicked(LineSegment my_ray)
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void ModuleCamera3D::Look(const vec3& Spot)
 {
-	/*this->Position = Position;
-	this->Reference = Reference;
-
-	Z = normalize(Position - Reference);
+	Z = normalize(_Position - Spot);
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
-	if(!RotateAroundReference)
-	{
-		this->Reference = this->Position;
-		this->Position += Z * 0.05f;
-	}
-
-	CalculateViewMatrix();*/
-}
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::LookAt( const vec3 &Spot)
-{
-
-	/*float3 difference = spot - _frustum.pos;
-
-	float3x3 matrix = float3x3::LookAt(_frustum.front, difference.Normalized(), _frustum.up, float3::unitY);
-
-	_frustum.front = matrix.MulDir(_frustum.front).Normalized();
-	_frustum.up = matrix.MulDir(_frustum.up).Normalized();*/
-}
-
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::Move(const vec3 &Movement)
-{
-	/*Position += Movement;
-	Reference += Movement;
-
-	CalculateViewMatrix();*/
+	RotMatrix = float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
+	_scene_transform->local_transform = RotMatrix;
 }
 
 // -----------------------------------------------------------------

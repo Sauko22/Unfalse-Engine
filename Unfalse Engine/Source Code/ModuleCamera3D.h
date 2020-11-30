@@ -18,16 +18,14 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);
-	void Move(const vec3 &Movement);
+	void Look(const vec3 &Spot);
 	float* GetViewMatrixCamera();
 	void ObjPicked(LineSegment ray_local_space);
 
 public:
 	
-	float X, Y, Z;
-	float3 Position, Reference;
+	vec3 X, Y, Z;
+	vec3 Reference, Position, _Position;
 	float camera_speed;
 	bool lalt;
 	bool orbit;
@@ -38,7 +36,7 @@ public:
 
 private:
 
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+	float4x4 RotMatrix;
 	
 	float3 origin;
 	float3 dest;

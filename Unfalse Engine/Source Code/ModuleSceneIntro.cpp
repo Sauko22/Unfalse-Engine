@@ -24,12 +24,6 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	// TODO 2: Place the camera one unit up in Y and one unit to the right
-	// experiment with different camera placements, then use LookAt()
-	// to make it look at the center
-	App->camera->Move(vec3(-3, 2, 1));
-	App->camera->LookAt(vec3(0.f, 0.f, 0.f));
-
 	root = new GameObject(nullptr);
 
 	// Scene Camera
