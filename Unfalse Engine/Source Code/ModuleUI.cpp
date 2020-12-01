@@ -53,6 +53,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	sphere = false;
 	cylinder = false;
 	j = 0;
+	k = 0;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -265,6 +266,16 @@ update_status ModuleUI::Update()
 				j++;
 			}
 
+			if (ImGui::MenuItem("GameObject"))
+			{
+				std::string obj = std::to_string(k);
+
+				GameObject* emptyObject = new GameObject(App->scene_intro->root);
+				emptyObject->name.append("emptyObject_").append(obj);
+				(CompTransform*)emptyObject->AddComponent(Component::compType::TRANSFORM);
+				k++;
+			}
+
 			ImGui::EndMenu();
 		}
 		
@@ -376,6 +387,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 			gameobject->component_list[i]->gameobject_selected = true;
 		}
 	}
+
 	if (node_open)
 	{
 		for (int i = 0; i < gameobject->children_list.size(); i++)

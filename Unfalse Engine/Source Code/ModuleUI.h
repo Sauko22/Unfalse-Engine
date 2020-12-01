@@ -61,7 +61,6 @@ public:
 
 	void Hierarchy(GameObject* gameobject);
 	void DeselectGameObjects(GameObject* gameobject);
-	
 
 	// Editor menu
 	bool activeInspec;
@@ -84,5 +83,5 @@ public:
 	bool color;
 	bool texture2d;
 	bool vsync;
-	int j;
+	int j, k;
 };
