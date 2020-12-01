@@ -6,11 +6,6 @@
 
 #include "Glew\include\glew.h"
 
-// JSON Header 
-//#include "JSON\parson.h" 
-
-//#include "MathGeoLib/include/MathGeoLib.h"
-
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	// Toolbar

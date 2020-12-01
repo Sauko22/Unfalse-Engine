@@ -29,6 +29,7 @@ ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app,
 	compmesh = nullptr;
 	comptrans = nullptr;
 	j = 0;
+	texinlibrary = true;
 }
 
 // Destructor
@@ -129,6 +130,8 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
 
+	//App->serialization->Insert_values(pgameobject, comptrans);
+
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
 		compmesh = (CompMesh*)pgameobject->AddComponent(Component::compType::MESH);
@@ -149,6 +152,8 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 		// The mesh is not in the library
 		if (filesize == 0)
 		{
+			LOG("Lodaing mesh from assets");
+
 			// copy vertices
 			compmesh->num_vertex = ourMesh->mNumVertices;
 			compmesh->vertex = new float[compmesh->num_vertex * 3];
@@ -200,6 +205,8 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 		}
 		else
 		{
+			LOG("Lodaing mesh from library");
+
 			LoadMesh(compmesh->name, buffer);
 			Load_Mesh();
 		}
@@ -207,8 +214,8 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 		// Texture importer
 		Import_Texture(ourMesh, scene, pgameobject, compmesh);
 		
-		LOG("Mesh loaded");
-		LOG("Components: %i", pgameobject->component_list.size());
+		//LOG("Mesh loaded");
+		//LOG("Components: %i", pgameobject->component_list.size());
 	}
 	
 	for (int i = 0; i < node->mNumChildren; i++)
@@ -347,19 +354,30 @@ void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameOb
 
 			compmesh->texname = texname_2;
 			
-			// Texture Import 
-			ImportTexture(texname_2, texname_3);
-			
-			// Texture save
 			uint filesize = 0;
 			char* buffer = nullptr;
-			filesize = SaveTexture(ourMesh, &buffer);
 
-			if (filesize > 0)
+			// Texture Import 
+			ImportTexture(texname_2, texname_3, filesize, buffer);
+			
+			// Texture save (if it's not in the library)
+			if (texinlibrary == false)
 			{
-				file_path = "";
-				file_path.append("Library/Textures/").append(texname_2);
-				App->filesys->Save(file_path.c_str(), buffer, filesize);
+				LOG("Lodaing texture from assets");
+
+				filesize = SaveTexture(ourMesh, &buffer);
+
+				if (filesize > 0)
+				{
+					file_path = "";
+					file_path.append("Library/Textures/").append(texname_2);
+					App->filesys->Save(file_path.c_str(), buffer, filesize);
+				}
+				texinlibrary = true;
+			}
+			else 
+			{
+				LOG("Lodaing texture from library");
 			}
 
 			// Texture load
@@ -368,12 +386,10 @@ void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameOb
 	}
 }
 
-void ModuleFBXLoad::ImportTexture(std::string texname_2, std::string texname_3)
+void ModuleFBXLoad::ImportTexture(std::string texname_2, std::string texname_3, uint &filesize, char* &buffer)
 {
 	file_path = "";
-	uint64 filesize = 0;
-	char* buffer = nullptr;
-
+	
 	// The texture is in the library
 	file_path.append("Library/Textures/").append(texname_2);
 	filesize = App->filesys->Load(file_path.c_str(), &buffer);
@@ -385,6 +401,7 @@ void ModuleFBXLoad::ImportTexture(std::string texname_2, std::string texname_3)
 		file_path = "";
 		file_path.append("Assets/Textures/").append(texname_2).append(".").append(texname_3);
 		filesize = App->filesys->Load(file_path.c_str(), &buffer);
+		texinlibrary = false;
 	}
 
 	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, filesize);

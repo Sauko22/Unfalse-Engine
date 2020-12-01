@@ -46,8 +46,8 @@ bool ModuleFileSystem::Init()
 	char* write_path = SDL_GetPrefPath(App->GetOrganizationName(), App->GetTitleName());
 
 	// Trun this on while in game mode
-	// if(PHYSFS_setWriteDir(write_path) == 0)
-	// LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	/*if(PHYSFS_setWriteDir(write_path) == 0)
+	LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());*/
 
 	SDL_free(write_path);
 

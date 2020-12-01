@@ -164,6 +164,7 @@
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
     <ClInclude Include="Source Code\ModuleResources.h" />
     <ClInclude Include="Source Code\ModuleSceneIntro.h" />
+    <ClInclude Include="Source Code\ModuleSerialization.h" />
     <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\p2Defs.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
     <ClCompile Include="Source Code\ModuleResources.cpp" />
     <ClCompile Include="Source Code\ModuleSceneIntro.cpp" />
+    <ClCompile Include="Source Code\ModuleSerialization.cpp" />
     <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />

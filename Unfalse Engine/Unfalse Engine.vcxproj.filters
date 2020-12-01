@@ -324,6 +324,9 @@
     <ClInclude Include="Source Code\ModuleResources.h">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModuleSerialization.h">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -504,6 +507,9 @@
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\ModuleResources.cpp">
+      <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleSerialization.cpp">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClCompile>
   </ItemGroup>

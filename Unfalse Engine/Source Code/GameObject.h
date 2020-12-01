@@ -11,7 +11,7 @@ class GameObject
 {
 public:
 	GameObject(GameObject* parent);
-	~GameObject();
+	virtual ~GameObject();
 
 	std::vector<GameObject*> children_list;
 	std::vector<Component*> component_list;

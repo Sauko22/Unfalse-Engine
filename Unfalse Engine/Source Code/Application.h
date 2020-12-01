@@ -15,6 +15,7 @@
 #include "ModuleFBXLoad.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleSerialization.h"
 
 #include <string>
 #include <vector>
@@ -36,6 +37,7 @@ public:
 	ModuleFBXLoad* fbxload;
 	ModuleFileSystem* filesys;
 	ModuleResources* resource;
+	ModuleSerialization* serialization;
 
 private:
 
