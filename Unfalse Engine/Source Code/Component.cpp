@@ -176,6 +176,8 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	deftexname = " ";
 	gameobject_selected = false;
 	gameObject = gameobject;
+	mpath = "";
+	tpath = "";
 }
 
 CompMesh::~CompMesh()

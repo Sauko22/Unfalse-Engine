@@ -101,6 +101,8 @@ public:
 	bool deftexactive;
 	std::string name;
 	std::string deftexname;
+	std::string mpath;
+	std::string tpath;
 
 	AABB bbox;
 };

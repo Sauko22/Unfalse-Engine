@@ -130,8 +130,6 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 
 	comptrans->local_transform = float4x4::FromTRS(comptrans->pos, comptrans->rot, comptrans->scl);
 
-	//App->serialization->Insert_values(pgameobject, comptrans);
-
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
 		compmesh = (CompMesh*)pgameobject->AddComponent(Component::compType::MESH);
@@ -210,13 +208,46 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 			LoadMesh(compmesh->name, buffer);
 			Load_Mesh();
 		}
-
+		
 		// Texture importer
 		Import_Texture(ourMesh, scene, pgameobject, compmesh);
-		
+
+		std::string path = "";
+		compmesh->mpath = path.append("Library").append("/").append("Meshes").append("/").append(compmesh->name);
+		std::string _path = "";
+		compmesh->tpath = _path.append("Library/Textures/").append(compmesh->texname);
+
 		//LOG("Mesh loaded");
 		//LOG("Components: %i", pgameobject->component_list.size());
 	}
+
+	/*"Node ID": 1985990324,
+		"Name" : "BakerHouse",
+		"Parent Node ID" : 0,
+		"Transform" : [
+			1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+		],
+		"Mesh ID": 0,
+				"Material ID" : 0*/
+				//App->serialization->Insert_values(pgameobject, comptrans);
+
+	// GameObject importer
+	App->serialization->Import_GameObject(comptrans, pgameobject);
 	
 	for (int i = 0; i < node->mNumChildren; i++)
 	{
