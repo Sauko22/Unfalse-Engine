@@ -210,12 +210,12 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 		}
 		
 		// Texture importer
-		Import_Texture(ourMesh, scene, pgameobject, compmesh);
+		Import_Texture(ourMesh, scene, pgameobject);
 
-		std::string path = "";
+		/*std::string path = "";
 		compmesh->mpath = path.append("Library").append("/").append("Meshes").append("/").append(compmesh->name);
 		std::string _path = "";
-		compmesh->tpath = _path.append("Library/Textures/").append(compmesh->texname);
+		compmesh->tpath = _path.append("Library/Textures/").append(compmesh->texname);*/
 
 		//LOG("Mesh loaded");
 		//LOG("Components: %i", pgameobject->component_list.size());
@@ -354,22 +354,24 @@ void ModuleFBXLoad::Save_Mesh(std::string name)
 	App->filesys->Save(path.c_str(), fileBuffer, size);
 }
 
-void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject, CompMesh* compmesh)
+void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject)
 {
-	// Default texture
-	compmesh->defaultex = App->renderer3D->texchec;
-	compmesh->deftexname = "Checkers";
-
 	if (ourMesh->HasTextureCoords(0))
 	{
 		// Material
 		if (scene->HasMaterials())
 		{
 			// Active texture
-			compmesh->hastext = true;
 			gameobject->AddComponent(Component::compType::MATERIAL);
+			CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
+			
+			compmaterial->hastext = true;
+			
+			// Default texture
+			compmaterial->defaultex = App->renderer3D->texchec;
+			compmaterial->deftexname = "Checkers";
 			gameobject->ObjtexActive = true;
-			compmesh->texactive = true;
+			compmaterial->texactive = true;
 
 			// Texture name
 			aiMaterial* texture = nullptr;
@@ -383,7 +385,7 @@ void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameOb
 
 			App->filesys->SplitFilePath(texture_path.C_Str(), &texname, &texname_2, &texname_3);
 
-			compmesh->texname = texname_2;
+			compmaterial->texname = texname_2;
 			
 			uint filesize = 0;
 			char* buffer = nullptr;
@@ -447,12 +449,13 @@ void ModuleFBXLoad::LoadTexture(char* buffer, uint filesize, GameObject* gameobj
 
 	ilLoadL(IL_DDS, (const void*)buffer, filesize);
 
-	compmesh->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-	compmesh->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
+	compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
 
-	compmesh->textgl = ilutGLBindTexImage();
+	compmaterial->textgl = ilutGLBindTexImage();
 
-	gameobject->actualtexgl = compmesh->textgl;
+	gameobject->actualtexgl = compmaterial->textgl;
 	
 	ilDeleteImages(1, &textIL);
 }
@@ -492,15 +495,13 @@ void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* g
 
 	App->filesys->SplitFilePath(name, &texname, &texname_2, &texname_3);
 
-	compmesh->texname = texname_2;
+	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
+	compmaterial->texname = texname_2;
 
-	for (int i = 0; i < gameobject->component_list.size(); i++)
-	{
-		gameobject->component_list[i]->newtexgl = ilutGLBindTexImage();
-		gameobject->component_list[i]->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-		gameobject->component_list[i]->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
-		gameobject->component_list[i]->texname = texname_2;
-	}
+	compmaterial->newtexgl = ilutGLBindTexImage();
+	compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+	compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+	compmaterial->texname = texname_2;
 
 	ilDeleteImages(1, &textIL);
 }

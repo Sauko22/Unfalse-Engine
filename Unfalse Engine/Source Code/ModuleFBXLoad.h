@@ -32,7 +32,7 @@ public:
 	void LoadMesh(std::string name, char* buffer);
 
 	// Textures
-	void Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject, CompMesh* compmesh);
+	void Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameObject* gameobject);
 	void ImportTexture(std::string texname_2, std::string texname_3, uint &filesize, char* &buffer);
 	uint64 SaveTexture(aiMesh* ourMesh, char** fileBuffer);
 	void LoadTexture(char* buffer, uint filesize, GameObject* gameobject);

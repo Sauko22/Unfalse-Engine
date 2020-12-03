@@ -34,8 +34,8 @@ bool ModuleSceneIntro::Start()
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	// Load street
-	//std::string file_path = "Assets/Models/Street environment_V03.fbx";
-	std::string file_path = "Assets/Models/BakerHouse.fbx";
+	std::string file_path = "Assets/Models/Street environment_V03.fbx";
+	//std::string file_path = "Assets/Models/BakerHouse.fbx";
 	char* buffer = nullptr;
 	uint fileSize = 0;
 	fileSize = App->filesys->Load(file_path.c_str(), &buffer);

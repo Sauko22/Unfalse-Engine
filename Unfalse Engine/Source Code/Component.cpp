@@ -13,15 +13,8 @@
 Component::Component(compType type, GameObject*) : type(type), gameObject(gameObject)
 {
 	normactive = false;
-	texactive = false;
-	texactive = false;
-	deftexactive = false;
-	newtexgl = 0;
 	gameobject_selected = false;
 	renderactive = true;
-	texture_h = 0;
-	texture_w = 0;
-	texname = " ";
 }
 
 Component::~Component()
@@ -43,7 +36,7 @@ CompTransform::~CompTransform()
 
 void CompTransform::update()
 {
-	if(first_it == false)
+	if (first_it == false)
 	{
 		UpdateTrans();
 		first_it = true;
@@ -62,7 +55,7 @@ void CompTransform::inspector()
 				pos.x = position[0];
 				pos.y = position[1];
 				pos.z = position[2];
-			
+
 				// Update position
 				UpdateTrans();
 			}
@@ -140,7 +133,7 @@ void CompTransform::UpdateTrans()
 		{
 			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
 			{
-				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM) 
+				if (gameObject->children_list[i]->component_list[j]->type == Component::compType::TRANSFORM)
 				{
 					CompTransform* children_transform = (CompTransform*)gameObject->children_list[i]->component_list[j];
 					children_transform->UpdateTrans();
@@ -153,9 +146,6 @@ void CompTransform::UpdateTrans()
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
 	normactive = false;
-	texactive = false;
-	deftexactive = false;
-	newtexgl = 0;
 	id_index = 0;
 	num_index = 0;
 	id_vertex = 0;
@@ -168,16 +158,11 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	num_tex = 0;
 	tex = nullptr;
 	num_faces = 0;
-	hastext = false;
 	meshactive = true;
-	texactive = false;
-	deftexactive = false;
 	name = " ";
-	deftexname = " ";
 	gameobject_selected = false;
 	gameObject = gameobject;
 	mpath = "";
-	tpath = "";
 }
 
 CompMesh::~CompMesh()
@@ -234,77 +219,63 @@ void CompMesh::inspector()
 			ImGui::Text("Text coords: %i", num_tex);
 			ImGui::Text("Gameobject: %s", name.c_str());
 		}
-
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("ActiveMat", &texactive);
-			ImGui::Text("%s", texname.c_str());
-
-			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
-			ImGui::Text("Height: %i", texture_h);
-
-			ImGui::Image((ImTextureID)textgl, ImVec2(128, 128));
-		}
-		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("Defaultext", &deftexactive);
-			ImGui::Text("%s", deftexname.c_str());
-
-			ImGui::Image((ImTextureID)defaultex, ImVec2(128, 128));
-		}
 	}
 }
 
 void CompMesh::RenderMesh()
 {
 	CompTransform* transform = nullptr;
+	CompMaterial* texture = nullptr;
 
 	for (int i = 0; i < gameObject->component_list.size(); i++)
 	{
-
 		if (gameObject->component_list[i]->type == Component::compType::TRANSFORM)
 		{
 			transform = (CompTransform*)gameObject->component_list[i];
 		}
+		if (gameObject->component_list[i]->type == Component::compType::MATERIAL)
+		{
+			texture = (CompMaterial*)gameObject->component_list[i];
+		}
 	}
-	
+
 	glPushMatrix();
 	glMultMatrixf(transform->local_transform.Transposed().ptr());
 
 	// Draw textures
-	if (newtexgl != 0)
+	if (texture != nullptr && texture->newtexgl != 0)
 	{
-		textgl = newtexgl;
-		hastext = true;
+		texture->textgl = texture->newtexgl;
+		texture->hastext = true;
 	}
-	if (hastext == true)
+	if (texture != nullptr && texture->hastext == true)
 	{
 		glEnable(GL_TEXTURE_2D);
 		/*glEnable(GL_CULL_FACE);
 		glActiveTexture(GL_TEXTURE0);*/
 
-		if (texactive == true)
+		if (texture->texactive == true)
 		{
-			if (deftexactive == true)
+			if (texture->deftexactive == true)
 			{
-				glBindTexture(GL_TEXTURE_2D, defaultex);
+				glBindTexture(GL_TEXTURE_2D, texture->defaultex);
 			}
 			else
 			{
-				glBindTexture(GL_TEXTURE_2D, textgl);
+				glBindTexture(GL_TEXTURE_2D, texture->textgl);
 			}
 		}
 		else
 		{
-			if (deftexactive == true)
+			if (texture->deftexactive == true)
 			{
-				glBindTexture(GL_TEXTURE_2D, defaultex);
+				glBindTexture(GL_TEXTURE_2D, texture->defaultex);
 			}
 		}
 	}
-	if (hastext == false && deftexactive == true)
+	if (texture != nullptr && texture->hastext == false && texture->deftexactive == true)
 	{
-		glBindTexture(GL_TEXTURE_2D, defaultex);
+		glBindTexture(GL_TEXTURE_2D, texture->defaultex);
 	}
 
 	//Draw Mesh
@@ -330,12 +301,12 @@ void CompMesh::RenderMesh()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	if (hastext == true)
+	if (texture != nullptr && texture->hastext == true)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 	}
-	else if (hastext == false && deftexactive == true)
+	else if (texture != nullptr && texture->hastext == false && texture->deftexactive == true)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
@@ -375,7 +346,15 @@ AABB CompMesh::GetAABB()
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
 {
-
+	texactive = false;
+	deftexactive = false;
+	hastext = false;
+	newtexgl = 0;
+	texture_h = 0;
+	texture_w = 0;
+	texname = " ";
+	deftexname = " ";
+	tpath = "";
 }
 
 CompMaterial::~CompMaterial()
@@ -388,6 +367,23 @@ void CompMaterial::update()
 
 void CompMaterial::inspector()
 {
+	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("ActiveMat", &texactive);
+		ImGui::Text("%s", texname.c_str());
+
+		ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
+		ImGui::Text("Height: %i", texture_h);
+
+		ImGui::Image((ImTextureID)textgl, ImVec2(128, 128));
+	}
+	if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("Defaultext", &deftexactive);
+		ImGui::Text("%s", deftexname.c_str());
+
+		ImGui::Image((ImTextureID)defaultex, ImVec2(128, 128));
+	}
 }
 
 void CompMaterial::RenderTexture()
@@ -502,9 +498,9 @@ void CompCamera::Render()
 	float3 cube_vertex[8];
 
 	frustum.GetCornerPoints(cube_vertex);
-		
+
 	glBegin(GL_LINES);
-		
+
 	// Base
 	glVertex3fv(cube_vertex[0].ptr());
 	glVertex3fv(cube_vertex[1].ptr());
@@ -551,7 +547,7 @@ void CompCamera::Render()
 bool CompCamera::ContainsAaBox(const AABB& refBox) const
 {
 	float3 vCorner[8];
-	Plane* m_plane = new Plane [6];
+	Plane* m_plane = new Plane[6];
 	int iTotalIn = 0;
 	refBox.GetCornerPoints(vCorner); // get the corners of the box into the vCorner array
 	frustum.GetPlanes(m_plane);
@@ -559,21 +555,21 @@ bool CompCamera::ContainsAaBox(const AABB& refBox) const
 	// test all 8 corners against the 6 sides
 	// if all points are behind 1 specific plane, we are out
 	// if we are in with all points, then we are fully in
-	for (int p = 0; p < 6; ++p) 
+	for (int p = 0; p < 6; ++p)
 	{
 		int iInCount = 8;
 		int iPtIn = 1;
 
-		for (int i = 0; i < 8; ++i) 
+		for (int i = 0; i < 8; ++i)
 		{
 			// test this point against the planes
 			if (m_plane[p].IsOnPositiveSide(vCorner[i]) == true) //<-- “IsOnPositiveSide” from MathGeoLib
-			{ 
+			{
 				iPtIn = 0;
 				--iInCount;
 			}
 		}
-	
+
 		// were all the points outside of plane p?
 		if (iInCount == 0)
 		{
@@ -581,7 +577,7 @@ bool CompCamera::ContainsAaBox(const AABB& refBox) const
 			m_plane = nullptr;
 			return false;
 		}
-			
+
 		// check if they were all on the right side of the plane
 		iTotalIn += iPtIn;
 	}

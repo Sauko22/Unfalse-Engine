@@ -39,26 +39,6 @@ update_status ModuleSerialization::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSerialization::Insert_values(/*GameObject* parent, CompTransform* transform*/)
-{
-	// Insert values
-	/*json_object_set_string(root_object, "ID", parent->name.c_str()"BakerHouse");
-	json_object_set_number(root_object, "age", 25);
-	json_object_dotset_string(root_object, "address.city", "Cupertino");
-	json_object_dotset_value(root_object, "contact.emails", json_parse_string("[\"email@example.com\",\"email2@example.com\"]"));
-
-	// JSON format text
-	serialized_string = json_serialize_to_string_pretty(root_value);
-	puts(serialized_string);
-
-	// Save values
-	Save_values(root_value, serialized_string, parent->name);
-
-	// Free variables
-	json_free_serialized_string(serialized_string);
-	json_value_free(root_value);*/
-}
-
 void ModuleSerialization::Import_GameObject(CompTransform* comptrans, GameObject* gameobject)
 {
 	ImportGameObject(comptrans, gameobject);
@@ -89,6 +69,7 @@ void ModuleSerialization::ImportGameObject(CompTransform* comptrans, GameObject*
 
 	// Mesh
 	CompMesh* compmesh = (CompMesh*)gameobject->GetComponent(Component::compType::MESH);
+	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
 
 	if (compmesh == nullptr)
 	{
@@ -97,18 +78,18 @@ void ModuleSerialization::ImportGameObject(CompTransform* comptrans, GameObject*
 	else
 	{
 		AddString(obj, "Mesh_Name", compmesh->name.c_str());
-		AddString(obj, "Mesh_Path", compmesh->mpath.c_str());
+		//AddString(obj, "Mesh_Path", compmesh->mpath.c_str());
 	}
 
 	// Texture
-	if (compmesh == nullptr)
+	if (compmaterial == nullptr)
 	{
 		AddString(obj, "Texture", "No texture");
 	}
 	else
 	{
-		AddString(obj, "Texture_Name", compmesh->texname.c_str());
-		AddString(obj, "Texture_Path", compmesh->tpath.c_str());
+		AddString(obj, "Texture_Name", compmaterial->texname.c_str());
+		//AddString(obj, "Texture_Path", compmesh->tpath.c_str());
 	}
 }
 

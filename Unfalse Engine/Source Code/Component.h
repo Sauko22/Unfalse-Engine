@@ -35,13 +35,7 @@ public:
 	GameObject* gameObject;
 	bool renderactive;
 	bool normactive;
-	bool texactive;
-	bool deftexactive;
-	GLuint newtexgl = 0;
 	bool gameobject_selected;
-	int texture_h;
-	int texture_w;
-	std::string texname;
 };
 
 class CompTransform : public Component
@@ -92,17 +86,11 @@ public:
 
 	uint num_faces;
 
-	GLuint textgl;
-	GLuint defaultex;
-
-	bool hastext;
 	bool meshactive;
-	bool texactive;
-	bool deftexactive;
+	
 	std::string name;
-	std::string deftexname;
 	std::string mpath;
-	std::string tpath;
+	std::string muid;
 
 	AABB bbox;
 };
@@ -118,8 +106,20 @@ public:
 	virtual void RenderTexture();
 
 public:
+	GLuint textgl;
+	GLuint defaultex;
+	GLuint newtexgl = 0;
 
+	bool hastext;
+	bool texactive;
+	bool deftexactive;
 
+	std::string deftexname;
+	std::string tpath;
+	std::string tuid;
+	int texture_h;
+	int texture_w;
+	std::string texname;
 };
 
 class CompCamera : public Component

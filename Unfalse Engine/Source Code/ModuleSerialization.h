@@ -33,7 +33,6 @@ public:
 	void AddMat4x4(JSON_Array* obj, float4x4 transform);
 	
 	// JSON EXAMPLES
-	void Insert_values(/*GameObject* parent, CompTransform* transform*/);
 	void Load_values(const char* file, const char* variable_name);
 
 public:
