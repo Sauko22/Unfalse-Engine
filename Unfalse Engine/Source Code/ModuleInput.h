@@ -74,9 +74,6 @@ public:
 	char* dropped_filedir;
 	char* texturedir;
 
-	bool texture_dropped;
-	bool texture_obj_dropped;
-
 	std::string name;
 	std::size_t texname;
 };

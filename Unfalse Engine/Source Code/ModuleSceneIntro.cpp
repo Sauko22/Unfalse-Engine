@@ -36,10 +36,7 @@ bool ModuleSceneIntro::Start()
 	// Load street
 	std::string file_path = "Assets/Models/Street environment_V03.fbx";
 	//std::string file_path = "Assets/Models/BakerHouse.fbx";
-	char* buffer = nullptr;
-	uint fileSize = 0;
-	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->LoadFBX(buffer, fileSize, root);
+	App->resource->ImportFile(file_path.c_str());
 
 	return ret;
 }

@@ -163,6 +163,7 @@ CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobjec
 	gameobject_selected = false;
 	gameObject = gameobject;
 	mpath = "";
+	muid = 0;
 }
 
 CompMesh::~CompMesh()
@@ -355,6 +356,7 @@ CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIA
 	texname = " ";
 	deftexname = " ";
 	tpath = "";
+	tuid = 0;
 }
 
 CompMaterial::~CompMaterial()

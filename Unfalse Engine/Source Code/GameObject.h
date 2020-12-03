@@ -35,6 +35,7 @@ public:
 	uint faces_name;
 	uint texturescoords_name;
 	GLuint actualtexgl;
+	uint guid;
 
 	bool objSelected;
 	bool ObjrenderActive;

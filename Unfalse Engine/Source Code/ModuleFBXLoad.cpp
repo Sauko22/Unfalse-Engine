@@ -102,6 +102,7 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 	{
 		pgameobject->name = node->mName.C_Str();
 	}
+	pgameobject->guid = App->resource->GenerateNewUID();
 
 	LOG("GameObject: %s", pgameobject->name.c_str());
 
@@ -349,6 +350,8 @@ void ModuleFBXLoad::Save_Mesh(std::string name)
 	bytes = sizeof(float) * compmesh->num_tex * 2;
 	memcpy(cursor, compmesh->tex, bytes);
 
+	//compmesh->muid = App->resource->GenerateNewUID();
+
 	path.append("Library/Meshes/").append(name);
 
 	App->filesys->Save(path.c_str(), fileBuffer, size);
@@ -402,6 +405,8 @@ void ModuleFBXLoad::Import_Texture(aiMesh* ourMesh, const aiScene* scene, GameOb
 
 				if (filesize > 0)
 				{
+					//compmaterial->tuid = App->resource->GenerateNewUID();
+
 					file_path = "";
 					file_path.append("Library/Textures/").append(texname_2);
 					App->filesys->Save(file_path.c_str(), buffer, filesize);
@@ -480,28 +485,31 @@ uint64 ModuleFBXLoad::SaveTexture(aiMesh* ourMesh, char** fileBuffer)
 	return size;
 }
 
-void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, char* name)
+void ModuleFBXLoad::LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, const char* name)
 {
-	ILuint textIL;
+	if (gameobject != nullptr)
+	{
+		ILuint textIL;
 
-	ilGenImages(1, &textIL);
-	ilBindImage(textIL);
+		ilGenImages(1, &textIL);
+		ilBindImage(textIL);
 
-	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, filesize);
+		ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, filesize);
 
-	std::string texname;
-	std::string texname_2;
-	std::string texname_3;
+		std::string texname;
+		std::string texname_2;
+		std::string texname_3;
 
-	App->filesys->SplitFilePath(name, &texname, &texname_2, &texname_3);
+		App->filesys->SplitFilePath(name, &texname, &texname_2, &texname_3);
 
-	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
-	compmaterial->texname = texname_2;
+		CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
+		compmaterial->texname = texname_2;
 
-	compmaterial->newtexgl = ilutGLBindTexImage();
-	compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-	compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
-	compmaterial->texname = texname_2;
+		compmaterial->newtexgl = ilutGLBindTexImage();
+		compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+		compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+		compmaterial->texname = texname_2;
 
-	ilDeleteImages(1, &textIL);
+		ilDeleteImages(1, &textIL);
+	}
 }

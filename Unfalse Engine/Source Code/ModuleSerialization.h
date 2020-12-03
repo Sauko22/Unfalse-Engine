@@ -23,7 +23,7 @@ public:
 	// GameObject importer
 	void Import_GameObject(CompTransform* comptrans, GameObject* gameobject);
 	void ImportGameObject(CompTransform* comptrans, GameObject* gameobject);
-	void SaveGameObject(const char* name);
+	void SaveGameObject(uint name);
 	void LoadGameObject();
 
 	// Add values
@@ -31,6 +31,7 @@ public:
 	JSON_Array* AddArray(JSON_Object* array, const char* name);
 	void AddString(JSON_Object* array, const char* name, const char* value);
 	void AddMat4x4(JSON_Array* obj, float4x4 transform);
+	void AddFloat(JSON_Object* obj, const char* name, double value);
 	
 	// JSON EXAMPLES
 	void Load_values(const char* file, const char* variable_name);
@@ -40,5 +41,6 @@ public:
 	JSON_Object* root_object;
 	JSON_Value* init_array;
 	JSON_Array* root_array;
+	uint modeluid;
 };
 

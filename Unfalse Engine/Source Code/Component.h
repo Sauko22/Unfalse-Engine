@@ -90,7 +90,7 @@ public:
 	
 	std::string name;
 	std::string mpath;
-	std::string muid;
+	uint muid;
 
 	AABB bbox;
 };
@@ -115,11 +115,11 @@ public:
 	bool deftexactive;
 
 	std::string deftexname;
-	std::string tpath;
-	std::string tuid;
 	int texture_h;
 	int texture_w;
 	std::string texname;
+	std::string tpath;
+	uint tuid;
 };
 
 class CompCamera : public Component

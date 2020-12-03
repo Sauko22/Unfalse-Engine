@@ -4,7 +4,7 @@
 
 ModuleSerialization::ModuleSerialization(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	modeluid = 0;
 }
 
 ModuleSerialization::~ModuleSerialization()
@@ -42,7 +42,7 @@ update_status ModuleSerialization::Update()
 void ModuleSerialization::Import_GameObject(CompTransform* comptrans, GameObject* gameobject)
 {
 	ImportGameObject(comptrans, gameobject);
-	SaveGameObject("BakerHouse");
+	SaveGameObject(gameobject->guid);
 	LoadGameObject();
 }
 
@@ -53,6 +53,9 @@ void ModuleSerialization::ImportGameObject(CompTransform* comptrans, GameObject*
 	// GameObject name
 	AddString(obj, "Name", gameobject->name.c_str());
 
+	// GameObject UID
+	AddFloat(obj, "ID", gameobject->guid);
+
 	// Parent name
 	if (gameobject->parentGameObject->name == " ")
 	{
@@ -62,6 +65,9 @@ void ModuleSerialization::ImportGameObject(CompTransform* comptrans, GameObject*
 	{
 		AddString(obj, "Parent", gameobject->parentGameObject->name.c_str());
 	}
+	
+	// Parent UID
+	AddFloat(obj, "Parent ID", gameobject->parentGameObject->guid);
 
 	// Transforms
 	JSON_Array* Transform = App->serialization->AddArray(obj, "Transform");
@@ -69,38 +75,42 @@ void ModuleSerialization::ImportGameObject(CompTransform* comptrans, GameObject*
 
 	// Mesh
 	CompMesh* compmesh = (CompMesh*)gameobject->GetComponent(Component::compType::MESH);
-	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
 
 	if (compmesh == nullptr)
 	{
 		AddString(obj, "Mesh", "No mesh");
+		AddFloat(obj, "Mesh ID", 0);
 	}
 	else
 	{
 		AddString(obj, "Mesh_Name", compmesh->name.c_str());
+		AddFloat(obj, "Mesh ID", compmesh->muid);
 		//AddString(obj, "Mesh_Path", compmesh->mpath.c_str());
 	}
 
 	// Texture
+	CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
 	if (compmaterial == nullptr)
 	{
 		AddString(obj, "Texture", "No texture");
+		AddFloat(obj, "Texture ID", 0);
 	}
 	else
 	{
 		AddString(obj, "Texture_Name", compmaterial->texname.c_str());
+		AddFloat(obj, "Texture ID", compmaterial->tuid);
 		//AddString(obj, "Texture_Path", compmesh->tpath.c_str());
 	}
 }
 
-void ModuleSerialization::SaveGameObject(const char* name)
+void ModuleSerialization::SaveGameObject(uint uid)
 {
 	char* serialized_string = NULL;
 	serialized_string = json_serialize_to_string_pretty(root_value);
 	size_t size = sprintf(serialized_string, "%s", serialized_string);
 
 	std::string _name;
-	_name.append("Library/Models/").append(name);
+	_name.append("Library/Models/").append("BakerHouse");
 
 	App->filesys->Save(_name.c_str(), serialized_string, size, false);
 	json_free_serialized_string(serialized_string);
@@ -169,4 +179,9 @@ void ModuleSerialization::AddMat4x4(JSON_Array* obj, float4x4 transform)
 	json_array_append_number(obj, scaling.x);
 	json_array_append_number(obj, scaling.y);
 	json_array_append_number(obj, scaling.z);
+}
+
+void ModuleSerialization::AddFloat(JSON_Object* obj, const char* name, double value)
+{
+	json_object_set_number(obj, name, value);
 }

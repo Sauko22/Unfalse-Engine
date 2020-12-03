@@ -5,6 +5,8 @@
 #define LIBRARY_PATH "Library/"
 #define TEXTURES_PATH "Library/Textures/"
 #define MESHES_PATH "Library/Meshes/"
+#define MODELS_PATH "Library/Models/"
+#define SCENES_PATH "Library/Scenes/"
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 

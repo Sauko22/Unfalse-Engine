@@ -2,7 +2,9 @@
     "GameObject": [
         {
             "Name": " GameObject_0",
+            "ID": 1819771806,
             "Parent": "root",
+            "Parent ID": 0,
             "Transform": [
                 0,
                 0,
@@ -16,11 +18,15 @@
                 1
             ],
             "Mesh": "No mesh",
-            "Texture": "No texture"
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_004",
+            "ID": 306764064,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 21.01409912109375,
                 0,
@@ -34,11 +40,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "City_building_004",
-            "Texture_Name": "building03_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building03_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_001",
+            "ID": 776251676,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 20.053276062011719,
                 2.1210730949405843e-07,
@@ -52,11 +62,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "City_building_001",
-            "Texture_Name": "Building_V02_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V02_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_007",
+            "ID": 1104689227,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 37.4932861328125,
                 -1.5106878663573298e-06,
@@ -70,11 +84,15 @@
                 1
             ],
             "Mesh_Name": "City_building_007",
-            "Texture_Name": "building_016_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_008",
+            "ID": 294638467,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 18.270824432373047,
                 -2.0522466002148576e-06,
@@ -88,11 +106,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_008",
-            "Texture_Name": "building_025_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building_025_c",
+            "Texture ID": 0
         },
         {
             "Name": "Line002",
+            "ID": 1998950122,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 1.8538382053375244,
                 0,
@@ -106,11 +128,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "Line002",
-            "Texture": "No texture"
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
         },
         {
             "Name": "Plane001",
+            "ID": 750156160,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -0.02860260009765625,
                 0.026032090187072754,
@@ -124,11 +150,15 @@
                 0.99663525819778442
             ],
             "Mesh_Name": "Plane001",
-            "Texture_Name": ""
+            "Mesh ID": 0,
+            "Texture_Name": "",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_010",
+            "ID": 375676193,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -39.153720855712891,
                 8.5538647454086458e-07,
@@ -142,11 +172,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_010",
-            "Texture_Name": "building 01_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_011",
+            "ID": 1838788462,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 37.4932861328125,
                 -1.5106878663573298e-06,
@@ -160,11 +194,15 @@
                 1
             ],
             "Mesh_Name": "City_building_011",
-            "Texture_Name": "building_016_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_013",
+            "ID": 1053729556,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 33.201576232910156,
                 5.0146070407208754e-07,
@@ -178,11 +216,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_013",
-            "Texture_Name": "building 06_ c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_014",
+            "ID": 1482325739,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 32.061729431152344,
                 0,
@@ -196,11 +238,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "City_building_014",
-            "Texture_Name": "building03_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building03_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_016",
+            "ID": 1399370716,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -41.972747802734375,
                 8.5538647454086458e-07,
@@ -214,11 +260,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "City_building_016",
-            "Texture_Name": "building 01_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_017",
+            "ID": 2087324856,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -39.153720855712891,
                 8.5538647454086458e-07,
@@ -232,11 +282,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_017",
-            "Texture_Name": "building 01_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_022",
+            "ID": 1407574451,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -27.426488876342773,
                 0,
@@ -250,11 +304,15 @@
                 1
             ],
             "Mesh_Name": "City_building_022",
-            "Texture_Name": "building05 _c"
+            "Mesh ID": 0,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_023",
+            "ID": 1058388724,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 37.4932861328125,
                 -1.5106878663573298e-06,
@@ -268,11 +326,15 @@
                 1
             ],
             "Mesh_Name": "City_building_023",
-            "Texture_Name": "building_016_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_024",
+            "ID": 1814110084,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 43.060829162597656,
                 -0.069194458425045013,
@@ -286,11 +348,15 @@
                 1
             ],
             "Mesh_Name": "City_building_024",
-            "Texture_Name": "building_025_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building_025_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_026",
+            "ID": 915449438,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -16.446016311645508,
                 0,
@@ -304,11 +370,15 @@
                 1
             ],
             "Mesh_Name": "City_building_026",
-            "Texture_Name": "building05 _c"
+            "Mesh ID": 0,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_028",
+            "ID": 346004684,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -33.755039215087891,
                 -9.3834518111179932e-07,
@@ -322,11 +392,15 @@
                 1
             ],
             "Mesh_Name": "City_building_028",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "Object010",
+            "ID": 1303977134,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 4.066741943359375,
                 -0.47595980763435364,
@@ -340,11 +414,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "Object010",
-            "Texture": "No texture"
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_030",
+            "ID": 1504505346,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -41.835563659667969,
                 -9.3834518111179932e-07,
@@ -358,11 +436,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_030",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_031",
+            "ID": 2096941559,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -41.835563659667969,
                 -9.3834518111179932e-07,
@@ -376,11 +458,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_031",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_032",
+            "ID": 1648134436,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 21.01409912109375,
                 0,
@@ -394,11 +480,15 @@
                 1.0000001192092896
             ],
             "Mesh_Name": "City_building_032",
-            "Texture_Name": "building03_c"
+            "Mesh ID": 0,
+            "Texture_Name": "building03_c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_033",
+            "ID": 1298324205,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 42.37042236328125,
                 5.0146070407208754e-07,
@@ -412,11 +502,15 @@
                 1
             ],
             "Mesh_Name": "City_building_033",
-            "Texture_Name": "building 06_ c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_034",
+            "ID": 1847738810,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -16.696884155273438,
                 0,
@@ -430,11 +524,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_034",
-            "Texture_Name": "building05 _c"
+            "Mesh ID": 0,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_035",
+            "ID": 1577921023,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -40.802516937255859,
                 -9.3834518111179932e-07,
@@ -448,11 +546,15 @@
                 1
             ],
             "Mesh_Name": "City_building_035",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_036",
+            "ID": 774110166,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 33.201576232910156,
                 5.0146070407208754e-07,
@@ -466,11 +568,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_036",
-            "Texture_Name": "building 06_ c"
+            "Mesh ID": 0,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_037",
+            "ID": 1072704210,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -20.317689895629883,
                 -16.163610458374023,
@@ -484,11 +590,15 @@
                 1
             ],
             "Mesh_Name": "City_building_037",
-            "Texture_Name": "building05 _c"
+            "Mesh ID": 0,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_038",
+            "ID": 1025277714,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -16.495393753051758,
                 0,
@@ -502,11 +612,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_038",
-            "Texture_Name": "building05 _c"
+            "Mesh ID": 0,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_039",
+            "ID": 17779713,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -30.643888473510742,
                 -9.3834518111179932e-07,
@@ -520,11 +634,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_039",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_040",
+            "ID": 799680654,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 -30.643888473510742,
                 -9.3834518111179932e-07,
@@ -538,11 +656,15 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_040",
-            "Texture_Name": "Building_V01_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 0
         },
         {
             "Name": "City_building_041",
+            "ID": 1678870204,
             "Parent": " GameObject_0",
+            "Parent ID": 1819771806,
             "Transform": [
                 21.612646102905273,
                 2.1210730949405843e-07,
@@ -556,7 +678,9 @@
                 0.99999994039535522
             ],
             "Mesh_Name": "City_building_041",
-            "Texture_Name": "Building_V02_C"
+            "Mesh ID": 0,
+            "Texture_Name": "Building_V02_C",
+            "Texture ID": 0
         }
     ]
 }

@@ -13,6 +13,7 @@ public:
 		NO_TYPE,
 		TEXTURE,
 		MESH,
+		MODEL
 	};
 
 	Resource(uint uid, ResType type);
@@ -38,8 +39,10 @@ public:
 	// Destructor
 	virtual ~ModuleResources();
 
-	bool Init();
+	bool Start();
 	bool CleanUp();
+	void GetAllAssets();
+	void CreateMeta(PathNode node, uint64& assetID);
 
 public:
 	//uint Find(const char* file_in_assets) const;
@@ -54,6 +57,16 @@ private:
 
 private:
 	std::map<uint, Resource*> resources;
+};
+
+class ResModel : public Resource
+{
+public:
+	ResModel(uint uid);
+	virtual ~ResModel();
+
+public:
+
 };
 
 class ResMesh : public Resource

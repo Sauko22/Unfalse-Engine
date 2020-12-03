@@ -17,8 +17,6 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_x_motion = 0;
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
-	texture_dropped = false;
-	texture_obj_dropped = false;
 
 	name = "";
 }
@@ -144,33 +142,8 @@ update_status ModuleInput::PreUpdate()
 				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
 				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
 
-				fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+				App->resource->ImportFile(norm_load_directory.c_str());
 
-				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
-					App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
-				else
-				{
-					std::string texname_2;
-
-					std::string texturepath = "Assets/Textures";
-					texturepath.append(texname_2);
-					
-					texname = norm_load_directory.find_last_of("/");
-					texname_2 = norm_load_directory.substr(texname);
-					texturepath.append(texname_2);
-
-					char* tex_path = (char*)texturepath.c_str();
-
-					std::string file_path = texturepath;
-					char* buffer = nullptr;
-					uint fileSize = 0;
-					fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-
-					if (App->scene_intro->SelectedGameObject != nullptr)
-					{
-						App->fbxload->LoadTextureObject(buffer, fileSize, App->scene_intro->SelectedGameObject, tex_path);
-					}
-				}
 				SDL_free(dropped_filedir);
 			}
 			break;

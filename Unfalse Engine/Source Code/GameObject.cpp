@@ -21,6 +21,7 @@ GameObject::GameObject(GameObject* parent)
 	faces_name = 0;
 	texturescoords_name = 0;
 	actualtexgl = 0;
+	guid = 0;
 
 	objSelected = false;
 	ObjrenderActive = true;

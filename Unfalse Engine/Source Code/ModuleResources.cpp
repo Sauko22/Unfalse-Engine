@@ -10,9 +10,11 @@ ModuleResources::ModuleResources(Application* app, bool start_enabled) : Module(
 ModuleResources::~ModuleResources()
 {}
 
-bool ModuleResources::Init()
+bool ModuleResources::Start()
 {
 	LOG("Init Resources");
+
+	//GetAllAssets();
 
 	return true;
 }
@@ -22,6 +24,22 @@ bool ModuleResources::CleanUp()
 	LOG("Destroying Resources");
 
 	return true;
+}
+
+void ModuleResources::GetAllAssets()
+{
+	/*std::vector<std::string> assets;
+	assets.push_back("meta");
+
+	uint64 folderID = 0;
+	PathNode engineAssets = App->filesys->GetAllFiles("Assets/", nullptr, &assets);
+	CreateMeta(engineAssets, folderID);*/
+}
+
+void ModuleResources::CreateMeta(PathNode node, uint64& assetID)
+{
+	//std::string metaFile = node.path + ".meta";
+
 }
 
 uint ModuleResources::ImportFile(const char* assetsFile)
@@ -36,9 +54,9 @@ uint ModuleResources::ImportFile(const char* assetsFile)
 
 	App->filesys->SplitFilePath(assetsFile, &texname, &texname_2, &texname_3);
 
-	if (texname_3 == "fbx")
+	if (texname_3 == "fbx" || texname_3 == "FBX")
 	{
-		type = Resource::ResType::MESH;
+		type = Resource::ResType::MODEL;
 	}
 	else if (texname_3 == "png" || texname_3 == "tga")
 	{
@@ -57,16 +75,18 @@ uint ModuleResources::ImportFile(const char* assetsFile)
 	
 	switch (resource->Type) 
 	{
-	case Resource::ResType::TEXTURE: App->fbxload->LoadTexture(buffer, fileSize, App->scene_intro->root); break;
-	case Resource::ResType::MESH: App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root); break;
+	case Resource::ResType::TEXTURE: App->fbxload->LoadTextureObject(buffer, fileSize, App->scene_intro->SelectedGameObject, texname_2.c_str()); break;
+	case Resource::ResType::MODEL: App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root); break;
 	}
+
+	LOG("Loaded resource %s", assetsFile);
 
 	return ret;
 }
 
 uint ModuleResources::GenerateNewUID()
 {
-	LCG RandomUID = 0;
+	LCG RandomUID;
 	uint NewUID = 0;
 
 	NewUID = RandomUID.Int();
@@ -82,6 +102,7 @@ Resource* ModuleResources::CreateNewResource(const char* assetsPath, Resource::R
 	switch (type)
 	{
 	case Resource::ResType::TEXTURE: ret = (Resource*) new ResTexture(uid); break;
+	case Resource::ResType::MODEL: ret = (Resource*) new ResModel(uid); break;
 	case Resource::ResType::MESH: ret = (Resource*) new ResMesh(uid); break;
 	}
 
@@ -132,6 +153,16 @@ char* Resource::GenLibraryPath(Resource* resource)
 uint Resource::GetID()
 {
 	return UID;
+}
+
+ResModel::ResModel(uint id) : Resource(id, MODEL)
+{
+	Type = MODEL;
+}
+
+ResModel::~ResModel()
+{
+
 }
 
 ResMesh::ResMesh(uint id) : Resource(id, MESH)
