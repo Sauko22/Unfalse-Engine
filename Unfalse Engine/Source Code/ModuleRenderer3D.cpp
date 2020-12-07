@@ -262,10 +262,15 @@ void ModuleRenderer3D::Draw()
 	// Window 1
 	ImGui::Begin("Scene", NULL);
 	
+	ImGui::SetCursorPos(/*ImGui::GetCursorPos() +*/ ImVec2(img_offset.x, img_offset.y));
+	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
+	img_corner.y = App->window->windowSize.y - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
+
 	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-	ImVec2 WinSize = ImGui::GetWindowSize();
-
+	 WinSize = ImGui::GetWindowSize();
+	/* WinSize.x+= ImGui::GetWindowContentRegionMin().x;
+	 WinSize.y += ImGui::GetWindowContentRegionMin().y;*/
 	if (WinSize.x != App->window->windowSize.x || WinSize.y != App->window->windowSize.y)
 	{
 		WinResize(Vec2(WinSize.x, WinSize.y));
@@ -273,7 +278,7 @@ void ModuleRenderer3D::Draw()
 
 	// Draw any Meshes loaded into scene
 	UpdateGameObjects(App->scene_intro->root);
-	
+	App->scene_intro->EditTransform();
 	ImGui::End();
 }
 
@@ -343,6 +348,7 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 	{
 		img_size /= (img_size.y / (win_size.y - 10.0f));
 	}
+	img_offset = Vec2(win_size.x - 5.0f - img_size.x, win_size.y - 5.0f - img_size.y) / 2;
 }
 
 bool ModuleRenderer3D::ContainsAaBox_2(AABB aabb)

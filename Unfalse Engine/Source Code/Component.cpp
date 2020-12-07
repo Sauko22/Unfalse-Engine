@@ -143,6 +143,7 @@ void CompTransform::UpdateTrans()
 	}
 }
 
+
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
 	normactive = false;

@@ -287,3 +287,12 @@ float* ModuleCamera3D::GetViewMatrixCamera()
 
 	return (float*)viewMatrix.v;
 }
+
+float4x4 ModuleCamera3D::GetViewMatrixM()
+{
+	return _scene_camera->frustum.ViewMatrix();
+}
+float4x4 ModuleCamera3D::GetProjectionMatrixM()
+{
+	return _scene_camera->frustum.ProjectionMatrix();
+}

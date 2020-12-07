@@ -59,7 +59,10 @@ public:
 	uint renderTexture;
 	Vec2 img_size;
 	Vec2 win_size;
+	Vec2 img_corner;
+	Vec2 img_offset;
 
+	ImVec2 WinSize;
 	int j;
 
 	GLuint texchec;

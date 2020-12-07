@@ -21,6 +21,10 @@ public:
 	void Look(const vec3 &Spot);
 	float* GetViewMatrixCamera();
 	void ObjPicked(LineSegment ray_local_space);
+	
+	float4x4 GetViewMatrixM();
+	
+	float4x4 GetProjectionMatrixM();
 
 public:
 	
