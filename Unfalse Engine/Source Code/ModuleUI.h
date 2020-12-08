@@ -62,6 +62,12 @@ public:
 	void Hierarchy(GameObject* gameobject);
 	void DeselectGameObjects(GameObject* gameobject);
 
+	void ChangeGameObjectParent(GameObject* obj, GameObject* nextparent);
+	void TimeWindows();
+
+	bool playing;
+	bool paused;
+
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;

@@ -54,6 +54,8 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	cameradirection = vec3(0.f, 0.f, -1.f);
+	playing = false;
+	paused = false;
 }
 
 ModuleUI::~ModuleUI()
@@ -346,6 +348,8 @@ update_status ModuleUI::Update()
 			ImGui::End();
 		}
 	}
+	TimeWindows();
+
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
 	
@@ -904,4 +908,37 @@ void ModuleUI::showDockSpace(bool* p_open)
 	}
 	
 	ImGui::End();
+}
+
+void ModuleUI::TimeWindows() {
+	ImVec2 buttonSize = { 50.f, 20.f };
+	ImGui::Begin("Time Management", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Text("|"); ImGui::SameLine();
+	if (playing == true) {
+		if (ImGui::Button("Stop", buttonSize)) {
+			playing = false;
+		}
+	}
+	else {
+		if (ImGui::Button("Play", buttonSize)) {
+			playing = true;
+		}
+	}
+
+	ImGui::SameLine(/*windowCenter - buttonSize.x * 0.5f*/);
+	if (paused == true) {
+		if (ImGui::Button("Resume", buttonSize)) {
+			paused = false;
+		}
+	}
+	else {
+		if (ImGui::Button("Pause", buttonSize)) {
+			paused = true;
+		}
+	}
+	ImGui::End();
+
+
+
+
 }
