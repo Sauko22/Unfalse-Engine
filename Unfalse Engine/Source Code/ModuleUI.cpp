@@ -394,7 +394,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 
 				if (obj != nullptr) //The second part of this is bug that needs to be fixed
 				{
-					ChangeParent(obj, gameobject);
+					ChangeGameObjectParent(obj, gameobject);
 				}
 
 			}
@@ -402,9 +402,11 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 		}
 		ImGui::EndDragDropTarget();
 	}
-	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoDisableHover)) {
+	
+	if (ImGui::BeginDragDropSource())
+	{
 		ImGui::SetDragDropPayload(DROP_ID_HIERARCHY_NODES, &gameobject, sizeof(GameObject), ImGuiCond_Once);
-		ImGui::Text(GameObjname);
+		ImGui::Text("GameObjname");
 		ImGui::EndDragDropSource();
 	}
 
@@ -422,7 +424,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 
 
 
-void ModuleUI::ChangeParent(GameObject* obj, GameObject* nextparent)
+void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
 {
 	if (obj != nullptr && nextparent != nullptr) {
 
