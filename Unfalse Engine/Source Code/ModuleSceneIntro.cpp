@@ -15,6 +15,8 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	camera = nullptr;
 	mCurrentGizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 	mCurrentGizmoMode = ImGuizmo::MODE::WORLD;
+
+	ImGuizmo::Enable(true);
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -37,6 +39,7 @@ bool ModuleSceneIntro::Start()
 
 	// Load street
 	std::string file_path = "Assets/Models/Street environment_V03.fbx";
+	//std::string file_path = "Assets/Models/Megaman.fbx";
 	//std::string file_path = "Assets/Models/BakerHouse.fbx";
 	App->resource->ImportFile(file_path.c_str());
 
@@ -77,7 +80,9 @@ update_status ModuleSceneIntro::Update()
 
 	// Create XYZ Axis
 	App->renderer3D->Draw_Axis();
-	HandleInput();
+	if (ImGuizmo::IsUsing() == false)
+		HandleInput();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -125,15 +130,15 @@ void ModuleSceneIntro::EditTransform()
 	float4x4 viewMatrix = App->camera->GetViewMatrixM().Transposed();
 	float4x4 projectionMatrix = App->camera->GetProjectionMatrixM().Transposed();
 	float4x4 objectTransform = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM))->local_transform;
-	objectTransform.Transposed();
+	//objectTransform.Transposed();
 	ImGuizmo::SetDrawlist();
 	cornerPos = Vec2(App->renderer3D->img_corner.x, App->window->windowSize.y - App->renderer3D->img_corner.y - App->renderer3D->img_size.y);
 	ImGuizmo::SetRect(App->renderer3D->img_corner.x, cornerPos.y, App->renderer3D->img_size.x, App->renderer3D->img_size.y);
 
 	float tempTransform[16];
 	memcpy(tempTransform, objectTransform.ptr(), 16 * sizeof(float));
-	ImGuizmo::MODE finalMode = (mCurrentGizmoOperation == ImGuizmo::OPERATION::SCALE ? ImGuizmo::MODE::LOCAL : mCurrentGizmoMode);
-	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation,  finalMode, tempTransform);
+	
+	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation,  mCurrentGizmoMode, tempTransform);
 
 	if (ImGuizmo::IsUsing())
 	{

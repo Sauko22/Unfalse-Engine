@@ -278,6 +278,8 @@ void ModuleRenderer3D::Draw()
 
 	// Draw any Meshes loaded into scene
 	UpdateGameObjects(App->scene_intro->root);
+
+	
 	App->scene_intro->EditTransform();
 	ImGui::End();
 }

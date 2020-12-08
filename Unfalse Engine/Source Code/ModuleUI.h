@@ -61,7 +61,8 @@ public:
 
 	void Hierarchy(GameObject* gameobject);
 	void DeselectGameObjects(GameObject* gameobject);
-
+	void ChangeParent(GameObject* obj, GameObject* nextparent);
+	void DropTrget_In_Inspector(GameObject* node);
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;
