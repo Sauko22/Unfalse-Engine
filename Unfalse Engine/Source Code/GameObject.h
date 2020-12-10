@@ -19,6 +19,7 @@ public:
 	void update();
 	void Inspector();
 	void UpdateAABB();
+	void CreateEmptyChild();
 
 	Component* AddComponent(Component::compType type);
 	Component* GetComponent(Component::compType type);
@@ -36,11 +37,14 @@ public:
 	uint texturescoords_name;
 	GLuint actualtexgl;
 	uint guid;
+	GameObject* empty_GameObject;
+	int empty_GameObjects;
 
 	bool objSelected;
 	bool ObjrenderActive;
 	bool Objdelete;
 	bool ObjtexActive;
+	bool EmptyChild;
 
 	OBB obb;
 	AABB aabb;

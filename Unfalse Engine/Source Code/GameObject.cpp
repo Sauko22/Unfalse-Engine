@@ -27,6 +27,7 @@ GameObject::GameObject(GameObject* parent)
 	ObjrenderActive = true;
 	Objdelete = false;
 	ObjtexActive = false;
+	EmptyChild = false;
 }
 
 GameObject::~GameObject()
@@ -80,7 +81,10 @@ void GameObject::update()
 
 void GameObject::Inspector()
 {
+	ImVec2 buttonSize = { 100.f, 20.f };
 	ImGui::Checkbox("DeleteObj", &Objdelete);
+	if(ImGui::Button("Empty Child", buttonSize)) CreateEmptyChild();
+	
 	ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
 	ImGui::Text("%s", name.c_str());
 
@@ -90,6 +94,21 @@ void GameObject::Inspector()
 		component_list[i]->inspector();
 	}
 }
+
+void GameObject::CreateEmptyChild() 
+{
+	empty_GameObjects++;
+	std::string obj = std::to_string(empty_GameObjects);
+
+	std::string name = "Empty_Child";
+	name.append(obj);
+
+	 empty_GameObject = new GameObject(App->scene_intro->SelectedGameObject);
+	 empty_GameObject->name.append("Empty Child");
+	empty_GameObject->AddComponent(Component::compType ::TRANSFORM);
+
+}
+
 
 void GameObject::UpdateAABB()
 {
@@ -108,7 +127,8 @@ void GameObject::UpdateAABB()
 
 		mesh->bbox = aabb;
 
-		App->renderer3D->GenerateLines(mesh);
+		
+		if(App->UI->bounding)App->renderer3D->GenerateLines(mesh);
 	}
 }
 

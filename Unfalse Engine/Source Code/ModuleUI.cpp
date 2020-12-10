@@ -56,6 +56,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	cameradirection = vec3(0.f, 0.f, -1.f);
 	playing = false;
 	paused = false;
+	bounding = false;
 }
 
 ModuleUI::~ModuleUI()
@@ -925,7 +926,7 @@ void ModuleUI::TimeWindows() {
 		}
 	}
 
-	ImGui::SameLine(/*windowCenter - buttonSize.x * 0.5f*/);
+	ImGui::SameLine();
 	if (paused == true) {
 		if (ImGui::Button("Resume", buttonSize)) {
 			paused = false;
@@ -936,6 +937,17 @@ void ModuleUI::TimeWindows() {
 			paused = true;
 		}
 	}
+	
+	ImGui::SameLine();
+	if (bounding == false)
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
+	else if (bounding == true)
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+	if (ImGui::Button("Box", buttonSize))
+	{
+		bounding =! bounding;
+	}
+	ImGui::PopStyleColor();
 	ImGui::End();
 
 
