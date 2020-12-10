@@ -375,7 +375,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 
 	bool node_open = ImGui::TreeNodeEx(GameObjname, node_flags);
 
-	if (ImGui::IsItemClicked())
+	if (ImGui::IsItemClicked() || empty == true)
 	{
 		DeselectGameObjects(App->scene_intro->root);
 
