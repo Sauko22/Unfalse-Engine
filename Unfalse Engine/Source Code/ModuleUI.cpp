@@ -57,6 +57,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	playing = false;
 	paused = false;
 	bounding = false;
+	empty = false;
 }
 
 ModuleUI::~ModuleUI()
@@ -937,7 +938,6 @@ void ModuleUI::TimeWindows() {
 			paused = true;
 		}
 	}
-	
 	ImGui::SameLine();
 	if (bounding == false)
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
@@ -948,6 +948,13 @@ void ModuleUI::TimeWindows() {
 		bounding =! bounding;
 	}
 	ImGui::PopStyleColor();
+	ImVec2 buttonSizes = { 130.f, 20.f };
+	ImGui::SameLine();
+	if (ImGui::Button("Empty GameObject", buttonSizes))
+	{
+		empty = true;
+	}
+
 	ImGui::End();
 
 

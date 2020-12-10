@@ -22,6 +22,7 @@ GameObject::GameObject(GameObject* parent)
 	texturescoords_name = 0;
 	actualtexgl = 0;
 	guid = 0;
+	empty_GameObjects = 0;
 
 	objSelected = false;
 	ObjrenderActive = true;
@@ -87,7 +88,7 @@ void GameObject::Inspector()
 	
 	ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
 	ImGui::Text("%s", name.c_str());
-
+	if (App->UI->empty == true)CreateEmptyGameObject();
 	// Update components
 	for (int i = 0; i < component_list.size(); i++)
 	{
@@ -109,6 +110,20 @@ void GameObject::CreateEmptyChild()
 
 }
 
+void GameObject::CreateEmptyGameObject()
+{
+	empty_GameObjects++;
+	std::string obj = std::to_string(empty_GameObjects);
+
+	std::string name = "Empty_GameObject";
+	name.append(obj);
+
+	empty_GameObject = new GameObject(App->scene_intro->root);
+	empty_GameObject->name.append("Empty GameObject");
+	empty_GameObject->AddComponent(Component::compType::TRANSFORM);
+	App->UI->empty = false;
+
+}
 
 void GameObject::UpdateAABB()
 {

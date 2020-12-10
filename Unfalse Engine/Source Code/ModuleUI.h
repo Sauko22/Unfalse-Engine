@@ -68,6 +68,7 @@ public:
 	bool playing;
 	bool paused;
 	bool bounding;
+	bool empty;
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;
