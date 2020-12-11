@@ -126,38 +126,39 @@ void ModuleSceneIntro::EditTransform()
 {
 	if (SelectedGameObject == nullptr)
 		return;
-	
+
 	float4x4 viewMatrix = App->camera->GetViewMatrixM().Transposed();
 	float4x4 projectionMatrix = App->camera->GetProjectionMatrixM().Transposed();
-	
+	float4x4 marcburru = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Transposed();
 	//objectTransform.Transposed();
 	ImGuizmo::SetDrawlist();
 	cornerPos = Vec2(App->renderer3D->img_corner.x, App->window->windowSize.y - App->renderer3D->img_corner.y - App->renderer3D->img_size.y);
 	ImGuizmo::SetRect(App->renderer3D->img_corner.x, cornerPos.y, App->renderer3D->img_size.x, App->renderer3D->img_size.y);
 
-	CompTransform* ty = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
-	
-	 
+	//CompTransform* ty = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
+
+
 	float modelPtr[16];
-	memcpy(modelPtr, ty->global_transform.Transposed().ptr(), 16 * sizeof(float));
+	memcpy(modelPtr, marcburru.ptr(), 16 * sizeof(float));
 
 	//tempTransform.Transposed();
-	
-	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation,  mCurrentGizmoMode, modelPtr);
+
+	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, modelPtr);
 
 	if (ImGuizmo::IsUsing())
 	{
-		
-		/*CompTransform* transform;
+		/*float4x4 newMatrix;
+		newMatrix.Set(modelPtr);
+		CompTransform* transform;
 		transform = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
-		tempTransform.Transpose();
-		
-		transform->global_transform = tempTransform;
-		
+		newMatrix.Transpose();
+
+		transform->global_transform = newMatrix;
+
 		transform->local_transform = dynamic_cast<CompTransform*>(transform->gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Inverted()* transform->global_transform;
-		
+
 		transform->local_transform.Decompose(transform->scl, transform->rot, transform->pos);
 		transform->UpdateTrans();*/
-		
+
 	}
 }

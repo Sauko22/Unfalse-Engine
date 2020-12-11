@@ -46,73 +46,73 @@ void CompTransform::update()
 
 void CompTransform::inspector()
 {
-	//if (gameobject_selected == true)
-	//{
-	//	if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-	//	{
-	//		float position[4] = { pos.x, pos.y, pos.z, 1.0f };
-	//		if (ImGui::DragFloat3("Position", position, 0.1f, -500.0f, 500.0f))
-	//		{
-	//			pos.x = position[0];
-	//			pos.y = position[1];
-	//			pos.z = position[2];
+	if (gameobject_selected == true)
+	{
+		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			float position[4] = { pos.x, pos.y, pos.z, 1.0f };
+			if (ImGui::DragFloat3("Position", position, 0.1f, -500.0f, 500.0f))
+			{
+				pos.x = position[0];
+				pos.y = position[1];
+				pos.z = position[2];
 
-	//			// Update position
-	//			UpdateTrans();
-	//		}
+				 //Update position
+				UpdateTrans();
+			}
 
-	//		ImGui::Text("Rotations");
+			ImGui::Text("Rotations");
 
-	//		float3 _rot = rot.ToEulerXYZ();
-	//		_rot *= RADTODEG;
-	//		float anglex = _rot.x;
-	//		if (ImGui::DragFloat("x", &anglex, 0.1f, -1000.0f, 1000.0f))
-	//		{
-	//			float newrot = anglex - _rot.x;
-	//			float3 axis(1, 0, 0);
-	//			Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
-	//			rot = rot * _newrot;
+			float3 _rot = rot.ToEulerXYZ();
+			_rot *= RADTODEG;
+			float anglex = _rot.x;
+			if (ImGui::DragFloat("x", &anglex, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = anglex - _rot.x;
+				float3 axis(1, 0, 0);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
 
-	//			// Update rotation
-	//			UpdateTrans();
-	//		}
+				 //Update rotation
+				UpdateTrans();
+			}
 
-	//		float angley = _rot.y;
-	//		if (ImGui::DragFloat("y", &angley, 0.1f, -1000.0f, 1000.0f))
-	//		{
-	//			float newrot = angley - _rot.y;
-	//			float3 axis(0, -1, 0);
-	//			Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
-	//			rot = rot * _newrot;
+			float angley = _rot.y;
+			if (ImGui::DragFloat("y", &angley, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = angley - _rot.y;
+				float3 axis(0, -1, 0);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
 
-	//			// Update rotation
-	//			UpdateTrans();
-	//		}
+				 //Update rotation
+				UpdateTrans();
+			}
 
-	//		float anglez = _rot.z;
-	//		if (ImGui::DragFloat("z", &anglez, 0.1f, -1000.0f, 1000.0f))
-	//		{
-	//			float newrot = anglez - _rot.z;
-	//			float3 axis(0, 0, 1);
-	//			Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
-	//			rot = rot * _newrot;
+			float anglez = _rot.z;
+			if (ImGui::DragFloat("z", &anglez, 0.1f, -1000.0f, 1000.0f))
+			{
+				float newrot = anglez - _rot.z;
+				float3 axis(0, 0, 1);
+				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
+				rot = rot * _newrot;
 
-	//			// Update rotation
-	//			UpdateTrans();
-	//		}
+				 //Update rotation
+				UpdateTrans();
+			}
 
-	//		float scale[4] = { scl.x, scl.y, scl.z, 1.0f };
-	//		if (ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f))
-	//		{
-	//			scl.x = scale[0];
-	//			scl.y = scale[1];
-	//			scl.z = scale[2];
+			float scale[4] = { scl.x, scl.y, scl.z, 1.0f };
+			if (ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f))
+			{
+				scl.x = scale[0];
+				scl.y = scale[1];
+				scl.z = scale[2];
 
-	//			// Update scale
-	//			UpdateTrans();
-	//		}
-	//	}
-	/*}*/
+				 //Update scale
+				UpdateTrans();
+			}
+		}
+	}
 }
 
 void CompTransform::UpdateTrans()

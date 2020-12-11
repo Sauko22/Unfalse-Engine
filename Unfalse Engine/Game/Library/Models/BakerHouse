@@ -2,7 +2,7 @@
     "GameObject": [
         {
             "Name": " GameObject_0",
-            "ID": 2098282009,
+            "ID": 1670242582,
             "Parent": "root",
             "Parent ID": 0,
             "Transform": [
@@ -24,9 +24,9 @@
         },
         {
             "Name": "Chimney",
-            "ID": 222690184,
+            "ID": 1826052295,
             "Parent": " GameObject_0",
-            "Parent ID": 2098282009,
+            "Parent ID": 1670242582,
             "Transform": [
                 0,
                 0,
@@ -46,9 +46,9 @@
         },
         {
             "Name": "Baker_house",
-            "ID": 39900732,
+            "ID": 67411240,
             "Parent": " GameObject_0",
-            "Parent ID": 2098282009,
+            "Parent ID": 1670242582,
             "Transform": [
                 0,
                 0,
