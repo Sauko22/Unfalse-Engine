@@ -233,7 +233,7 @@ void ModuleCamera3D::ObjPicked(LineSegment my_ray)
 		if (mesh != nullptr)
 		{
 			CompTransform* transform = (CompTransform*)it->second->GetComponent(Component::compType::TRANSFORM);
-			my_ray.Transform(transform->local_transform.Inverted());
+			my_ray.Transform(transform->global_transform.Inverted());
 
 			for (int i = 0; i < mesh->num_index; i += 3)
 			{
@@ -286,4 +286,13 @@ float* ModuleCamera3D::GetViewMatrixCamera()
 	viewMatrix.Transpose();
 
 	return (float*)viewMatrix.v;
+}
+
+float4x4 ModuleCamera3D::GetViewMatrixM()
+{
+	return(float4x4) _scene_camera->frustum.ViewMatrix();
+}
+float4x4 ModuleCamera3D::GetProjectionMatrixM()
+{
+	return _scene_camera->frustum.ProjectionMatrix();
 }

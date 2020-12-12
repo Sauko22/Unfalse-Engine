@@ -327,6 +327,9 @@
     <ClInclude Include="Source Code\ModuleSerialization.h">
       <Filter>Sources\Modules\Game\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Libs\Imgui\ImGuizmo.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Color.cpp">
@@ -511,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\ModuleSerialization.cpp">
       <Filter>Sources\Modules\Game\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Libs\Imgui\ImGuizmo.cpp">
+      <Filter>libs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

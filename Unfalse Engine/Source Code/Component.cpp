@@ -25,7 +25,8 @@ CompTransform::CompTransform(GameObject* gameobject) : Component(compType::TRANS
 	pos = pos.zero;
 	rot = rot.identity;
 	scl = scl.one;
-	local_transform = local_transform.identity;
+	local_transform.SetIdentity();
+	global_transform.SetIdentity();
 	gameobject_selected = false;
 	gameObject = gameobject;
 	first_it = false;
@@ -56,7 +57,7 @@ void CompTransform::inspector()
 				pos.y = position[1];
 				pos.z = position[2];
 
-				// Update position
+				 //Update position
 				UpdateTrans();
 			}
 
@@ -72,7 +73,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				// Update rotation
+				 //Update rotation
 				UpdateTrans();
 			}
 
@@ -84,7 +85,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				// Update rotation
+				 //Update rotation
 				UpdateTrans();
 			}
 
@@ -96,7 +97,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				// Update rotation
+				 //Update rotation
 				UpdateTrans();
 			}
 
@@ -107,7 +108,7 @@ void CompTransform::inspector()
 				scl.y = scale[1];
 				scl.z = scale[2];
 
-				// Update scale
+				 //Update scale
 				UpdateTrans();
 			}
 		}
@@ -122,13 +123,18 @@ void CompTransform::UpdateTrans()
 		local_transform = float4x4::FromTRS(pos, rot, scl);
 		if (parent_transform != nullptr)
 		{
-			local_transform = parent_transform->local_transform * local_transform;
+			global_transform = parent_transform->global_transform * local_transform;
 		}
 	}
 	else
 	{
+		
+		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 		local_transform = float4x4::FromTRS(pos, rot, scl);
-
+		if (parent_transform != nullptr)
+		{
+			global_transform = parent_transform->global_transform * local_transform;
+		}
 		for (int i = 0; i < gameObject->children_list.size(); i++)
 		{
 			for (int j = 0; j < gameObject->children_list[i]->component_list.size(); j++)
@@ -142,6 +148,7 @@ void CompTransform::UpdateTrans()
 		}
 	}
 }
+
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
@@ -241,7 +248,7 @@ void CompMesh::RenderMesh()
 	}
 
 	glPushMatrix();
-	glMultMatrixf(transform->local_transform.Transposed().ptr());
+	glMultMatrixf(transform->global_transform.Transposed().ptr());
 
 	// Draw textures
 	if (texture != nullptr && texture->newtexgl != 0)

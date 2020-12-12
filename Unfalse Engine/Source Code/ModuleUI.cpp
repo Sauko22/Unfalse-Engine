@@ -6,6 +6,7 @@
 #include "ModuleFileSystem.h"
 
 #include "Glew\include\glew.h"
+#define DROP_ID_HIERARCHY_NODES "hierarchy_node"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -469,6 +470,32 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 			gameobject->component_list[i]->gameobject_selected = true;
 		}
 	}
+	if (ImGui::BeginDragDropTarget()) {
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+
+		if (payload != nullptr)
+		{
+			if (payload->IsDataType(DROP_ID_HIERARCHY_NODES))
+			{
+				GameObject* obj = *(GameObject**)payload->Data;
+
+				if (obj != nullptr) //The second part of this is bug that needs to be fixed
+				{
+					ChangeGameObjectParent(obj, gameobject);
+				}
+
+			}
+			//ImGui::ClearDragDrop();
+		}
+		ImGui::EndDragDropTarget();
+	}
+	
+	if (ImGui::BeginDragDropSource())
+	{
+		ImGui::SetDragDropPayload(DROP_ID_HIERARCHY_NODES, &gameobject, sizeof(GameObject), ImGuiCond_Once);
+		ImGui::Text("GameObjname");
+		ImGui::EndDragDropSource();
+	}
 
 	if (node_open)
 	{
@@ -478,8 +505,43 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 		}
 		ImGui::TreePop();
 	}
+	
+	
 }
 
+
+
+void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
+{
+	if (obj != nullptr && nextparent != nullptr) {
+
+		//obj->parent->to_delete = true;
+
+		for (int i = 0; i < obj->parentGameObject->children_list.size(); i++)
+		{
+			if (obj->parentGameObject->children_list[i] == obj)
+			{
+				obj->parentGameObject->children_list.erase(obj->parentGameObject->children_list.begin() + i);
+				i--;
+
+			}
+		}
+		//obj->parentGameObject = nextparent;
+		//dynamic_cast<CompTransform*>(obj->children_list->GetComponent(Component::compType::TRANSFORM))->UpdateTrans();
+		
+		obj->parentGameObject = nextparent;
+		nextparent->children_list.push_back(obj);
+		
+		/*for (int i = 0; i < nextparent->children_list.size(); i++)
+		{
+			obj->parentGameObject = nextparent;
+			nextparent->children_list.push_back(obj);
+			dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform = dynamic_cast<CompTransform*>(nextparent->children_list[i]->GetComponent(Component::compType::TRANSFORM))->local_transform* dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform;
+			dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform.Inverse();
+		}*/
+		//nextparent->children_list.push_back(obj);
+	}
+}
 void ModuleUI::DeselectGameObjects(GameObject* gameobject)
 {
 	gameobject->objSelected = false;

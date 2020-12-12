@@ -54,6 +54,7 @@ public:
 	Quat rot;
 	float3 scl;
 	float4x4 local_transform;
+	float4x4 global_transform;
 	bool first_it;
 };
 

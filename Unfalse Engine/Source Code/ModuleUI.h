@@ -66,12 +66,13 @@ public:
 	void TimeWindows();
 
 	void ResourceExplorer();
-	const char* GetFileAt(int i);
+	//const char* GetFileAt(int i);
 
 	bool playing;
 	bool paused;
 	bool bounding;
 	bool empty;
+	
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;
@@ -96,7 +97,7 @@ public:
 	int j, k;
 
 	//Resource Menu
-	void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
+	//void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
 	void DrawCurrentFolder();
 	std::string current_folder;
 };

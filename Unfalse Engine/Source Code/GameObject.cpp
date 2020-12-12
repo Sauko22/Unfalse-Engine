@@ -139,7 +139,7 @@ void GameObject::UpdateAABB()
 		App->renderer3D->GenerateAABB(mesh);
 
 		obb = mesh->GetAABB();
-		obb.Transform(transform->local_transform);
+		obb.Transform(transform->global_transform);
 
 		aabb.SetNegativeInfinity();
 		aabb.Enclose(obb);
