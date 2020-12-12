@@ -1,8 +1,10 @@
 #pragma once
 #include "Module.h"
+#include "Application.h"
 #include "Globals.h"
 #include "Vector.h"
 #include "Component.h"
+#include "ModuleResources.h"
 #include <string>
 
 typedef unsigned int GLuint;
@@ -24,9 +26,18 @@ public:
 
 	void LoadFBX(char* file_path, uint filesize, GameObject* parent);
 
-	void Import(aiNode* node, GameObject* parent, const aiScene* scene);
+	void Import(aiNode* node, GameObject* parent, const aiScene* scene, uint id);
+
+	// Model
+	void Import_Model(ResModel* resource, uint fileSize, char* buffer);
+	void ImportModel(aiNode* node, ResModel* parent, const aiScene* scene, uint id);
+	void Save_Model();
+
+	// Texture
+	void ResImport_Texture(const char* assetspath);
 
 	// Meshes
+	void Import_Mesh();
 	void Load_Mesh();
 	void Save_Mesh(std::string name);
 	void LoadMesh(std::string name, char* buffer);
@@ -42,9 +53,11 @@ public:
 	CompMesh* compmesh;
 	CompTransform* comptrans;
 
-	int j;
+	int j, k;
 	bool texinlibrary;
 
 	std::string file_path;
 	std::string mesh_path;
+	bool onlibrary;
+	uint parentid;
 };

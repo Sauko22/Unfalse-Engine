@@ -15,6 +15,7 @@ public:
 
 	std::vector<GameObject*> children_list;
 	std::vector<Component*> component_list;
+	std::vector<Component*> tempcomponent_list;
 
 	void update();
 	void Inspector();
@@ -23,7 +24,9 @@ public:
 	void CreateEmptyGameObject();
 
 	Component* AddComponent(Component::compType type);
+	Component* AddTempComponent(Component::compType type);
 	Component* GetComponent(Component::compType type);
+	Component* GetTempComponent(Component::compType type);
 
 	GameObject* parentGameObject;
 
@@ -40,6 +43,7 @@ public:
 	uint guid;
 	GameObject* empty_GameObject;
 	int empty_GameObjects;
+	uint puid;
 
 	bool objSelected;
 	bool ObjrenderActive;

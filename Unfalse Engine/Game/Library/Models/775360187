@@ -1,0 +1,56 @@
+{
+    "GameObject": [
+        {
+            "Name": "GameObject_4",
+            "ID": 777239954,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "pCylinder1",
+            "ID": 272851371,
+            "Parent": "GameObject_4",
+            "Parent ID": 777239954,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "pCylinder1",
+            "Mesh ID": 284965425,
+            "Texture_Name": "",
+            "Texture ID": 325847788
+        }
+    ]
+}

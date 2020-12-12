@@ -17,6 +17,7 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_x_motion = 0;
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
+	filedropped = false;
 
 	name = "";
 }
@@ -134,15 +135,49 @@ update_status ModuleInput::PreUpdate()
 				LOG("OBJECT NAME: %s", extDir.c_str());
 				name = extDir;
 
-				char* buffer = nullptr;
-				uint fileSize = 0;
+				/*char* buffer = nullptr;
+				uint fileSize = 0;*/
 
 				std::size_t assets = Dir.find("Assets");
 				std::string load_directory = Dir.substr(assets);
 				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
 				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
 
-				App->resource->ImportFile(norm_load_directory.c_str());
+				//fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(norm_load_directory.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
+				{
+					if (App->filesys->Exists(path.c_str()))
+					{
+						filedropped = true;
+						App->serialization->parentuid = App->resource->GenerateNewUID();
+						App->serialization->LoadGameObject(path.c_str());
+						filedropped = false;
+					}
+					else
+					{
+						LOG("%s doesn't have a meta file", path.c_str());
+					}
+				}
+				else
+				{
+					char* buffer = nullptr;
+					uint fileSize = 0;
+					fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+
+					if (App->scene_intro->SelectedGameObject != nullptr)
+					{
+						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, norm_load_directory.c_str());
+					}
+				}
 
 				SDL_free(dropped_filedir);
 			}

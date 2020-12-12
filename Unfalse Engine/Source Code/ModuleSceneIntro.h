@@ -25,6 +25,7 @@ public:
 
 	void GetAllGameObjects();
 	void AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
+	GameObject* SearchGameObjectID(uint id);
 
 public:
 	// Root gameobject

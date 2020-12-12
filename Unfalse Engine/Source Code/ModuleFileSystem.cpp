@@ -414,7 +414,7 @@ uint ModuleFileSystem::Save(const char* file, const void* buffer, unsigned int s
 	else
 		LOG("[error] File System error while opening file %s: %s", file, PHYSFS_getLastError());
 
-	LOG("Texture %s saved correctly", file);
+	//LOG("Texture %s saved correctly", file);
 
 	return ret;
 }

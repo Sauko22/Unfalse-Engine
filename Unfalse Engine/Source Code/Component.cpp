@@ -357,6 +357,7 @@ CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIA
 	deftexname = " ";
 	tpath = "";
 	tuid = 0;
+	texgldata = nullptr;
 }
 
 CompMaterial::~CompMaterial()

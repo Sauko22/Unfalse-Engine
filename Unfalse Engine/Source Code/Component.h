@@ -9,6 +9,7 @@
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
+typedef unsigned char ILubyte;
 
 class GameObject;
 
@@ -109,6 +110,7 @@ public:
 	GLuint textgl;
 	GLuint defaultex;
 	GLuint newtexgl = 0;
+	ILubyte* texgldata;
 
 	bool hastext;
 	bool texactive;

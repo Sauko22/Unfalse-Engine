@@ -34,10 +34,29 @@ bool ModuleSceneIntro::Start()
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	// Load street
-	//std::string file_path = "Assets/Models/Street environment_V03.fbx";
-	std::string file_path = "Assets/Models/Megaman.fbx";
-	App->resource->ImportFile(file_path.c_str());
+	std::string file_path = "Assets/Models/Street environment_V03.fbx";
+	//std::string file_path = "Assets/Models/BakerHouse.fbx";
+	/*char* buffer = nullptr;
+	uint fileSize = 0;
+	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+	App->fbxload->LoadFBX(buffer, fileSize, root);*/
+	std::string path;
+	std::string texname;
+	std::string texname_2;
+	std::string texname_3;
 
+	App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+	path.append(texname).append(texname_2).append(".meta");
+
+	if (App->filesys->Exists(path.c_str()))
+	{
+		App->serialization->LoadGameObject(path.c_str());
+	}
+	else
+	{
+		LOG("%s doesn't have a meta file", path.c_str());
+	}
+	
 	return ret;
 }
 
@@ -99,6 +118,19 @@ void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameOb
 			AllGameObjects(gameObject->children_list[i], gameObjects);
 		}
 	}
+}
+
+GameObject* ModuleSceneIntro::SearchGameObjectID(uint id)
+{
+	for (int i = 0; i < App->serialization->gameobject_list.size(); i++)
+	{
+		if (App->serialization->gameobject_list[i]->guid == id)
+		{
+			return App->serialization->gameobject_list[i];
+		}
+	}
+
+	return nullptr;
 }
 
 

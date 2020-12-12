@@ -38,6 +38,7 @@ GameObject::~GameObject()
 		if (component_list[i] != nullptr)
 		{
 			delete component_list[i];
+			component_list[i] = nullptr;
 		}
 	}
 	component_list.clear();
@@ -77,7 +78,10 @@ void GameObject::update()
 			component_list[i]->update();
 		}
 	}
-	UpdateAABB();
+	if (component_list.empty() == false)
+	{
+		UpdateAABB();
+	}
 }
 
 void GameObject::Inspector()
@@ -172,6 +176,31 @@ Component* GameObject::AddComponent(Component::compType type)
 	return ret;
 }
 
+Component* GameObject::AddTempComponent(Component::compType type)
+{
+	Component* ret = nullptr;
+
+	switch (type)
+	{
+	case Component::compType::TRANSFORM:
+		ret = new CompTransform(this);
+		break;
+	case Component::compType::MESH:
+		ret = new CompMesh(this);
+		break;
+	case Component::compType::MATERIAL:
+		ret = new CompMaterial(this);
+		break;
+	case Component::compType::CAMERA:
+		ret = new CompCamera(this);
+		break;
+	}
+
+	tempcomponent_list.push_back(ret);
+
+	return ret;
+}
+
 Component* GameObject::GetComponent(Component::compType type)
 {
 	Component* ret = nullptr;
@@ -180,6 +209,19 @@ Component* GameObject::GetComponent(Component::compType type)
 	{
 		if (type == component_list[i]->type)
 			return component_list[i];
+	}
+
+	return ret;
+}
+
+Component* GameObject::GetTempComponent(Component::compType type)
+{
+	Component* ret = nullptr;
+
+	for (int i = 0; i < tempcomponent_list.size(); i++)
+	{
+		if (type == tempcomponent_list[i]->type)
+			return tempcomponent_list[i];
 	}
 
 	return ret;

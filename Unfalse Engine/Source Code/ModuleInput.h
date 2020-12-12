@@ -76,4 +76,6 @@ public:
 
 	std::string name;
 	std::size_t texname;
+
+	bool filedropped;
 };

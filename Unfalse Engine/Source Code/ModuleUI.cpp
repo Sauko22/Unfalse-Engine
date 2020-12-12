@@ -219,41 +219,117 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Cube"))
 			{
 				std::string file_path = "Assets/Primitives/Cube.fbx";
-				char* buffer = nullptr;
+				/*char* buffer = nullptr;
 				uint fileSize = 0;
 				cube = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 			
 			if (ImGui::MenuItem("Sphere"))
 			{
 				std::string file_path = "Assets/Primitives/Sphere.fbx";
-				char* buffer = nullptr;
+				/*char* buffer = nullptr;
 				uint fileSize = 0;
 				sphere = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 
 			if (ImGui::MenuItem("Cylinder"))
 			{
 				std::string file_path = "Assets/Primitives/Cylinder.fbx";
-				char* buffer = nullptr;
+				/*char* buffer = nullptr;
 				uint fileSize = 0;
 				cylinder = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 
 			if (ImGui::MenuItem("Pyramid"))
 			{
 				std::string file_path = "Assets/Primitives/Pyramid.fbx";
-				char* buffer = nullptr;
+				/*char* buffer = nullptr;
 				uint fileSize = 0;
 				pyramid = true;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);
+				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 
 			if (ImGui::MenuItem("Camera"))
