@@ -65,6 +65,9 @@ public:
 	void ChangeGameObjectParent(GameObject* obj, GameObject* nextparent);
 	void TimeWindows();
 
+	void ResourceExplorer();
+	const char* GetFileAt(int i);
+
 	bool playing;
 	bool paused;
 	bool bounding;
@@ -91,4 +94,9 @@ public:
 	bool texture2d;
 	bool vsync;
 	int j, k;
+
+	//Resource Menu
+	void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
+	void DrawCurrentFolder();
+	std::string current_folder;
 };

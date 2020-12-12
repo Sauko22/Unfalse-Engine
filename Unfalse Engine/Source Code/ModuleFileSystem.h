@@ -14,6 +14,7 @@ struct PathNode;
 
 typedef unsigned __int64 uint64;
 
+
 class ModuleFileSystem : public Module
 {
 public:

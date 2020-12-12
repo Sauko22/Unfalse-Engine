@@ -3,6 +3,7 @@
 #include "ModuleUI.h"
 #include "Component.h"
 #include "GameObject.h"
+#include "ModuleFileSystem.h"
 
 #include "Glew\include\glew.h"
 
@@ -105,7 +106,8 @@ bool ModuleUI::Init()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_Docking;
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
@@ -351,7 +353,10 @@ update_status ModuleUI::Update()
 		}
 	}
 	TimeWindows();
-
+	
+	//Resource Manager windows
+	ResourceExplorer();
+	
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
 	
@@ -956,8 +961,115 @@ void ModuleUI::TimeWindows() {
 	}
 
 	ImGui::End();
+}
+
+void ModuleUI::ResourceExplorer()
+{
 
 
+	if (ImGui::Begin("Resource Explorer")) {
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
+		ImGui::BeginChild("Tree", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.15f, ImGui::GetContentRegionAvail().y), false, window_flags);
+		ImGui::Text("Resources");
+		//DrawDirectoryRecursive("Assets", nullptr);
+		ImGui::EndChild();
 
+		ImGui::SameLine();
+		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true);
+		DrawCurrentFolder();
+		ImGui::EndChild();
+	}
+	ImGui::End();
 
+}
+void  ModuleUI::DrawCurrentFolder()
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	App->filesys->DiscoverFiles(current_folder.c_str(), files, dirs);
+
+	for (size_t i = 0; i < dirs.size(); i++)
+	{
+		ImGui::PushID(i);
+		if (ImGui::Button(dirs[i].c_str(), ImVec2(100, 100))) {
+			current_folder.append("/");
+			current_folder.append(dirs[i].c_str());
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS"))
+			{
+				IM_ASSERT(payload->DataSize == sizeof(int));
+				int payload_n = *(const int*)payload->Data;
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		if (ImGui::IsMouseDoubleClicked(0))
+		{
+			current_folder = current_folder + dirs[i];
+		}
+
+		ImGui::PopID();
+		ImGui::SameLine();
+	}
+
+	for (size_t i = 0; i < files.size(); i++)
+	{
+		if (files[i].find(".meta") != -1)
+			continue;
+
+		ImGui::PushID(i);
+		ImGui::Button(files[i].c_str(), ImVec2(120, 120));
+
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("ASSETS", &i, sizeof(int));
+			ImGui::EndDragDropSource();
+		}
+
+		/*if (ImGui::BeginPopupContextItem()) {
+			if (ImGui::Button("Delete"))
+			{
+				std::string file_to_delete = current_folder + "/" + files[i];
+				App->resource->DeleteAsset(file_to_delete.c_str());
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}*/
+
+		if (files[i].find(".fbx") != std::string::npos)
+		{/*
+			ImGui::SameLine();
+			if (ImGui::Button("->"))
+				ImGui::OpenPopup("Meshes");
+			if (ImGui::BeginPopup("Meshes", ImGuiWindowFlags_NoMove))
+			{
+				std::string model = current_folder + "/" + files[i];
+				const char* library_path = App->resource->Find(App->resources->GetUIDFromMeta(model.append(".meta").c_str()));
+
+				std::vector<uint> meshes;
+				std::vector<uint> materials;
+				ModelImporter::ExtractInternalResources(library_path, meshes, materials);
+
+				for (size_t m = 0; m < meshes.size(); m++)
+				{
+					ImGui::PushID(meshes[m]);
+					ImGui::Text("%d", meshes[m]);
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+					{
+						ImGui::SetDragDropPayload("MESHES", &(meshes[m]), sizeof(int));
+						ImGui::EndDragDropSource();
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndPopup();*/
+			/*}*/
+		}
+
+		ImGui::PopID();
+		ImGui::SameLine();
+	}
 }
