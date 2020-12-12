@@ -38,9 +38,9 @@ bool ModuleSceneIntro::Start()
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
 
 	// Load street
-	//std::string file_path = "Assets/Models/Street environment_V03.fbx";
+	std::string file_path = "Assets/Models/Street environment_V03.fbx";
 	//std::string file_path = "Assets/Models/Megaman.fbx";
-	std::string file_path = "Assets/Models/BakerHouse.fbx";
+	//std::string file_path = "Assets/Models/BakerHouse.fbx";
 	App->resource->ImportFile(file_path.c_str());
 
 	return ret;
@@ -138,27 +138,26 @@ void ModuleSceneIntro::EditTransform()
 	//CompTransform* ty = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
 
 
-	float modelPtr[16];
-	memcpy(modelPtr, marcburru.ptr(), 16 * sizeof(float));
+	float4x4 modelPtr;
+	modelPtr = marcburru;
 
 	//tempTransform.Transposed();
 
-	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, modelPtr);
+	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, marcburru.ptr());
 
 	if (ImGuizmo::IsUsing())
 	{
-		/*float4x4 newMatrix;
-		newMatrix.Set(modelPtr);
+		
 		CompTransform* transform;
 		transform = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
-		newMatrix.Transpose();
+		marcburru.Transpose();
 
-		transform->global_transform = newMatrix;
+		transform->global_transform = marcburru;
 
 		transform->local_transform = dynamic_cast<CompTransform*>(transform->gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Inverted()* transform->global_transform;
 
-		transform->local_transform.Decompose(transform->scl, transform->rot, transform->pos);
-		transform->UpdateTrans();*/
+		transform->local_transform.Decompose(transform->pos, transform->rot, transform->scl);
+		transform->UpdateTrans();
 
 	}
 }
