@@ -1310,86 +1310,104 @@ void  ModuleUI::DrawFolder()
 			continue;
 
 		ImGui::PushID(i);
-		if (files[i].find(".fbx") && files[i].find(".FBX")) {
+		
+		GLuint buttonimage;
 
-			if (ImGui::ImageButton((void*)(intptr_t)texture_, { 64, 64 }))
+		std::string file_path;
+		file_path.append(folder).append("/").append(files[i]);
 
-				/*if (ImGui::Button(files[i].c_str(), ImVec2(120, 120)))*/
+		//std::string file_path = "Assets/Models/Megaman.fbx";
+		//std::string file_path = "Assets/Models/BakerHouse.fbx";
+		/*char* buffer = nullptr;
+		uint fileSize = 0;
+		fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+		App->fbxload->LoadFBX(buffer, fileSize, root);*/
+		std::string path;
+		std::string texname;
+		std::string texname_2;
+		std::string texname_3;
+
+		App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+		path.append(texname).append(texname_2).append(".meta");
+
+		std::string ext;
+		ext.append("fbx");
+		std::string _ext;
+		_ext.append("FBX");
+		if (texname_3 == ext || texname_3 == _ext)
+		{
+			buttonimage = fbx_;
+		}
+		else
+		{
+			buttonimage = texture_;
+		}
+
+		if (ImGui::ImageButton((void*)(intptr_t)buttonimage, { 64, 64 }))
+		{
+
+			std::string file_path;
+			file_path.append(folder).append("/").append(files[i]);
+
+			//std::string file_path = "Assets/Models/Megaman.fbx";
+			//std::string file_path = "Assets/Models/BakerHouse.fbx";
+			/*char* buffer = nullptr;
+			uint fileSize = 0;
+			fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+			App->fbxload->LoadFBX(buffer, fileSize, root);*/
+			
+			if (texname_3 == ext || texname_3 == _ext)
 			{
-
-				std::string file_path;
-				file_path.append(folder).append("/").append(files[i]);
-
-				//std::string file_path = "Assets/Models/Megaman.fbx";
-				//std::string file_path = "Assets/Models/BakerHouse.fbx";
-				/*char* buffer = nullptr;
-				uint fileSize = 0;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, root);*/
-				std::string path;
-				std::string texname;
-				std::string texname_2;
-				std::string texname_3;
-
-				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
-				path.append(texname).append(texname_2).append(".meta");
-
-				std::string ext;
-				ext.append("fbx");
-				std::string _ext;
-				_ext.append("FBX");
-				if (texname_3 == ext || texname_3 == _ext)
+				if (App->filesys->Exists(path.c_str()))
 				{
-					if (App->filesys->Exists(path.c_str()))
-					{
-						App->input->filedropped = true;
-						App->serialization->parentuid = App->resource->GenerateNewUID();
-						App->serialization->LoadGameObject(path.c_str());
-						App->input->filedropped = false;
-					}
-					else
-					{
-						LOG("%s doesn't have a meta file", path.c_str());
-					}
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
 				}
 				else
 				{
-					char* buffer = nullptr;
-					uint fileSize = 0;
-					fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
+			}
+			else
+			{
+				char* buffer = nullptr;
+				uint fileSize = 0;
+				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 
 
-					if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
+				if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
+				{
+					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
+
+					if (App->scene_intro->SelectedGameObject != nullptr)
 					{
 						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
-
-						if (App->scene_intro->SelectedGameObject != nullptr)
-						{
-							App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
-						}
-
 					}
+
 				}
 			}
-
-
-
-			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::Button("Delete"))
-				{
-					/*std::string file_to_delete = current_folder + "/" + files[i];
-					App->resource->DeleteAsset(file_to_delete.c_str());
-					ImGui::CloseCurrentPopup();*/
-				}
-				ImGui::EndPopup();
-			}
-
-			ImGui::Text("%s", files[i].c_str());
-			ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
-			ImGui::PopID();
-			ImGui::SameLine();
 		}
+
+
+
+		if (ImGui::BeginPopupContextItem()) {
+			if (ImGui::Button("Delete"))
+			{
+				/*std::string file_to_delete = current_folder + "/" + files[i];
+				App->resource->DeleteAsset(file_to_delete.c_str());
+				ImGui::CloseCurrentPopup();*/
+			}
+			ImGui::EndPopup();
+		}
+
+		ImGui::Text("%s", files[i].c_str());
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+		ImGui::PopID();
+		ImGui::SameLine();
+		
 	}
 }
 
