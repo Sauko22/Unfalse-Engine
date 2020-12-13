@@ -100,3 +100,11 @@ Shows all the logs from the code.
 - Models must be in the models folder and textures must be in textures folder
 
 ## Assignment 2 - Engine Editor
+
+### Scene Serialitzacion
+Saves and Load all the objects of the main window as a Scene. For that, we use the buttons found in the Time Management bar.
+
+### Time Management bar
+- Play/Stop: Allows to change the scene and return to the previous state.
+- Box : Activate/Desactivate box colliders
+- Empty GameObject: 
