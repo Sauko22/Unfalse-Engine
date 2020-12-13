@@ -1,12 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "ModuleFBXLoad.h"
 #include "glmath.h"
 #include "Light.h"
 #include "Vec2.h"
-#include "ModuleFBXLoad.h"
-#include "ModuleGameObject.h"
+#include "Component.h"
 
 #define MAX_LIGHTS 8
 
@@ -30,11 +28,23 @@ public:
 	void Draw();
 
 	void Draw_Axis();
+
+	// Update gameobjects
+	void UpdateGameObjects(GameObject* gameobject);
+	void DeleteGameObjects(GameObject* gameobject);
+	void _DeleteGameObjects(GameObject* gameobject);
+	void DeleteAllGameObjects();
+	void GenerateAABB(CompMesh* compmesh);
+	void GenerateLines(CompMesh* compmesh);
+
+	void UpdateCameraView();
+	bool ContainsAaBox_2(AABB aabb);
+
 public:
 
 	Light lights[MAX_LIGHTS];
-	//mat3x3 NormalMatrix;
-	mat4x4 /*ModelMatrix, ViewMatrix,*/ ProjectionMatrix;
+	
+	mat4x4 ProjectionMatrix;
 
 	// Draw axis
 	float init[3] = { 0,0,0 };
@@ -51,8 +61,15 @@ public:
 	uint renderTexture;
 	Vec2 img_size;
 	Vec2 win_size;
+	Vec2 img_corner;
+	Vec2 img_offset;
 
+	ImVec2 WinSize;
 	int j;
 
 	GLuint texchec;
+
+	CompCamera* main_camera;
+	CompCamera* camera_culling;
+	bool culling;
 };

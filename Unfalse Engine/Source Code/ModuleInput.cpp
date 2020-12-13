@@ -1,8 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
-#include "ModuleFBXLoad.h"
-#include "ModuleFileSystem.h"
 
 #include "Glew/include/glew.h"
 
@@ -19,10 +17,7 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_x_motion = 0;
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
-	texture_dropped = false;
-	texture_obj_dropped = false;
-
-	name = "";
+	filedropped = false;
 }
 
 // Destructor
@@ -133,49 +128,49 @@ update_status ModuleInput::PreUpdate()
 				// Get Object name
 				std::string fileDir = "";
 				std::string extDir = "";
-				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir);
+				std::string filetype = "";
+				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir, &filetype);
 				LOG("OBJECT NAME: %s", extDir.c_str());
-				name = extDir;
-
-				char* buffer = nullptr;
-				uint fileSize = 0;
 
 				std::size_t assets = Dir.find("Assets");
 				std::string load_directory = Dir.substr(assets);
 				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
 				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
 
-				fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(norm_load_directory.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
 
 				if (norm_load_directory.substr(norm_load_directory.find(".")) == (".fbx") || norm_load_directory.substr(norm_load_directory.find(".")) == (".FBX"))
-					App->fbxload->Import(buffer, fileSize);
-				else
 				{
-					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+					if (App->filesys->Exists(path.c_str()))
 					{
-						if (App->gameobject->emptygameobject_list[i]->emptySelected == true)
-						{
-							for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-							{
-								texname = norm_load_directory.find_last_of("/");
-								texname_2 = norm_load_directory.substr(texname);
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
-							}
-							texture_dropped = true;
-						}
-						for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-						{
-							if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected == true)
-							{
-								texname = norm_load_directory.find_last_of("/");
-								texname_2 = norm_load_directory.substr(texname);
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->pngname = texname_2;
-								texture_obj_dropped = true;
-							}
-						}
+						filedropped = true;
+						App->serialization->parentuid = App->resource->GenerateNewUID();
+						App->serialization->LoadGameObject(path.c_str());
+						filedropped = false;
+					}
+					else
+					{
+						LOG("%s doesn't have a meta file", path.c_str());
 					}
 				}
-					
+				else
+				{
+					char* buffer = nullptr;
+					uint fileSize = 0;
+					fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
+
+					if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
+					{
+						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, norm_load_directory.c_str());
+					}
+				}
+
 				SDL_free(dropped_filedir);
 			}
 			break;

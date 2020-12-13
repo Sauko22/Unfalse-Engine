@@ -24,7 +24,7 @@
 #undef Polygon
 #endif
 
-#include "../Math/MathNamespace.h"
+#include "MathGeoLib/include/Math/MathNamespace.h"
 
 MATH_BEGIN_NAMESPACE
 

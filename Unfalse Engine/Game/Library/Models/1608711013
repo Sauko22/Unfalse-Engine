@@ -1,0 +1,810 @@
+{
+    "GameObject": [
+        {
+            "Name": "GameObject_2",
+            "ID": 1610521159,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "City_building_004",
+            "ID": 123368795,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                21.01409912109375,
+                0,
+                -41.47589111328125
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                -0.49999997019767761,
+                -0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_004",
+            "Mesh ID": 130052411,
+            "Texture_Name": "building03_c",
+            "Texture ID": 325593898
+        },
+        {
+            "Name": "City_building_001",
+            "ID": 1699024861,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                20.053276062011719,
+                2.1210730949405843e-07,
+                17.707164764404297
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                -0.49999997019767761,
+                -0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_001",
+            "Mesh ID": 1712600956,
+            "Texture_Name": "Building_V02_C",
+            "Texture ID": 1266630647
+        },
+        {
+            "Name": "City_building_007",
+            "ID": 570473588,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                37.4932861328125,
+                -1.5106878663573298e-06,
+                16.010492324829102
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_007",
+            "Mesh ID": 577157204,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 849560275
+        },
+        {
+            "Name": "City_building_008",
+            "ID": 542225109,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                18.270824432373047,
+                -2.0522466002148576e-06,
+                40.979995727539063
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                1.5454308055495858e-08,
+                1.5454309831852697e-08,
+                0.70710676908493042
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_008",
+            "Mesh ID": 549396072,
+            "Texture_Name": "building_025_c",
+            "Texture ID": 650601104
+        },
+        {
+            "Name": "Line002",
+            "ID": 76826371,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                1.8538382053375244,
+                0,
+                -2.1597719192504883
+            ],
+            "Rotation": [
+                -3.0908623216419073e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -3.0908619663705394e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "Line002",
+            "Mesh ID": 86503690,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "Plane001",
+            "ID": 2120526924,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -0.02860260009765625,
+                0.026032090187072754,
+                0
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "Scale": [
+                0.9966353178024292,
+                0.97061651945114136,
+                0.9966353178024292
+            ],
+            "Mesh_Name": "Plane001",
+            "Mesh ID": 2127280161,
+            "Texture_Name": "",
+            "Texture ID": 1988710469
+        },
+        {
+            "Name": "City_building_010",
+            "ID": 1024849273,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -39.153720855712891,
+                8.5538647454086458e-07,
+                25.154010772705078
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_010",
+            "Mesh ID": 1033760761,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 1825466871
+        },
+        {
+            "Name": "City_building_011",
+            "ID": 1047051966,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                37.4932861328125,
+                -1.5106878663573298e-06,
+                30.134540557861328
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_011",
+            "Mesh ID": 1057216632,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 849560275
+        },
+        {
+            "Name": "City_building_013",
+            "ID": 1741055911,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                33.201576232910156,
+                5.0146070407208754e-07,
+                -42.288055419921875
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                1.5454308055495858e-08,
+                1.5454309831852697e-08,
+                0.70710676908493042
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_013",
+            "Mesh ID": 1748853463,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 97882886
+        },
+        {
+            "Name": "City_building_014",
+            "ID": 1608099382,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                32.061729431152344,
+                0,
+                -19.439706802368164
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                0.49999997019767761,
+                0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_014",
+            "Mesh ID": 1617846322,
+            "Texture_Name": "building03_c",
+            "Texture ID": 325593898
+        },
+        {
+            "Name": "City_building_016",
+            "ID": 967305613,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -41.972747802734375,
+                8.5538647454086458e-07,
+                34.270423889160156
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                0.49999997019767761,
+                0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_016",
+            "Mesh ID": 975381649,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 1825466871
+        },
+        {
+            "Name": "City_building_017",
+            "ID": 1853742002,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -39.153720855712891,
+                8.5538647454086458e-07,
+                44.260082244873047
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_017",
+            "Mesh ID": 1861469933,
+            "Texture_Name": "building 01_c",
+            "Texture ID": 1825466871
+        },
+        {
+            "Name": "City_building_022",
+            "ID": 1260917102,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -27.426488876342773,
+                0,
+                -20.831323623657227
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                0.49999991059303284,
+                0.49999994039535522,
+                0.50000005960464478
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_022",
+            "Mesh ID": 1269062759,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 2042597788
+        },
+        {
+            "Name": "City_building_023",
+            "ID": 2106990807,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                37.4932861328125,
+                -1.5106878663573298e-06,
+                42.130641937255859
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_023",
+            "Mesh ID": 2117225094,
+            "Texture_Name": "building_016_c",
+            "Texture ID": 849560275
+        },
+        {
+            "Name": "City_building_024",
+            "ID": 318842958,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                43.060829162597656,
+                -0.069194458425045013,
+                -20.572771072387695
+            ],
+            "Rotation": [
+                -0.5,
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_024",
+            "Mesh ID": 328032930,
+            "Texture_Name": "building_025_c",
+            "Texture ID": 650601104
+        },
+        {
+            "Name": "City_building_026",
+            "ID": 1003796173,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -16.446016311645508,
+                0,
+                31.51188850402832
+            ],
+            "Rotation": [
+                -0.5,
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_026",
+            "Mesh ID": 1013195008,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 2042597788
+        },
+        {
+            "Name": "City_building_028",
+            "ID": 1861687952,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -33.755039215087891,
+                -9.3834518111179932e-07,
+                13.38798999786377
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_028",
+            "Mesh ID": 1871295650,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "Object010",
+            "ID": 299188986,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                4.066741943359375,
+                -0.47595980763435364,
+                -20.604869842529297
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                -0.49999997019767761,
+                -0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "Object010",
+            "Mesh ID": 309562515,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "City_building_030",
+            "ID": 838077343,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -41.835563659667969,
+                -9.3834518111179932e-07,
+                -42.807239532470703
+            ],
+            "Rotation": [
+                -4.6362931271914931e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -1.5454309831852697e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_030",
+            "Mesh ID": 849495187,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "City_building_031",
+            "ID": 1438765246,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -41.835563659667969,
+                -9.3834518111179932e-07,
+                -34.679481506347656
+            ],
+            "Rotation": [
+                -4.6362931271914931e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -1.5454309831852697e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_031",
+            "Mesh ID": 1451018542,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "City_building_032",
+            "ID": 1219735495,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                21.01409912109375,
+                0,
+                -29.478403091430664
+            ],
+            "Rotation": [
+                -0.50000011920928955,
+                -0.49999997019767761,
+                -0.5,
+                0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_032",
+            "Mesh ID": 1232336896,
+            "Texture_Name": "building03_c",
+            "Texture ID": 325593898
+        },
+        {
+            "Name": "City_building_033",
+            "ID": 751114459,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                42.37042236328125,
+                5.0146070407208754e-07,
+                -32.361495971679688
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_033",
+            "Mesh ID": 767475394,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 97882886
+        },
+        {
+            "Name": "City_building_034",
+            "ID": 83795089,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -16.696884155273438,
+                0,
+                16.049516677856445
+            ],
+            "Rotation": [
+                -1.3346269156500057e-07,
+                0.70710676908493042,
+                0.70710676908493042,
+                7.164545223758978e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_034",
+            "Mesh ID": 96118006,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 2042597788
+        },
+        {
+            "Name": "City_building_035",
+            "ID": 2110136111,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -40.802516937255859,
+                -9.3834518111179932e-07,
+                13.38798999786377
+            ],
+            "Rotation": [
+                0.5,
+                0.5,
+                0.5,
+                -0.5
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_035",
+            "Mesh ID": 2121136229,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "City_building_036",
+            "ID": 1849960349,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                33.201576232910156,
+                5.0146070407208754e-07,
+                -31.216331481933594
+            ],
+            "Rotation": [
+                -4.6362931271914931e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -1.5454309831852697e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_036",
+            "Mesh ID": 1863884549,
+            "Texture_Name": "building 06_ c",
+            "Texture ID": 97882886
+        },
+        {
+            "Name": "City_building_037",
+            "ID": 1160431880,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -20.317689895629883,
+                -16.163610458374023,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                1,
+                -4.3711388286737929e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_037",
+            "Mesh ID": 1173311765,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 2042597788
+        },
+        {
+            "Name": "City_building_038",
+            "ID": 746602571,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -16.495393753051758,
+                0,
+                -41.649002075195313
+            ],
+            "Rotation": [
+                -1.3065661619293678e-07,
+                0.70710676908493042,
+                0.70710676908493042,
+                6.8839383970953349e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_038",
+            "Mesh ID": 759343214,
+            "Texture_Name": "building05 _c",
+            "Texture ID": 2042597788
+        },
+        {
+            "Name": "City_building_039",
+            "ID": 211980827,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -30.643888473510742,
+                -9.3834518111179932e-07,
+                -42.807239532470703
+            ],
+            "Rotation": [
+                -4.6362931271914931e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -1.5454309831852697e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_039",
+            "Mesh ID": 224025260,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "City_building_040",
+            "ID": 20520992,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                -30.643888473510742,
+                -9.3834518111179932e-07,
+                -34.679481506347656
+            ],
+            "Rotation": [
+                -4.6362931271914931e-08,
+                0.70710676908493042,
+                0.70710676908493042,
+                -1.5454309831852697e-08
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_040",
+            "Mesh ID": 33192014,
+            "Texture_Name": "Building_V01_C",
+            "Texture ID": 543227271
+        },
+        {
+            "Name": "City_building_041",
+            "ID": 1792814985,
+            "Parent": "GameObject_2",
+            "Parent ID": 1610521159,
+            "Position": [
+                21.612646102905273,
+                2.1210730949405843e-07,
+                30.695278167724609
+            ],
+            "Rotation": [
+                -0.70710676908493042,
+                0,
+                0,
+                0.70710676908493042
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "City_building_041",
+            "Mesh ID": 1805903733,
+            "Texture_Name": "Building_V02_C",
+            "Texture ID": 1266630647
+        }
+    ]
+}

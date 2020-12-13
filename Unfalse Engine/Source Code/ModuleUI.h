@@ -19,9 +19,6 @@
 
 #include <vector>
 
-typedef unsigned int GLuint;
-typedef unsigned char GLubyte;
-
 class ModuleUI : public Module
 {
 public:
@@ -40,25 +37,39 @@ public:
 	bool showDemo;
 	bool showAbout;
 	bool showConfig;
-
+	bool showSceneLoad;
 
 	// Docking
 	bool showDock;
 
 	// Primitives
-
 	bool cube;
 	bool pyramid;
 	bool sphere;
 	bool cylinder;
 
-
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
+	void showSceneLoadWin(bool* p_open = NULL);
 	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
-	
+	void showInspectorWin();
 
+	void Hierarchy(GameObject* gameobject);
+	void DeselectGameObjects(GameObject* gameobject);
+	void CreateEmptyGameObject();
+
+	void ChangeGameObjectParent(GameObject* obj, GameObject* nextparent);
+	void TimeWindows();
+
+	void ResourceExplorer();
+	void AssetsExplorer();
+	
+	bool playing;
+	bool paused;
+	bool bounding;
+	bool raycast;
+	
 	// Editor menu
 	bool activeInspec;
 	bool activeConsole;
@@ -66,7 +77,6 @@ public:
 
 	void putLog(const char*);
 	
-
 	std::vector<std::string> items;
 
 	std::vector<float> fps_log;
@@ -80,4 +90,24 @@ public:
 	bool color;
 	bool texture2d;
 	bool vsync;
+	int j, k, l;
+	
+	void DrawFolder();
+	void DrawTree(const char* dire, const char* filter_extension);
+	std::string folder;
+
+	uint myscene;
+	bool savescene;
+
+	int my_image_width;
+	int my_image_height;
+	
+	GLuint folde_;
+	GLuint file_;
+	GLuint texture_;
+	GLuint fbx_;
+	uint folders;
+	uint file;
+	uint fbx;
+	uint texture;
 };

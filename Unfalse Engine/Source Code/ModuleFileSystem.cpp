@@ -27,7 +27,7 @@ ModuleFileSystem::ModuleFileSystem(Application* app, bool start_enabled) : Modul
 
 	AddPath("."); //Adding ProjectFolder (working directory)
 	AddPath("Assets");
-	//CreateLibraryDirectories();
+	CreateLibraryDirectories();
 }
 
 // Destructor
@@ -46,8 +46,7 @@ bool ModuleFileSystem::Init()
 	char* write_path = SDL_GetPrefPath(App->GetOrganizationName(), App->GetTitleName());
 
 	// Trun this on while in game mode
-	// if(PHYSFS_setWriteDir(write_path) == 0)
-	// LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	
 
 	SDL_free(write_path);
 
@@ -64,10 +63,11 @@ bool ModuleFileSystem::CleanUp()
 
 void ModuleFileSystem::CreateLibraryDirectories()
 {
-	/*CreateDir(LIBRARY_PATH);
-	CreateDir(FOLDERS_PATH);
+	CreateDir(LIBRARY_PATH);
+	CreateDir(TEXTURES_PATH);
 	CreateDir(MESHES_PATH);
-	CreateDir(TEXTURES_PATH);*/
+	CreateDir(MODELS_PATH);
+	CreateDir(SCENES_PATH);
 }
 
 // Add a new zip file or folder
@@ -412,6 +412,8 @@ uint ModuleFileSystem::Save(const char* file, const void* buffer, unsigned int s
 	}
 	else
 		LOG("[error] File System error while opening file %s: %s", file, PHYSFS_getLastError());
+
+	//LOG("Texture %s saved correctly", file);
 
 	return ret;
 }

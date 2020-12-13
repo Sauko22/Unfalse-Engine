@@ -1,13 +1,14 @@
 #pragma once
 #include "Module.h"
+#include "Application.h"
 #include "Globals.h"
 #include "Vector.h"
-#include "ModuleGameObject.h"
 #include "Component.h"
-#include <xstring>
+#include "ModuleResources.h"
+#include <string>
 
-typedef unsigned int GLuint;
-typedef unsigned int ILuint;
+struct aiNode;
+struct aiScene;
 
 class ModuleFBXLoad : public Module
 {
@@ -19,22 +20,16 @@ public:
 
 	bool CleanUp();
 
-	void Import(char* file_path, uint filesize, char* tex_path = nullptr);
+	// Model
+	void Import_Model(ResModel* resource, uint fileSize, char* buffer);
+	void ImportModel(aiNode* node, ResModel* parent, const aiScene* scene, uint id);
 
-	void Load_Mesh();
-
-	void LoadTexture(char* file_path);
+	// Texture
+	void ResImport_Texture(const char* assetspath);
 	
-	virtual void LoadTextureObject(char* file_path, int i, int k, int j);
-
 public:
-	EmptyGameObject* emptygameobject;
-	CompMesh* compmesh;
-	GameObject* gameobject;
-
-	ILuint textIL;
-
-	int j;
-
-	bool ResizeFBX;
+	int k;
+	bool texinlibrary;
+	bool onlibrary;
+	uint parentid;
 };

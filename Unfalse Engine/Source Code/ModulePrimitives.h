@@ -18,14 +18,15 @@ public:
 	bool CleanUp();
 
 	// Primitives creation
-	//void CreatePoint();
+	
 	
 	void CreatePlane(float posx, float posy, float posz);
-	
+	void CreateLine(vec3 origin, vec3 destination);
 
 	// Primitives properties
 	void PrimitivesProp();
 
 	// Primitives list
 	std::vector<Primitive*> primitive_list;
+	std::vector<Primitive*> bbox_list;
 };

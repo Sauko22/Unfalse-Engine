@@ -1,28 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
-#include "ModuleFBXLoad.h"
-#include "ModuleWindow.h"
-#include "Component.h"
-#include "ModuleGameObject.h"
-#include "p2Defs.h"
 
 #include "Glew\include\glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
-
-#include "Devil\include\ilu.h"
-#include "Devil\include\ilut.h"
-
-#pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#pragma comment( lib, "Devil/libx86/ILU.lib" )
-#pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -36,6 +20,9 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 	win_size = { 0,0 };
 
 	j = 0;
+
+	main_camera = nullptr;
+	culling = false;
 }
 
 // Destructor
@@ -140,24 +127,23 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate()
 {
+	if (App->camera->scene_camera != nullptr)
+	{
+		UpdateCameraView();
+	}
+
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	glLoadMatrixf(App->camera->GetViewMatrixCamera());
 
 	// light 0 on cam pos
 	lights[0].SetPos(5, 5, 5);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
-
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		App->fbxload->ResizeFBX = !App->fbxload->ResizeFBX;
-		LOG("RESIZED");
-	}
 
 	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
 	{
@@ -183,12 +169,29 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+void ModuleRenderer3D::UpdateCameraView()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	static float4x4 viewMatrix;
+
+	viewMatrix = App->camera->scene_camera->frustum.ProjectionMatrix();
+	viewMatrix.Transpose();
+
+	glLoadMatrixf((GLfloat*)viewMatrix.v);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
 	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 
@@ -242,8 +245,6 @@ void ModuleRenderer3D::GenerateSceneBuffers()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->screen_surface->w, App->window->screen_surface->h);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
-	
-
 	//Configuring frame buffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
 
@@ -259,95 +260,154 @@ void ModuleRenderer3D::Draw()
 	// Window 1
 	ImGui::Begin("Scene", NULL);
 	
+	ImGui::SetCursorPos( ImVec2(img_offset.x, img_offset.y));
+	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
+	img_corner.y = App->window->windowSize.y - img_corner.y; 
+
 	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
-	ImVec2 WinSize = ImGui::GetWindowSize();
-
+	 WinSize = ImGui::GetWindowSize();
 	if (WinSize.x != App->window->windowSize.x || WinSize.y != App->window->windowSize.y)
 	{
 		WinResize(Vec2(WinSize.x, WinSize.y));
 	}
 
 	// Draw any Meshes loaded into scene
-	for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+	UpdateGameObjects(App->scene_intro->root);
+
+	// Draw raycast
+	if (App->UI->raycast == true)
 	{
-		if (App->gameobject->emptygameobject_list[i]->emptyrenderActive == true)
+		// Draw pickup line
+		glBegin(GL_LINES);
+		glVertex3fv(App->camera->origin.ptr());
+		glVertex3fv(App->camera->dest.ptr());
+		glEnd();
+	}
+
+	// Draw Guizmo
+	App->scene_intro->EditTransform();
+
+	ImGui::End();
+}
+
+void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
+{
+	if (gameobject != nullptr )
+	{
+		if (gameobject->Objdelete == true)
 		{
-			for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
+			std::string name;
+			name.append("GameObject_0");
+			if (gameobject->name != name)
 			{
-				// Render active
-				if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjrenderActive == true)
-				{
-					// Normals active
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjnormActive == true)
-					{
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = true;
-						}
-					}
-					else
-					{
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->normactive = false;
-						}
-					}
-
-					// Texture active
-					if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjtexActive == true)
-					{
-						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
-							}
-						}
-						else
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
-							}
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = true;
-							}
-						}
-					}
-					else
-					{
-						if (App->gameobject->emptygameobject_list[i]->gameobject_list[j]->ObjdefauTex == true)
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = true;
-							}
-						}
-						else
-						{
-							for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-							{
-								App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->deftexactive = false;
-							}
-						}
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->component_list[k]->texactive = false;
-						}
-					}
-
-					App->gameobject->emptygameobject_list[i]->gameobject_list[j]->update();
-				}
+				DeleteGameObjects(gameobject);
+			}
+			else
+			{
+				_DeleteGameObjects(gameobject);
 			}
 		}
-		
+
+		if (gameobject->ObjrenderActive == true)
+		{
+			gameobject->update();
+
+			for (int i = 0; i < gameobject->children_list.size(); i++)
+			{
+				UpdateGameObjects(gameobject->children_list[i]);
+			}
+		}
+	}
+}
+
+void ModuleRenderer3D::_DeleteGameObjects(GameObject* gameobject)
+{
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		_DeleteGameObjects(gameobject->children_list[i]);
 	}
 	
-	
-	
-	ImGui::End();
+	if (gameobject != nullptr)
+	{
+		if (gameobject->parentGameObject != nullptr)
+		{
+			for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
+			{
+				if (gameobject->parentGameObject->children_list[i] == gameobject)
+				{
+					gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
+					delete gameobject;
+					gameobject = nullptr;
+				}
+				break;
+			}
+		}
+	}
+
+	App->scene_intro->SelectedGameObject = nullptr;
+}
+
+void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
+{
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		DeleteGameObjects(gameobject->children_list[i]);
+	}
+
+	if (gameobject->parentGameObject != nullptr)
+	{
+		for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
+		{
+
+			if (gameobject->parentGameObject->children_list[i] == gameobject)
+			{
+				gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
+				i--;
+			}
+		}
+	}
+	if (gameobject != nullptr)
+	{
+		if (App->scene_intro->SelectedGameObject = gameobject)
+		{
+			App->scene_intro->SelectedGameObject = nullptr;
+		}
+
+		delete gameobject;
+		gameobject = nullptr;
+	}
+}
+
+void ModuleRenderer3D::DeleteAllGameObjects()
+{
+	App->scene_intro->SelectedGameObject = nullptr;
+	for (int i = 0; i < App->scene_intro->root->children_list.size(); i++)
+	{
+		std::string scenecamera;
+		scenecamera.append(" Scene Camera");
+		if (App->scene_intro->root->children_list[i]->name != scenecamera)
+		{
+			if (App->scene_intro->root->children_list[i] != nullptr)
+			{
+				for (int j = 0; i < App->scene_intro->root->children_list[i]->children_list.size(); j++)
+				{
+					if (App->scene_intro->root->children_list[i]->children_list[j] != nullptr)
+					{
+						delete App->scene_intro->root->children_list[i]->children_list[j];
+						App->scene_intro->root->children_list[i]->children_list[j] = nullptr;
+						App->scene_intro->root->children_list[i]->children_list.erase(App->scene_intro->root->children_list[i]->children_list.begin() + j);
+						j--;
+					}
+				}
+				delete App->scene_intro->root->children_list[i];
+				App->scene_intro->root->children_list[i] = nullptr;
+				App->scene_intro->root->children_list.erase(App->scene_intro->root->children_list.begin() + i);
+				i--;
+			}
+		}
+	}
+	App->serialization->gameobject_list.clear();
 }
 
 void ModuleRenderer3D::WinResize(Vec2 newSize)
@@ -356,14 +416,81 @@ void ModuleRenderer3D::WinResize(Vec2 newSize)
 
 	img_size = App->window->windowSize;
 
-	if (img_size.x > win_size.x)
+	if (img_size.x > win_size.x - 10.0f)
 	{
-		img_size /= (img_size.x / (win_size.x));
+		img_size /= (img_size.x / (win_size.x - 10.0f));
 	}
-	if (img_size.y > win_size.y)
+	if (img_size.y > win_size.y - 10.0f)
 	{
-		img_size /= (img_size.y / (win_size.y));
+		img_size /= (img_size.y / (win_size.y - 10.0f));
 	}
+	img_offset = Vec2(win_size.x - 5.0f - img_size.x, win_size.y - 5.0f - img_size.y) / 2;
+}
+
+bool ModuleRenderer3D::ContainsAaBox_2(AABB aabb)
+{
+	bool ret = false;
+
+	ret = camera_culling->ContainsAaBox(aabb);
+
+	return ret;
+}
+
+// LOCAL SPACE
+void ModuleRenderer3D::GenerateAABB(CompMesh* compmesh)
+{
+	compmesh->bbox.SetNegativeInfinity();
+	compmesh->bbox.Enclose((float3*)compmesh->vertex, compmesh->num_vertex);
+}
+
+void ModuleRenderer3D::GenerateLines(CompMesh* compmesh)
+{
+	float3 cube_vertex[8];
+
+	compmesh->bbox.GetCornerPoints(cube_vertex);
+
+	glBegin(GL_LINES);
+
+	// Base
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[4].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[5].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[1].ptr());
+
+	// Pilars
+	glVertex3fv(cube_vertex[0].ptr());
+	glVertex3fv(cube_vertex[2].ptr());
+
+	glVertex3fv(cube_vertex[4].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[5].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[1].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	// Top
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[6].ptr());
+
+	glVertex3fv(cube_vertex[2].ptr());
+	glVertex3fv(cube_vertex[3].ptr());
+
+	glVertex3fv(cube_vertex[6].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glVertex3fv(cube_vertex[3].ptr());
+	glVertex3fv(cube_vertex[7].ptr());
+
+	glEnd();
 }
 
 

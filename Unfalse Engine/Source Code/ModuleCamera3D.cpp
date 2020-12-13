@@ -1,21 +1,30 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "Glew\include\glew.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	CalculateViewMatrix();
+	X = vec3(1.f, 0.f, 0.f);
+	Y = vec3(0.f, 1.f, 0.f);
+	Z = vec3(0.f, 0.f, 1.f);
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
-
-	Position = vec3(10.0f, 2.0f, 5.0f);
-	Reference = vec3(0.0f, 0.0f, 0.0f);
+	Position = vec3(0.f, 0.f, 0.f);
+	_Position = vec3(0.f, 0.f, 0.f);
+	Reference = vec3(0.f, 0.f, 0.f);
 
 	camera_speed = 0;
 	lalt = false;
 	orbit = false;
+
+	scene_camera = nullptr;
+	_scene_camera = nullptr;
+
+	origin = origin.zero;
+	dest = dest.zero;
+	offsetx = 0.34;
+	offsety = 0.14;
+	first_it = false;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -26,6 +35,8 @@ bool ModuleCamera3D::Start()
 {
 	LOG("Setting up the camera");
 	bool ret = true;
+	
+	scene_camera = new CompCamera(nullptr);
 
 	return ret;
 }
@@ -39,53 +50,68 @@ bool ModuleCamera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
+update_status ModuleCamera3D::PreUpdate()
+{
+	_scene_camera = (CompCamera*)App->scene_intro->camera->GetComponent(Component::compType::CAMERA);
+	_scene_transform = (CompTransform*)App->scene_intro->camera->GetComponent(Component::compType::TRANSFORM);
+
+	return UPDATE_CONTINUE;
+}
+
+// -----------------------------------------------------------------
 update_status ModuleCamera3D::Update()
 {
+	if (first_it == false)
+	{
+		_scene_transform->pos = float3(0, 10, -30);
+		
+		first_it = true;
+	}
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
-		camera_speed = 0.15;
+		camera_speed = 2;
 	}
 	else
 	{
-		camera_speed = 0.05f;
+		camera_speed = 0.5;
 	}
 
 	// Camera zoom
 	if (App->input->mouse_z > 0) 
 	{
-		Position -= Z * 0.8f;
-		Reference -= Z * 0.8f;
+		_scene_transform->pos += _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->mouse_z < 0)
 	{
-		Position += Z * 0.8f;
-		Reference += Z * 0.8f;
+		_scene_transform->pos -= _scene_camera->frustum.front * camera_speed;
 	}
 
 	// Camera 2D movement
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		Position -= X * camera_speed;
-		Reference -= X * camera_speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
+	{
+		_scene_transform->pos -= _scene_camera->frustum.WorldRight() * camera_speed;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		Position += X * camera_speed;
-		Reference += X * camera_speed;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+	{
+		_scene_transform->pos += _scene_camera->frustum.WorldRight() * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 	{
-		Position -= Z * camera_speed;
-		Reference -= Z * camera_speed;
+		_scene_transform->pos += _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
-		Position += Z * camera_speed;
-		Reference += Z * camera_speed;
+		_scene_transform->pos -= _scene_camera->frustum.front * camera_speed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
-		LookAt(App->UI->cameradirection);
-
+		if (App->scene_intro->SelectedGameObject != nullptr)
+		{
+			CompTransform* objselect_pos = (CompTransform*)App->scene_intro->SelectedGameObject->GetComponent(Component::compType::TRANSFORM);
+			App->UI->cameradirection = (objselect_pos->pos.x, objselect_pos->pos.y, objselect_pos->pos.z);
+			Look(App->UI->cameradirection);
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN) lalt = true;
@@ -98,7 +124,7 @@ update_status ModuleCamera3D::Update()
 	{
 		if (orbit == false) 
 		{
-			LookAt(App->UI->cameradirection);
+			Look(App->UI->cameradirection);
 			orbit = true;
 		}
 		int dx = -App->input->GetMouseXMotion();
@@ -134,13 +160,11 @@ update_status ModuleCamera3D::Update()
 		Position = Reference + Z * length(Position);
 	}
 
-
 	// Mouse motion ----------------
 	if(lalt == false && App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		
 		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
+		int dy = App->input->GetMouseYMotion();
 
 		// TODO (Homework): Rotate the camera with the mouse
 		vec3 Forward = -Z;
@@ -148,65 +172,119 @@ update_status ModuleCamera3D::Update()
 		Forward = rotate(Forward, dx, Y);
 		Forward = rotate(Forward, dy, X);
 
-		LookAt(Forward + Position);
+		Look(Forward);
 	}
 
-	// Recalculate matrix -------------
-	CalculateViewMatrix();
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		float normalized_x = (App->renderer3D->win_size.x - App->input->GetMouseX()) / App->renderer3D->img_size.x;
+		float normalized_y = (App->renderer3D->win_size.y - App->input->GetMouseY()) / App->renderer3D->img_size.y;
+
+		normalized_x = -(normalized_x - 0.5) / 0.5;
+		normalized_y = (normalized_y - 0.5) / 0.5;
+
+		normalized_x -=  App->renderer3D->img_size.x / App->renderer3D->win_size.x;
+		normalized_x += offsetx;
+		normalized_y += offsety;
+
+		LineSegment picking = _scene_camera->frustum.UnProjectLineSegment(normalized_x, normalized_y);
+
+		origin = picking.a;
+		dest = picking.b;
+
+		ObjPicked(picking);
+	}
 
 	return UPDATE_CONTINUE;
 }
 
-// -----------------------------------------------------------------
-void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void ModuleCamera3D::ObjPicked(LineSegment my_ray)
 {
-	this->Position = Position;
-	this->Reference = Reference;
+	std::map<float, GameObject*> objects_crossed;
 
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	App->scene_intro->GetAllGameObjects();
 
-	if(!RotateAroundReference)
+	for (int i = 0; i < App->scene_intro->gameobject_list.size(); i++)
 	{
-		this->Reference = this->Position;
-		this->Position += Z * 0.05f;
-	}
+		bool hit = my_ray.Intersects(App->scene_intro->gameobject_list[i]->aabb); // ray vs. AABB
 
-	CalculateViewMatrix();
+		if (hit == true)
+		{
+			float hit_near;
+			float hit_far;
+
+			hit = my_ray.Intersects(App->scene_intro->gameobject_list[i]->aabb, hit_near, hit_far);
+			objects_crossed[hit_near] = App->scene_intro->gameobject_list[i];
+		}
+	}
+	
+	for (std::map<float, GameObject*>::iterator it = objects_crossed.begin(); it != objects_crossed.end(); it++)
+	{
+		CompMesh* mesh = (CompMesh*)it->second->GetComponent(Component::compType::MESH);
+
+		if (mesh != nullptr)
+		{
+			CompTransform* transform = (CompTransform*)it->second->GetComponent(Component::compType::TRANSFORM);
+			my_ray.Transform(transform->local_transform.Inverted());
+
+			for (int i = 0; i < mesh->num_index; i += 3)
+			{
+				// Triangle vertex
+				float3 vertex1(mesh->vertex[mesh->index[i] * 3], mesh->vertex[mesh->index[i] * 3 + 1], mesh->vertex[mesh->index[i] * 3 + 2]);
+				float3 vertex2(mesh->vertex[mesh->index[i + 1] * 3], mesh->vertex[mesh->index[i + 1] * 3 + 1], mesh->vertex[mesh->index[i + 1] * 3 + 2]);
+				float3 vertex3(mesh->vertex[mesh->index[i + 2] * 3], mesh->vertex[mesh->index[i + 2] * 3 + 1], mesh->vertex[mesh->index[i + 2] * 3 + 2]);
+
+				Triangle triangle(vertex1, vertex2, vertex3);
+
+				// Object selected
+				if (my_ray.Intersects(triangle, nullptr, nullptr))
+				{
+					App->UI->DeselectGameObjects(App->scene_intro->root);
+
+					App->scene_intro->SelectedGameObject = it->second;
+
+					it->second->objSelected = true;
+					
+					for (int i = 0; i < it->second->component_list.size(); i++)
+					{
+						it->second->component_list[i]->gameobject_selected = true;
+					}
+				}
+			}
+		}
+	}
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::LookAt( const vec3 &Spot)
+void ModuleCamera3D::Look(const vec3& Spot)
 {
-	Reference = Spot;
-
-	Z = normalize(Position - Reference);
+	Z = normalize(_Position - Spot);
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
-	CalculateViewMatrix();
-}
-
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::Move(const vec3 &Movement)
-{
-	Position += Movement;
-	Reference += Movement;
-
-	CalculateViewMatrix();
+	RotMatrix = float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
+	_scene_transform->local_transform = RotMatrix;
 }
 
 // -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
+float* ModuleCamera3D::GetViewMatrixCamera()
 {
-	return &ViewMatrix;
+	scene_camera = _scene_camera;
+	scene_transform = _scene_transform;
+
+	float4x4 viewMatrix;
+
+	viewMatrix = scene_camera->frustum.ViewMatrix();
+	viewMatrix.Transpose();
+
+	return (float*)viewMatrix.v;
 }
 
-// -----------------------------------------------------------------
-void ModuleCamera3D::CalculateViewMatrix()
+float4x4 ModuleCamera3D::GetViewMatrixM()
 {
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	ViewMatrixInverse = inverse(ViewMatrix);
+	return(float4x4) _scene_camera->frustum.ViewMatrix();
+}
+float4x4 ModuleCamera3D::GetProjectionMatrixM()
+{
+	return _scene_camera->frustum.ProjectionMatrix();
 }

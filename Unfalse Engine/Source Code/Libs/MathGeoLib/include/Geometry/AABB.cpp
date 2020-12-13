@@ -778,10 +778,10 @@ bool AABB::IntersectLineAABB_SSE(const float4 &rayPos, const float4 &rayDir, flo
 
 	// To avoid false positives, need to have an additional rejection test for each cardinal axis the ray direction
 	// is parallel to.
-	__m128 out2 = _mm_cmplt_ps(rayPos.v, MinPoint_SSE());
+	/*__m128 out2 = _mm_cmplt_ps(rayPos.v, MinPoint_SSE());
 	__m128 out3 = _mm_cmpgt_ps(rayPos.v, MaxPoint_SSE());
 	out2 = _mm_or_ps(out2, out3);
-	zeroDirections = _mm_and_ps(zeroDirections, out2);
+	zeroDirections = _mm_and_ps(zeroDirections, out2);*/
 
 	__m128 yOut = _mm_shuffle_ps(zeroDirections, zeroDirections, _MM_SHUFFLE(1,1,1,1));
 	__m128 zOut = _mm_shuffle_ps(zeroDirections, zeroDirections, _MM_SHUFFLE(2,2,2,2));

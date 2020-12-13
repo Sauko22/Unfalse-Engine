@@ -1,6 +1,5 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleSceneIntro.h"
 #include "Primitive.h"
 #include "p2Defs.h"
 #include "Glew/include/glew.h"
@@ -59,11 +58,18 @@ update_status ModulePrimitives::PostUpdate()
 
 void ModulePrimitives::CreatePlane(float posx, float posy, float posz)
 {
-	Plane* plane = new Plane;
+	Plane_Primitive* plane = new Plane_Primitive;
 	plane->SetPos(posx, posy, posz);
 	primitive_list.push_back((Primitive*)plane);
 }
 
+void ModulePrimitives::CreateLine(vec3 origin, vec3 destination)
+{
+	Line_Primitive* line = new Line_Primitive;
+	line->origin = origin;
+	line->destination = destination;
+	primitive_list.push_back((Primitive*)line);
+}
 
 void ModulePrimitives::PrimitivesProp()
 {

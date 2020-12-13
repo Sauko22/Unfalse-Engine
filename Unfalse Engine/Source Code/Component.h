@@ -5,10 +5,11 @@
 #include <vector>
 #include <string>
 
-//#include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int ILuint;
+typedef unsigned char ILubyte;
 
 class GameObject;
 
@@ -20,61 +21,41 @@ public:
 		NO_TYPE,
 		TRANSFORM,
 		MESH,
-		MATERIAL
+		MATERIAL,
+		CAMERA
 	};
 
 	Component(compType type, GameObject*);
 	virtual ~Component();
 
 	virtual void update() {};
+	virtual void inspector() {};
 
 public:
 	compType type;
 	GameObject* gameObject;
+	bool renderactive;
 	bool normactive;
-	bool texactive;
-	bool deftexactive;
-	GLuint newtexgl = 0;
+	bool gameobject_selected;
 };
 
 class CompTransform : public Component
 {
 public:
-	CompTransform(GameObject* gameobject, vec3 position, vec3 rotation, vec3 scale);
+	CompTransform(GameObject* gameobject);
 	~CompTransform();
 
 	void update();
-
+	void inspector();
+	void UpdateTrans();
+	
 public:
-	vec3 pos;
-	vec3 rot;
-	vec3 scl;
-};
-
-struct Mesh 
-{
-	uint id_index = 0; // index in VRAM
-	uint num_index = 0;
-	uint* index = nullptr;
-
-	uint id_vertex = 0; // unique vertex in VRAM
-	uint num_vertex = 0;
-	float* vertex = nullptr;
-
-	uint id_normals = 0; // unique normals in VRAM
-	uint num_normals = 0;
-	float* normals = nullptr;
-
-	uint id_tex = 0; // unique tex coords in VRAM
-	uint num_tex = 0;
-	float* tex = nullptr;
-
-	uint num_faces = 0;
-
-	GLuint textgl;
-	GLuint defaultex;
-
-	bool hastext = false;
+	float3 pos;
+	Quat rot;
+	float3 scl;
+	float4x4 local_transform;
+	float4x4 global_transform;
+	bool first_it;
 };
 
 class CompMesh : public Component
@@ -84,11 +65,35 @@ public:
 	~CompMesh();
 
 	void update();
+	void inspector();
 	void RenderMesh();
 
 public:
-	Mesh* newmesh;
-	std::vector<Mesh*> mesh_list;
+	uint id_index; // index in VRAM
+	uint num_index;
+	uint* index = nullptr;
+
+	uint id_vertex; // unique vertex in VRAM
+	uint num_vertex;
+	float* vertex;
+
+	uint id_normals; // unique normals in VRAM
+	uint num_normals;
+	float* normals;
+
+	uint id_tex; // unique tex coords in VRAM
+	uint num_tex;
+	float* tex;
+
+	uint num_faces;
+
+	bool meshactive;
+	
+	std::string name;
+	std::string mpath;
+	uint muid;
+
+	AABB bbox;
 };
 
 class CompMaterial : public Component
@@ -98,8 +103,46 @@ public:
 	~CompMaterial();
 
 	void update();
+	void inspector();
 	virtual void RenderTexture();
 
 public:
+	GLuint textgl;
+	GLuint defaultex;
+	GLuint newtexgl = 0;
+	ILubyte* texgldata;
 
+	bool hastext;
+	bool texactive;
+	bool deftexactive;
+
+	std::string deftexname;
+	int texture_h;
+	int texture_w;
+	std::string texname;
+	std::string tpath;
+	uint tuid;
+};
+
+class CompCamera : public Component
+{
+public:
+	CompCamera(GameObject* gameobject);
+	~CompCamera();
+
+	void update();
+	void Render();
+	void init();
+	void inspector();
+	bool ContainsAaBox(const AABB& refBox) const;
+	void UpdateTransform();
+
+public:
+	Frustum frustum;
+	float4x4 rotation;
+	float aspectRatio;
+	float3 initpos;
+	float3 initrot;
+	float3 rot;
+	float horizontalFOV;
 };

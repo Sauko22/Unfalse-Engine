@@ -35,8 +35,8 @@
 #endif
 
 #include "Clock.h"
-#include "../Math/myassert.h"
-#include "../Math/assume.h"
+#include "MathGeoLib/include/Math/myassert.h"
+#include "MathGeoLib/include/Math/assume.h"
 
 MATH_BEGIN_NAMESPACE
 

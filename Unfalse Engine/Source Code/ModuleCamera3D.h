@@ -2,6 +2,10 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
+#include "Component.h"
+#include "GameObject.h"
+
+#include "MathGeoLib/include/MathGeoLib.h"
 
 class ModuleCamera3D : public Module
 {
@@ -10,25 +14,37 @@ public:
 	~ModuleCamera3D();
 
 	bool Start();
+	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
 
-	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);
-	void Move(const vec3 &Movement);
-	float* GetViewMatrix();
-
-private:
-
-	void CalculateViewMatrix();
+	void Look(const vec3 &Spot);
+	float* GetViewMatrixCamera();
+	void ObjPicked(LineSegment ray_local_space);
+	
+	float4x4 GetViewMatrixM();
+	
+	float4x4 GetProjectionMatrixM();
 
 public:
-	
-	vec3 X, Y, Z, Position, Reference;
+	vec3 X, Y, Z;
+	vec3 Reference, Position, _Position;
 	float camera_speed;
 	bool lalt;
 	bool orbit;
-private:
+	CompCamera* scene_camera;
+	CompCamera* _scene_camera;
+	CompTransform* scene_transform;
+	CompTransform* _scene_transform;
 
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+public:
+	float3 origin;
+	float3 dest;
+
+private:
+	float4x4 RotMatrix;
+	
+	float offsetx;
+	float offsety;
+	bool first_it;
 };

@@ -1,32 +1,13 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleWindow.h"
 #include "ModuleUI.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleWindow.h"
-#include "ModuleGameObject.h"
-#include "ModuleFBXLoad.h"
+#include "Component.h"
+#include "GameObject.h"
+#include "ModuleFileSystem.h"
 
+#include <algorithm>
 #include "Glew\include\glew.h"
-
-#include "SDL\include\SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-
-//ImGui
-
-#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib */
-
-
-//// JSON Header 
-//#include "JSON\parson.h" 
-
-//#include "MathGeoLib/include/MathGeoLib.h"
-
-
+#define DROP_ID_HIERARCHY_NODES "hierarchy_node"
 
 ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -34,13 +15,13 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showDemo = false;
 	showAbout = false;
 	showConfig = false;
+	showSceneLoad = false;
 
 	// Editor Menu
 	 activeInspec = true;
 	 activeConsole = true;
 	 activeHierach = true;
 	
-
 	// Docking
 	showDock = false;
 
@@ -67,14 +48,30 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 
 	// Primitives
 	cube = false;
-	 pyramid = false;
-	 sphere = false;
-	 cylinder = false;
+	pyramid = false;
+	sphere = false;
+	cylinder = false;
+	j = 0;
+	k = 0;
+	l = 0;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	ms_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	cameradirection = { 0,0,0 };
+	cameradirection = vec3(0.f, 0.f, -1.f);
+	playing = false;
+	paused = false;
+	bounding = false;
+	raycast = false;
+	savescene = false;
+	myscene = 0;
+	folder = ("Assets");
+	my_image_width = 0;
+	my_image_height = 0;
+	texture_ = 0;
+	folde_ = 0;
+	fbx_ = 0;
+	file_ = 0;
 }
 
 ModuleUI::~ModuleUI()
@@ -84,6 +81,8 @@ bool ModuleUI::Init()
 {
 	LOG("Loading UI");
 	bool ret = true;
+
+	myscene = App->resource->GenerateNewUID();
 
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
@@ -122,16 +121,19 @@ bool ModuleUI::Init()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
+	
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
 	ImGui_ImplOpenGL3_Init();
 
-	/*print_commits_info("Sauko22", "Racing-Car");*/
-
+	//Loading Icons
+	fbx = App->resource->LoadTextureFromFile("Assets/Icons/model.png", &fbx_, &my_image_width, &my_image_height);
+	file = App->resource->LoadTextureFromFile("Assets/Icons/file.png", &file_, &my_image_width, &my_image_height);
+	texture = App->resource->LoadTextureFromFile("Assets/Icons/texture.jpg", &texture_, &my_image_width, &my_image_height);
+	folders = App->resource->LoadTextureFromFile("Assets/Icons/folder.png", &folde_, &my_image_width, &my_image_height);
+	
 	return ret;
 }
 
@@ -151,14 +153,15 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	if (showDock) {
+	if (showDock) 
+	{
 
 		showDockSpace(&showDock);
 	}
 	showDockSpace(&showDock);
 
 	App->renderer3D->Draw();
-
+	
 	// All windows, toolbars and options of ImGui
 	// Toolbar
 	if (ImGui::BeginMainMenuBar())
@@ -168,8 +171,7 @@ update_status ModuleUI::Update()
 
 			if (ImGui::MenuItem("New"))
 			{
-
-				// New file
+				App->renderer3D->DeleteAllGameObjects();
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
@@ -234,44 +236,114 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Cube"))
 			{
 				std::string file_path = "Assets/Primitives/Cube.fbx";
-				char* buffer = nullptr;
-				uint fileSize = 0;
-				cube = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
 				
-				//App->primitives->CreateCube(0, 0, 0, 1, 1, 1);
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 			
 			if (ImGui::MenuItem("Sphere"))
 			{
 				std::string file_path = "Assets/Primitives/Sphere.fbx";
-				char* buffer = nullptr;
-				uint fileSize = 0;
-				sphere = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 
 			if (ImGui::MenuItem("Cylinder"))
 			{
 				std::string file_path = "Assets/Primitives/Cylinder.fbx";
-				char* buffer = nullptr;
-				uint fileSize = 0;
-				cylinder = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
 
 			if (ImGui::MenuItem("Pyramid"))
 			{
 				std::string file_path = "Assets/Primitives/Pyramid.fbx";
-				char* buffer = nullptr;
-				uint fileSize = 0;
-				pyramid = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->Import(buffer, fileSize);
+				
+				std::string path;
+				std::string texname;
+				std::string texname_2;
+				std::string texname_3;
+
+				App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+				path.append(texname).append(texname_2).append(".meta");
+
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
 			}
+
+			if (ImGui::MenuItem("Camera"))
+			{
+				std::string obj = std::to_string(j);
+
+				GameObject* camera = new GameObject(App->scene_intro->root);
+				camera->name.append("Camera_").append(obj);
+				(CompTransform*)camera->AddComponent(Component::compType::TRANSFORM);
+				(CompCamera*)camera->AddComponent(Component::compType::CAMERA);
+				j++;
+			}
+
 			ImGui::EndMenu();
 		}
 		
@@ -317,77 +389,28 @@ update_status ModuleUI::Update()
 		ImGui::EndMainMenuBar();
 	}
 
-	/*if (ImGui::Begin("Inspector", NULL)) 
+	if (activeHierach == true)
 	{
-		
-
-		ImGui::End();
-	}*/
-
-	if (activeHierach == true) {
 		if (ImGui::Begin("Hierarchy"))
 		{
-			static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-			static int selection_mask = (1 << 2);
-			int node_clicked = -1;
-
-			for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
+			for (int i = 0; i < App->scene_intro->root->children_list.size(); i++)
 			{
-				// Disable the default "open on single-click behavior" + set Selected flag according to our selection.
-				ImGuiTreeNodeFlags node_flags = base_flags;
-				const bool is_selected = (selection_mask & (1 << i)) != 0;
-
-				bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "%s", App->gameobject->emptygameobject_list[i]->name.c_str());
-
-				if (ImGui::IsItemClicked())
-				{
-					for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-					{
-						App->gameobject->emptygameobject_list[i]->emptySelected = false;
-
-						for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-						{
-							App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
-						}
-					}
-					App->gameobject->emptygameobject_list[i]->emptySelected = true;
-				}
-
-
-				if (node_open)
-				{
-					
-					// Items 0..2 are Tree Node
-					for (int j = 0; j < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); j++)
-					{
-						node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-						ImGui::TreeNodeEx((void*)(intptr_t)j, node_flags, "%s", App->gameobject->emptygameobject_list[i]->gameobject_list[j]->name.c_str());
-
-						if (ImGui::IsItemClicked())
-						{
-							for (int i = 0; i < App->gameobject->emptygameobject_list.size(); i++)
-							{
-								App->gameobject->emptygameobject_list[i]->emptySelected = false;
-
-								for (int k = 0; k < App->gameobject->emptygameobject_list[i]->gameobject_list.size(); k++)
-								{
-									App->gameobject->emptygameobject_list[i]->gameobject_list[k]->objSelected = false;
-								}
-							}
-							App->gameobject->emptygameobject_list[i]->gameobject_list[j]->objSelected = true;
-						}
-					}
-					ImGui::TreePop();
-				}
+				Hierarchy(App->scene_intro->root->children_list[i]);
 			}
-			if (node_clicked != -1)
-			{
-				selection_mask = (1 << node_clicked);	// Click to single-select
-			}
-
 			ImGui::End();
 		}
 	}
+
+	if (activeInspec == true)
+	{
+		if (ImGui::Begin("Inspector"))
+		{
+			showInspectorWin();
+			
+			ImGui::End();
+		}
+	}
+
 	if (activeConsole == true) {
 		if (ImGui::Begin("Console", NULL, ImGuiWindowFlags_HorizontalScrollbar))
 		{
@@ -396,6 +419,17 @@ update_status ModuleUI::Update()
 			ImGui::End();
 		}
 	}
+	TimeWindows();
+	
+	//Resource Manager windows
+	if (ImGui::Begin("Resources", NULL))
+	{
+		ResourceExplorer();
+		
+		ImGui::End();
+	}
+	
+	AssetsExplorer();
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
 	
@@ -403,7 +437,113 @@ update_status ModuleUI::Update()
 	
 	if (showConfig == true) { showConfigWin(&showConfig); }
 
+	if (showSceneLoad == true) { showSceneLoadWin(&showSceneLoad); }
+
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::Hierarchy(GameObject* gameobject)
+{
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+	const char* GameObjname = gameobject->name.c_str();
+
+	if (gameobject->objSelected == true)
+	{
+		node_flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	bool node_open = ImGui::TreeNodeEx(GameObjname, node_flags);
+
+	if (ImGui::IsItemClicked())
+	{
+		DeselectGameObjects(App->scene_intro->root);
+
+		App->scene_intro->SelectedGameObject = gameobject;
+
+		gameobject->objSelected = true;
+		for (int i = 0; i < gameobject->component_list.size(); i++)
+		{
+			gameobject->component_list[i]->gameobject_selected = true;
+		}
+	}
+
+	if (ImGui::BeginDragDropTarget()) {
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
+
+		if (payload != nullptr)
+		{
+			if (payload->IsDataType(DROP_ID_HIERARCHY_NODES))
+			{
+				GameObject* obj = *(GameObject**)payload->Data;
+
+				if (obj != nullptr) //The second part of this is bug that needs to be fixed
+				{
+					ChangeGameObjectParent(obj, gameobject);
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+	
+	if (ImGui::BeginDragDropSource())
+	{
+		ImGui::SetDragDropPayload(DROP_ID_HIERARCHY_NODES, &gameobject, sizeof(GameObject), ImGuiCond_Once);
+		ImGui::Text("GameObjname");
+		ImGui::EndDragDropSource();
+	}
+
+	if (node_open)
+	{
+		for (int i = 0; i < gameobject->children_list.size(); i++)
+		{
+			Hierarchy(gameobject->children_list[i]);
+		}
+		ImGui::TreePop();
+	}
+}
+
+
+
+void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
+{
+	if (obj != nullptr && nextparent != nullptr) 
+	{
+		for (int i = 0; i < obj->parentGameObject->children_list.size(); i++)
+		{
+			if (obj->parentGameObject->children_list[i] == obj)
+			{
+				obj->parentGameObject->children_list.erase(obj->parentGameObject->children_list.begin() + i);
+				i--;
+
+			}
+		}
+		obj->parentGameObject = nextparent;
+		nextparent->children_list.push_back(obj);
+	}
+}
+
+void ModuleUI::DeselectGameObjects(GameObject* gameobject)
+{
+	gameobject->objSelected = false;
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		DeselectGameObjects(gameobject->children_list[i]);
+	}
+	for (int i = 0; i < gameobject->component_list.size(); i++)
+	{
+		gameobject->component_list[i]->gameobject_selected = false;
+	}
+}
+
+void ModuleUI::CreateEmptyGameObject()
+{
+	std::string obj = std::to_string(k);
+
+	GameObject* emptyObject = new GameObject(App->scene_intro->root);
+	emptyObject->name.append("emptyObject_").append(obj);
+	(CompTransform*)emptyObject->AddComponent(Component::compType::TRANSFORM);
+	k++;
 }
 
 update_status ModuleUI::PostUpdate()
@@ -446,87 +586,11 @@ void ModuleUI::putLog(const char* log)
 	items.push_back(item);
 }
 
-
-void EmptyGameObject::showEmptyInspectorWin()
+void ModuleUI::showInspectorWin()
 {
-	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
+	if (App->scene_intro->SelectedGameObject != nullptr)
 	{
-		ImGui::Checkbox("ActiveObj", &emptyrenderActive); ImGui::SameLine();
-		static char str0[128] = "Hello, world!";
-		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
-
-		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			static float pos[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
-			static float angle[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
-			static float scale[3] = { 1.0f, 1.0f, 1.0f };
-			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
-		}
-	}
-}
-
-void GameObject::showInspectorWin()
-{
-	if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
-		static char str0[128] = "Hello, world!";
-		ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
-
-		if (ImGui::CollapsingHeader("Local Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			static float pos[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Position", pos, 0.1f, -500.0f, 500.0f);
-			static float angle[3] = { 0.0f, 0.0f, 0.0f };
-			ImGui::DragFloat3("Degrees", angle, 0.1f, -180.0f, 180.0f);
-			static float scale[3] = { 1.0f, 1.0f, 1.0f };
-			ImGui::DragFloat3("Scale", scale, 0.1f, 0.0f, 500.0f);
-		}
-		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			
-			ImGui::Checkbox("ActiveNormals", &ObjnormActive);
-			ImGui::Text("Index: %i", index_name);
-			ImGui::Text("Normals: %i", normals_name);
-			ImGui::Text("Vertex: %i", vertex_name);
-			ImGui::Text("Faces: %i", faces_name);
-			ImGui::Text("Text coords: %i", texturescoords_name);
-			ImGui::Text("Gameobject: %s", fbxname.c_str());
-		}
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("ActiveMat", &ObjtexActive);
-			ImGui::Text("%s", pngname.c_str());
-
-			ImGui::Text("Width: %i", texture_w); ImGui::SameLine();
-			ImGui::Text("Height: %i", texture_h);
-
-			ImTextureID texture = 0;
-			for (int k = 0; k < component_list.size(); k++)
-			{
-				if (component_list[k]->newtexgl != 0)
-				{
-					texture = (ImTextureID)component_list[k]->newtexgl;
-				}
-			}
-			if (texture != 0)
-			{
-				ImGui::Image(texture, ImVec2(128, 128));
-			}
-			else
-			{
-				ImGui::Image((ImTextureID)actualtexgl, ImVec2(128, 128));
-			}
-		}
-		if (ImGui::CollapsingHeader("Default Text", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("Defaultext", &ObjdefauTex);
-			ImGui::Text("%s", deftexname.c_str());
-
-			ImGui::Image((ImTextureID)App->renderer3D->texchec, ImVec2(128, 128));
-		}
+		App->scene_intro->SelectedGameObject->Inspector();
 	}
 }
 
@@ -536,15 +600,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 	{
 		ImGui::End();
 		return;
-	}
-
-	if (ImGui::BeginMenu("Options"))
-	{
-		if (ImGui::MenuItem("Set Defaults")) {}
-		if (ImGui::MenuItem("Load")) {}
-		if (ImGui::MenuItem("Save")) {}
-
-		ImGui::EndMenu();
 	}
 
 	if (ImGui::CollapsingHeader("Application"))
@@ -775,7 +830,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 			SDL_SetWindowFullscreen(App->window->window, 0);
 			LOG("ISNOTFULLDESKTOP");
 		}
-		
 	}
 
 	if (ImGui::CollapsingHeader("Input"))
@@ -867,7 +921,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "0.0Mb");
 	}
 
-
 	ImGui::End();
 }
 
@@ -928,6 +981,44 @@ void ModuleUI::showAboutWin(bool* p_open)
 
 	ImGui::End();
 }
+
+void ModuleUI::showSceneLoadWin(bool* p_open)
+{
+	if (!ImGui::Begin("Loading Scene", p_open))
+	{
+		ImGui::End();
+		return;
+	}
+
+	ImGui::Text("Which scene do you want to load?");
+
+	std::vector<std::string> scenes_list;
+	std::vector<std::string> dir;
+
+	// Get path
+	std::string _dir = "";
+	_dir.append("Library/Scenes/");
+
+	// Get files in path
+	App->filesys->DiscoverFiles(_dir.c_str(), scenes_list, dir);
+
+	for (int i = 0; i < scenes_list.size(); i++)
+	{
+		std::string path;
+		path.append("Library/Scenes/").append(scenes_list[i]);
+
+		if (ImGui::Button(scenes_list[i].c_str()))
+		{
+			App->input->filedropped = true;
+			App->renderer3D->DeleteAllGameObjects();
+			App->serialization->LoadModel(path.c_str());
+			App->input->filedropped = false;
+		}
+	}
+
+	ImGui::End();
+}
+
 void ModuleUI::showDockSpace(bool* p_open)
 {
 	static bool opt_fullscreen_persistant = true;
@@ -982,3 +1073,382 @@ void ModuleUI::showDockSpace(bool* p_open)
 	ImGui::End();
 }
 
+void ModuleUI::TimeWindows() 
+{
+	ImVec2 buttonSize = { 50.f, 20.f };
+	ImGui::Begin("Time Management", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Text("|"); ImGui::SameLine();
+	
+	if (playing == true) 
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+		if (ImGui::Button("Stop", buttonSize)) 
+		{
+			std::string path;
+			path.append("Library/Scenes/") += std::to_string(myscene);
+			App->input->filedropped = true;
+			App->renderer3D->DeleteAllGameObjects();
+			App->serialization->LoadModel(path.c_str());
+			App->input->filedropped = false;
+
+			playing = false;
+		}
+	}
+	else 
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
+		if (ImGui::Button("Play", buttonSize)) 
+		{
+			savescene = true;
+			App->scene_intro->SaveScene();
+			savescene = false;
+			playing = true;
+		}
+	}
+	ImGui::PopStyleColor();
+	ImGui::SameLine();
+
+	if (paused == true) 
+	{
+		if (ImGui::Button("Resume", buttonSize)) 
+		{
+			paused = false;
+		}
+	}
+	else 
+	{
+		if (ImGui::Button("Pause", buttonSize)) 
+		{
+			paused = true;
+		}
+	}
+	ImGui::SameLine();
+	
+	if (bounding == false)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
+	}
+	else if (bounding == true)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+	}
+		
+	if (ImGui::Button("Box", buttonSize))
+	{
+		bounding =! bounding;
+	}
+	ImGui::PopStyleColor();
+	ImGui::SameLine();
+
+	if (raycast == true)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
+	}
+	else if (raycast == false)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+	}
+		
+	if (ImGui::Button("RayC", buttonSize))
+	{
+		raycast = !raycast;
+	}
+	ImGui::PopStyleColor();
+	
+	ImVec2 buttonSizes = { 80.f, 20.f };
+	ImGui::SameLine();
+	if (ImGui::Button("Empty GO", buttonSizes))
+	{
+		CreateEmptyGameObject();
+	}
+
+	ImGui::SameLine();
+	ImGui::Text("||");
+	ImGui::SameLine();
+	
+	ImVec2 buttonSizesu = { 100.f, 20.f };
+	if (ImGui::Button("Save Scene", buttonSizesu))
+	{
+		App->scene_intro->SaveScene();
+	}
+	
+	ImGui::SameLine();
+	if (ImGui::Button("Load Scene", buttonSizesu))
+	{
+		App->scene_intro->LoadScene();
+	}
+
+	ImGui::End();
+}
+
+void ModuleUI::ResourceExplorer()
+{
+	std::vector<ResModel*> resmodel_list;
+	std::vector<ResMesh*> resmesh_list;
+	std::vector<ResTexture*> restext_list;
+
+	for (std::map<uint, Resource*>::iterator it = App->resource->resources.begin(); it != App->resource->resources.end(); it++)
+	{
+		if (it->second->Type == Resource::ResType::MODEL)
+		{
+			resmodel_list.push_back((ResModel*)it->second);
+		}
+		else if (it->second->Type == Resource::ResType::MESH)
+		{
+			resmesh_list.push_back((ResMesh*)it->second);
+		}
+		else if (it->second->Type == Resource::ResType::TEXTURE)
+		{
+			restext_list.push_back((ResTexture*)it->second);
+		}
+		else
+		{
+			LOG("Error reading resource %s", it->second->UID);
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Models"))
+	{
+		if (ImGui::TreeNode("Models"))
+		{
+			for (int i = 0; i < resmodel_list.size(); i++)
+			{
+				if (resmodel_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", resmodel_list[i]->name.c_str());
+					ImGui::Text("Times loaded: %i", resmodel_list[i]->referenceCount);
+				}
+			}
+			
+			ImGui::Separator();
+		}
+		ImGui::TreePop();
+	}
+	if (ImGui::CollapsingHeader("Meshes"))
+	{
+		if (ImGui::TreeNode("Meshes"))
+		{
+			for (int i = 0; i < resmesh_list.size(); i++)
+			{
+				if (resmesh_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", resmesh_list[i]->name.c_str());
+					ImGui::Text("Times loaded: %i", resmesh_list[i]->referenceCount);
+				}
+			}
+
+			ImGui::Separator();
+		}
+		ImGui::TreePop();
+	}
+	if (ImGui::CollapsingHeader("Textures"))
+	{
+		if (ImGui::TreeNode("Textures"))
+		{
+			for (int i = 0; i < restext_list.size(); i++)
+			{
+				if (restext_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", restext_list[i]->texname.c_str());
+					ImGui::Text("Times loaded: %i", restext_list[i]->referenceCount);
+				}
+			}
+		}
+		ImGui::TreePop();
+	}
+}
+
+void ModuleUI::AssetsExplorer()
+{
+	if (ImGui::Begin("Assets Explorer")) 
+	{
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
+		ImGui::BeginChild("Tree", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.15f, ImGui::GetContentRegionAvail().y), false, window_flags);
+		ImGui::Text("Assets");
+		DrawTree("Assets", nullptr);
+		ImGui::EndChild();
+		
+		ImGui::SameLine();
+		ImGuiWindowFlags window_flagsi = ImGuiWindowFlags_AlwaysHorizontalScrollbar;
+		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true, window_flagsi);
+		DrawFolder();
+		ImGui::EndChild();
+	}
+	ImGui::End();
+}
+
+void  ModuleUI::DrawFolder()
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	App->filesys->DiscoverFiles(folder.c_str(), files, dirs);
+	ImVec2 buttonsize = { 20.f, 20.f };
+	if (ImGui::Button("<-", buttonsize))
+	{
+		size_t back = folder.find_first_of("/") + 1;
+		folder = folder.substr(0, back);
+	}
+
+	for (size_t i = 0; i < dirs.size(); i++)
+	{
+		ImGui::PushID(i);
+		if (ImGui::ImageButton((void*)(intptr_t)folde_, ImVec2(100, 100))) {
+			folder.append("/");
+			folder.append(dirs[i].c_str());
+		}
+
+		ImGui::Text("%s", dirs[i].c_str());
+		ImGui::Dummy(ImVec2(0.0f, 0.0f));
+		
+		ImGui::PopID();
+		ImGui::SameLine();
+	}
+
+	for (size_t i = 0; i < files.size(); i++)
+	{
+		if (files[i].find(".meta") != -1)
+			continue;
+
+		ImGui::PushID(i);
+		
+		GLuint buttonimage;
+
+		std::string file_path;
+		file_path.append(folder).append("/").append(files[i]);
+
+		std::string path;
+		std::string texname;
+		std::string texname_2;
+		std::string texname_3;
+
+		App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+		path.append(texname).append(texname_2).append(".meta");
+
+		std::string ext;
+		ext.append("fbx");
+		std::string _ext;
+		_ext.append("FBX");
+		if (texname_3 == ext || texname_3 == _ext)
+		{
+			buttonimage = fbx_;
+		}
+		else
+		{
+			buttonimage = texture_;
+		}
+
+		if (ImGui::ImageButton((void*)(intptr_t)buttonimage, { 64, 64 }))
+		{
+			std::string file_path;
+			file_path.append(folder).append("/").append(files[i]);
+			
+			if (texname_3 == ext || texname_3 == _ext)
+			{
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
+			}
+			else
+			{
+				char* buffer = nullptr;
+				uint fileSize = 0;
+				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+
+				if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
+				{
+					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
+				}
+			}
+		}
+
+		if (ImGui::BeginPopupContextItem()) 
+		{
+			if (ImGui::Button("Delete"))
+			{
+				std::string file_to_delete = folder + "/" + files[i];
+
+				std::string path;
+				std::string _texname;
+				std::string _texname_2;
+				std::string _texname_3;
+
+				App->filesys->SplitFilePath(file_to_delete.c_str(), &_texname, &_texname_2, &_texname_3);
+				path.append(_texname).append(_texname_2).append(".meta");
+
+				App->serialization->RemoveFile(path.c_str(), file_to_delete.c_str(), texname_3.c_str());
+				//App->resource->DeleteAsset(file_to_delete.c_str());
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+
+		ImGui::Text("%s", files[i].c_str());
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+		ImGui::PopID();
+		ImGui::SameLine();
+	}
+}
+
+void ModuleUI::DrawTree(const char* dire, const char* filter_extension)
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	std::string dir((dire) ? dire : "");
+	dir += "/";
+
+	ImGuiTreeNodeFlags tree_flags = ImGuiTreeNodeFlags_OpenOnDoubleClick;
+	App->filesys->DiscoverFiles(dir.c_str(), files, dirs);
+
+	for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	{
+		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str(), tree_flags))
+		{
+			if (ImGui::BeginPopupContextItem()) {
+				if (ImGui::Button("Delete file"))
+				{
+					//gameObject->to_delete = true;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::IsItemClicked()) {
+				folder = dire;
+				folder.append("/");
+				folder.append(*it).c_str();
+			}
+
+			DrawTree((dir + (*it)).c_str(), filter_extension);
+
+			ImGui::TreePop();
+		}
+	}
+
+	std::sort(files.begin(), files.end());
+
+	for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	{
+		const std::string& str = *it;
+
+		bool ok = true;
+
+		if (filter_extension && str.substr(str.find_last_of(".") + 1) != filter_extension)
+			ok = false;
+
+		if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		{
+			ImGui::TreePop();
+		}
+	}
+}

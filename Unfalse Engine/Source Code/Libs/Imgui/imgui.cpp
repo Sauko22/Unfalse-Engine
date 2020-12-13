@@ -7577,7 +7577,7 @@ static void ImGui::ErrorCheckEndFrameSanityChecks()
     // to always call End/EndChild even if Begin/BeginChild returns false! (this is unfortunately inconsistent with most other Begin* API).
     if (g.CurrentWindowStack.Size != 1)
     {
-        if (g.CurrentWindowStack.Size > 1)
+       /* if (g.CurrentWindowStack.Size > 1)
         {
             IM_ASSERT_USER_ERROR(g.CurrentWindowStack.Size == 1, "Mismatched Begin/BeginChild vs End/EndChild calls: did you forget to call End/EndChild?");
             while (g.CurrentWindowStack.Size > 1)
@@ -7586,7 +7586,7 @@ static void ImGui::ErrorCheckEndFrameSanityChecks()
         else
         {
             IM_ASSERT_USER_ERROR(g.CurrentWindowStack.Size == 1, "Mismatched Begin/BeginChild vs End/EndChild calls: did you call End/EndChild too much?");
-        }
+        }*/
     }
 }
 

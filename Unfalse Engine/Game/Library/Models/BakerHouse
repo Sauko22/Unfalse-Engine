@@ -1,0 +1,114 @@
+{
+    "GameObject": [
+        {
+            "Name": " GameObject_0",
+            "ID": 552124043,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Transform": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "L_grove2_0_0_node",
+            "ID": 747595909,
+            "Parent": " GameObject_0",
+            "Parent ID": 552124043,
+            "Transform": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "L_grove2_0_0_node",
+            "Mesh ID": 0,
+            "Texture_Name": "def_Rockman_exe_col",
+            "Texture ID": 0
+        },
+        {
+            "Name": "baster_VIS_O_OBJ2_1_0_node",
+            "ID": 1693042834,
+            "Parent": " GameObject_0",
+            "Parent ID": 552124043,
+            "Transform": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "baster_VIS_O_OBJ2_1_0_node",
+            "Mesh ID": 0,
+            "Texture_Name": "def_Rockman_exe_col",
+            "Texture ID": 0
+        },
+        {
+            "Name": "ears2_2_0_node",
+            "ID": 803258382,
+            "Parent": " GameObject_0",
+            "Parent ID": 552124043,
+            "Transform": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "ears2_2_0_node",
+            "Mesh ID": 0,
+            "Texture_Name": "def_Rockman_exe_col",
+            "Texture ID": 0
+        },
+        {
+            "Name": "hair2_3_0_node",
+            "ID": 1537934468,
+            "Parent": " GameObject_0",
+            "Parent ID": 552124043,
+            "Transform": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "hair2_3_0_node",
+            "Mesh ID": 0,
+            "Texture_Name": "def_Rockman_exe_col",
+            "Texture ID": 0
+        }
+    ]
+}
