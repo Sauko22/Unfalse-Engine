@@ -60,6 +60,9 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	paused = false;
 	bounding = false;
 	empty = false;
+	save = false;
+	load = false;
+	folder = ("Assets");
 }
 
 ModuleUI::~ModuleUI()
@@ -439,6 +442,7 @@ update_status ModuleUI::Update()
 		ImGui::End();
 	}
 	
+	AssetsExplorer();
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
 	
@@ -1053,16 +1057,18 @@ void ModuleUI::TimeWindows() {
 	ImGui::Begin("Time Management", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
 	ImGui::Text("|"); ImGui::SameLine();
 	if (playing == true) {
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
 		if (ImGui::Button("Stop", buttonSize)) {
 			playing = false;
 		}
 	}
 	else {
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
 		if (ImGui::Button("Play", buttonSize)) {
 			playing = true;
 		}
 	}
-
+	ImGui::PopStyleColor();
 	ImGui::SameLine();
 	if (paused == true) {
 		if (ImGui::Button("Resume", buttonSize)) {
@@ -1089,6 +1095,19 @@ void ModuleUI::TimeWindows() {
 	if (ImGui::Button("Empty GameObject", buttonSizes))
 	{
 		empty = true;
+	}
+	ImGui::SameLine();
+	ImGui::Text("||");
+	ImGui::SameLine();
+	ImVec2 buttonSizesu = { 100.f, 20.f };
+	if (ImGui::Button("Save Scene", buttonSizesu))
+	{
+		save = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load Scene", buttonSizesu))
+	{
+		load = true;
 	}
 
 	ImGui::End();
@@ -1170,35 +1189,45 @@ void ModuleUI::ResourceExplorer()
 		ImGui::TreePop();
 	}
 }
+void ModuleUI::AssetsExplorer()
+{
+	if (ImGui::Begin("Resource Explorer")) {
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
+		ImGui::BeginChild("Tree", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.15f, ImGui::GetContentRegionAvail().y), false, window_flags);
+		ImGui::Text("Resources");
+		//DrawDirectoryRecursive("Assets", nullptr);
+		ImGui::EndChild();
+		ImGui::SameLine();
+		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true);
+		DrawCurrentFolder();
+		ImGui::EndChild();
+	}
+	ImGui::End();
+}
 void  ModuleUI::DrawCurrentFolder()
 {
 	std::vector<std::string> files;
 	std::vector<std::string> dirs;
 
-	App->filesys->DiscoverFiles(current_folder.c_str(), files, dirs);
+	App->filesys->DiscoverFiles(folder.c_str(), files, dirs);
+	ImVec2 buttonsize = { 20.f, 20.f };
+	if (ImGui::Button("<-", buttonsize))
+	{
+		size_t back = folder.find_first_of("/") + 1;
+		folder = folder.substr(0, back);
+	}
 
 	for (size_t i = 0; i < dirs.size(); i++)
 	{
 		ImGui::PushID(i);
 		if (ImGui::Button(dirs[i].c_str(), ImVec2(100, 100))) {
-			current_folder.append("/");
-			current_folder.append(dirs[i].c_str());
+			folder.append("/");
+			folder.append(dirs[i].c_str());
 		}
 
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS"))
-			{
-				IM_ASSERT(payload->DataSize == sizeof(int));
-				int payload_n = *(const int*)payload->Data;
-			}
-			ImGui::EndDragDropTarget();
-		}
+		
 
-		if (ImGui::IsMouseDoubleClicked(0))
-		{
-			current_folder = current_folder + dirs[i];
-		}
+		
 
 		ImGui::PopID();
 		ImGui::SameLine();
@@ -1210,23 +1239,25 @@ void  ModuleUI::DrawCurrentFolder()
 			continue;
 
 		ImGui::PushID(i);
-		ImGui::Button(files[i].c_str(), ImVec2(120, 120));
-
-		if (ImGui::BeginDragDropSource())
+		if (ImGui::Button(files[i].c_str(), ImVec2(120, 120)))
 		{
-			ImGui::SetDragDropPayload("ASSETS", &i, sizeof(int));
-			ImGui::EndDragDropSource();
+
+			LOG("HOLI");
+
+
 		}
 
-		/*if (ImGui::BeginPopupContextItem()) {
+		
+
+		if (ImGui::BeginPopupContextItem()) {
 			if (ImGui::Button("Delete"))
 			{
-				std::string file_to_delete = current_folder + "/" + files[i];
+				/*std::string file_to_delete = current_folder + "/" + files[i];
 				App->resource->DeleteAsset(file_to_delete.c_str());
-				ImGui::CloseCurrentPopup();
+				ImGui::CloseCurrentPopup();*/
 			}
 			ImGui::EndPopup();
-		}*/
+		}
 
 		if (files[i].find(".fbx") != std::string::npos)
 		{/*
