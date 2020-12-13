@@ -74,8 +74,6 @@ public:
 	bool paused;
 	bool bounding;
 	bool empty;
-	bool save;
-	bool load;
 	
 	// Editor menu
 	bool activeInspec;

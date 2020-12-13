@@ -103,16 +103,6 @@ update_status ModuleSceneIntro::Update()
 	App->renderer3D->Draw_Axis();
 	if (ImGuizmo::IsUsing() == false)
 		HandleInput();
-
-	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
-	{
-		SaveScene();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
-	{
-		LoadScene();
-	}
 	
 	return UPDATE_CONTINUE;
 }

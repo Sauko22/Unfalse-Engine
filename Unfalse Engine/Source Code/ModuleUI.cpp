@@ -61,8 +61,6 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	paused = false;
 	bounding = false;
 	empty = false;
-	save = false;
-	load = false;
 	folder = ("Assets");
 }
 
@@ -1099,12 +1097,14 @@ void ModuleUI::TimeWindows() {
 	if (playing == true) {
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
 		if (ImGui::Button("Stop", buttonSize)) {
+			App->scene_intro->LoadScene();
 			playing = false;
 		}
 	}
 	else {
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
 		if (ImGui::Button("Play", buttonSize)) {
+			App->scene_intro->SaveScene();
 			playing = true;
 		}
 	}
@@ -1142,12 +1142,12 @@ void ModuleUI::TimeWindows() {
 	ImVec2 buttonSizesu = { 100.f, 20.f };
 	if (ImGui::Button("Save Scene", buttonSizesu))
 	{
-		save = true;
+		App->scene_intro->SaveScene();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load Scene", buttonSizesu))
 	{
-		load = true;
+		App->scene_intro->LoadScene();
 	}
 
 	ImGui::End();
@@ -1229,6 +1229,7 @@ void ModuleUI::ResourceExplorer()
 		ImGui::TreePop();
 	}
 }
+
 void ModuleUI::AssetsExplorer()
 {
 	if (ImGui::Begin("Resource Explorer")) {
@@ -1238,12 +1239,14 @@ void ModuleUI::AssetsExplorer()
 		//DrawDirectoryRecursive("Assets", nullptr);
 		ImGui::EndChild();
 		ImGui::SameLine();
-		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true);
+		ImGuiWindowFlags window_flagsi = ImGuiWindowFlags_AlwaysHorizontalScrollbar;
+		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true, window_flagsi);
 		DrawCurrentFolder();
 		ImGui::EndChild();
 	}
 	ImGui::End();
 }
+
 void  ModuleUI::DrawCurrentFolder()
 {
 	std::vector<std::string> files;
@@ -1265,10 +1268,6 @@ void  ModuleUI::DrawCurrentFolder()
 			folder.append(dirs[i].c_str());
 		}
 
-		
-
-		
-
 		ImGui::PopID();
 		ImGui::SameLine();
 	}
@@ -1281,10 +1280,52 @@ void  ModuleUI::DrawCurrentFolder()
 		ImGui::PushID(i);
 		if (ImGui::Button(files[i].c_str(), ImVec2(120, 120)))
 		{
+			std::string file_path;
+			file_path.append(folder).append("/").append(files[i]);
+			
+			//std::string file_path = "Assets/Models/Megaman.fbx";
+			//std::string file_path = "Assets/Models/BakerHouse.fbx";
+			/*char* buffer = nullptr;
+			uint fileSize = 0;
+			fileSize = App->filesys->Load(file_path.c_str(), &buffer);
+			App->fbxload->LoadFBX(buffer, fileSize, root);*/
+			std::string path;
+			std::string texname;
+			std::string texname_2;
+			std::string texname_3;
 
-			LOG("HOLI");
+			App->filesys->SplitFilePath(file_path.c_str(), &texname, &texname_2, &texname_3);
+			path.append(texname).append(texname_2).append(".meta");
 
+			std::string ext;
+			ext.append("fbx");
+			std::string _ext;
+			_ext.append("FBX");
+			if (texname_3 == ext || texname_3 == _ext)
+			{
+				if (App->filesys->Exists(path.c_str()))
+				{
+					App->input->filedropped = true;
+					App->serialization->parentuid = App->resource->GenerateNewUID();
+					App->serialization->LoadGameObject(path.c_str());
+					App->input->filedropped = false;
+				}
+				else
+				{
+					LOG("%s doesn't have a meta file", path.c_str());
+				}
+			}
+			else
+			{
+				char* buffer = nullptr;
+				uint fileSize = 0;
+				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 
+				if (App->scene_intro->SelectedGameObject != nullptr)
+				{
+					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
+				}
+			}
 		}
 
 		
