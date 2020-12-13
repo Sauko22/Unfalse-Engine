@@ -566,12 +566,14 @@ void ModuleResources::ChangeTexture(char* buffer, uint filesize, GameObject* gam
 		App->filesys->SplitFilePath(name, &texname, &texname_2, &texname_3);
 
 		CompMaterial* compmaterial = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
-		compmaterial->texname = texname_2;
 
-		compmaterial->newtexgl = ilutGLBindTexImage();
-		compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
-		compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
-		compmaterial->texname = texname_2;
+		if (compmaterial != nullptr)
+		{
+			compmaterial->newtexgl = ilutGLBindTexImage();
+			compmaterial->texture_h = ilGetInteger(IL_IMAGE_HEIGHT);
+			compmaterial->texture_w = ilGetInteger(IL_IMAGE_WIDTH);
+			compmaterial->texname = texname_2;
+		}
 
 		ilDeleteImages(1, &textIL);
 	}

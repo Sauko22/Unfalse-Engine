@@ -1366,11 +1366,6 @@ void  ModuleUI::DrawFolder()
 				if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
 				{
 					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
-
-					if (App->scene_intro->SelectedGameObject != nullptr)
-					{
-						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
-					}
 				}
 			}
 		}
