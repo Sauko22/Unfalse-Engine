@@ -32,6 +32,7 @@ public:
 	void Import_GameObject(ResModel* model, uint id);
 	void ImportGameObject(ResModel* model);
 	void SaveGameObject(uint id);
+	void SaveSceneGameObject(GameObject* gameobject, uint id);
 	void LoadGameObject(const char* path);
 	std::string GetModel(const char* path);
 	void LoadModel(const char* path);

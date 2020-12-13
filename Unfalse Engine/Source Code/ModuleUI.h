@@ -40,7 +40,7 @@ public:
 	bool showDemo;
 	bool showAbout;
 	bool showConfig;
-
+	bool showSceneLoad;
 
 	// Docking
 	bool showDock;
@@ -55,6 +55,7 @@ public:
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
+	void showSceneLoadWin(bool* p_open = NULL);
 	void showConsoleWin();
 	void showDockSpace(bool* p_open = NULL);
 	void showInspectorWin();
