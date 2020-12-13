@@ -8,7 +8,7 @@ https://github.com/Sauko22/Unfalse-Engine
 ## Team
 - Pol Juan Santos: https://github.com/Sauko22
 - Marc Palma Turon: https://github.com/marcpt98
-
+## Assignment 1 - Geometry Viewer
 ## Introduction to Unfalse Engine
 ### Menu
 The menu is divided by four options: File, View, GameObject and Help.
@@ -98,4 +98,71 @@ Shows all the logs from the code.
 ### Additional information
 - FBX that has a texture linked, will be loaded with his respective texture
 - Models must be in the models folder and textures must be in textures folder
+
+## Assignment 2 - Engine Editor
+
+### Scene Serialitzacion
+Saves and Load all the objects of the main window as a Scene. For that, we use the buttons found in the Time Management bar.
+
+### Time Management bar
+- Play/Stop: Allows to change the scene and return to the previous state
+- Box : Activate/Desactivate box colliders
+- Empty GameObject: Create a new gameobject in the hierachy
+- Save Scene: Save the current scene
+- Load Scene: Load a scene from the load Menu
+- RayCasting: Raycast is now visible
+### Transformations
+GameObjects position/rotation/scale can be modificated by the inspector and using Gizmos.
+- I: Gizmo Translate
+- O: Gizmo Rotation
+- P: Gizmo Scale
+
+### GameObject Inspector
+- Delete Object: Delete all the childs and parent gameobject
+- Empty Child: Create an empty child to the selected GameObject
+
+### Camera Component
+- A camera can be created in the menu of GameObjects
+- It has a Culling Option functional with the scene
+- FOV,Planes and transformation can be changed in the inspector
+
+### Inspector Updated
+Gameobject can be reparent with other gameobjects by dragging them
+
+### Assets Explorer
+- The User can navigate through folders and load files in the same window by double clicking the file
+- The tree shows the order of the folders, but can't load files or delete them
+- Each type of file has a diferent icon
+- The "<-" Button allow to return the previous folder
+- Left Click: Delete the file
+
+### Resource Explorer
+A windows the shows the loaded resources in the scene and how many times are loaded
+
+## Comments and difficulties
+- 
+## License & Copyright 
+
+[MIT License]
+
+Copyright (c) 2020 by Marc Palma & Pol Juan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
