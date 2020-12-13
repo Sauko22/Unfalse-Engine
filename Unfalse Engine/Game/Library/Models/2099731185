@@ -1,0 +1,108 @@
+{
+    "GameObject": [
+        {
+            "Name": "GameObject_0",
+            "ID": 2101541331,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "blitz",
+            "ID": 957690118,
+            "Parent": "GameObject_0",
+            "Parent ID": 2101541331,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "default1",
+            "ID": 1559950114,
+            "Parent": "blitz",
+            "Parent ID": 957690118,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "default1",
+            "Mesh ID": 1565659036,
+            "Texture_Name": "blitzcrank_skin11_TX_CM",
+            "Texture ID": 2144346703
+        },
+        {
+            "Name": "default002",
+            "ID": 2136637386,
+            "Parent": "blitz",
+            "Parent ID": 957690118,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "default002",
+            "Mesh ID": 2141998203,
+            "Texture_Name": "blitzcrank_skin11_TX_CM",
+            "Texture ID": 2144346703
+        }
+    ]
+}

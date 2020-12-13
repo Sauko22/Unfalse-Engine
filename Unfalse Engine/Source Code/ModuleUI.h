@@ -100,8 +100,26 @@ public:
 
 	//Resource Menu
 	//void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
-	void DrawCurrentFolder();
+	void DrawFolder();
+	void DrawTree(const char* dire, const char* filter_extension);
 	std::string folder;
+
 	uint myscene;
 	bool savescene;
+
+
+
+	int my_image_width;
+	int my_image_height;
+	
+	GLuint folde_;
+	GLuint file_;
+	GLuint texture_;
+	GLuint fbx_;
+	uint folders;
+	uint file;
+	uint fbx;
+	uint texture;
+
+
 };

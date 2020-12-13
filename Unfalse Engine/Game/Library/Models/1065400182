@@ -1,0 +1,56 @@
+{
+    "GameObject": [
+        {
+            "Name": "GameObject_5",
+            "ID": 1066862223,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "pPyramid1",
+            "ID": 1796187917,
+            "Parent": "GameObject_5",
+            "Parent ID": 1066862223,
+            "Position": [
+                0,
+                0.90462923049926758,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                2.3620853424072266,
+                2.3620853424072266,
+                2.3620853424072266
+            ],
+            "Mesh_Name": "pPyramid1",
+            "Mesh ID": 1809694391,
+            "Texture_Name": "",
+            "Texture ID": 1988710469
+        }
+    ]
+}

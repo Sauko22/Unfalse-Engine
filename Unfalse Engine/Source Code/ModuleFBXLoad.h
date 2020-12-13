@@ -48,7 +48,7 @@ public:
 	uint64 SaveTexture(aiMesh* ourMesh, char** fileBuffer);
 	void LoadTexture(char* buffer, uint filesize, GameObject* gameobject);
 	void LoadTextureObject(char* buffer, uint filesize, GameObject* gameobject, const char* name);
-
+	bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 public:
 	CompMesh* compmesh;
 	CompTransform* comptrans;

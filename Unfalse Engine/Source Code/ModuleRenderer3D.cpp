@@ -285,7 +285,7 @@ void ModuleRenderer3D::Draw()
 
 void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 {
-	if (gameobject != nullptr && gameobject->Objdelete == false)
+	if (gameobject != nullptr )
 	{
 		if (gameobject->Objdelete == true)
 		{

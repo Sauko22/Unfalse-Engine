@@ -83,6 +83,7 @@
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\Libs\Imgui\ImGuizmo.h" />
+    <ClInclude Include="Source Code\Libs\Imgui\stb_image.h" />
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Algorithm\Random\LCG.h" />
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Geometry\AABB.h" />
     <ClInclude Include="Source Code\Libs\MathGeoLib\include\Geometry\AABB2D.h" />

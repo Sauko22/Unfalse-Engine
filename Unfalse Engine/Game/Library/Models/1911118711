@@ -1,0 +1,56 @@
+{
+    "GameObject": [
+        {
+            "Name": "GameObject_3",
+            "ID": 1912859236,
+            "Parent": "root",
+            "Parent ID": 0,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh": "No mesh",
+            "Mesh ID": 0,
+            "Texture": "No texture",
+            "Texture ID": 0
+        },
+        {
+            "Name": "pCube1",
+            "ID": 404124362,
+            "Parent": "GameObject_3",
+            "Parent ID": 1912859236,
+            "Position": [
+                0,
+                0,
+                0
+            ],
+            "Rotation": [
+                0,
+                0,
+                0,
+                1
+            ],
+            "Scale": [
+                1,
+                1,
+                1
+            ],
+            "Mesh_Name": "pCube1",
+            "Mesh ID": 418257425,
+            "Texture_Name": "",
+            "Texture ID": 1988710469
+        }
+    ]
+}
