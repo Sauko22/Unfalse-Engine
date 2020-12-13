@@ -54,7 +54,7 @@ void GameObject::update()
 		{
 			CompMesh* mesh = (CompMesh*)this->GetComponent(Component::compType::MESH);
 
-			if (App->renderer3D->main_camera != nullptr)
+			if (App->renderer3D->camera_culling != nullptr)
 			{
 				if (App->renderer3D->culling == true)
 				{

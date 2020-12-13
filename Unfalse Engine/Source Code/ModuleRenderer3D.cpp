@@ -434,7 +434,7 @@ bool ModuleRenderer3D::ContainsAaBox_2(AABB aabb)
 {
 	bool ret = false;
 
-	ret = main_camera->ContainsAaBox(aabb);
+	ret = camera_culling->ContainsAaBox(aabb);
 
 	return ret;
 }

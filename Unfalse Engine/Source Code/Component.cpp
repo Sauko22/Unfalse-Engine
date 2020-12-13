@@ -425,7 +425,9 @@ CompCamera::CompCamera(GameObject* gameobject) : Component(compType::CAMERA, gam
 }
 
 CompCamera::~CompCamera()
-{}
+{
+	App->renderer3D->camera_culling = App->renderer3D->main_camera;
+}
 
 void CompCamera::init()
 {
@@ -481,10 +483,12 @@ void CompCamera::inspector()
 			if (culling == true)
 			{
 				App->renderer3D->culling = true;
+				App->renderer3D->camera_culling = this;
 			}
 			else
 			{
 				App->renderer3D->culling = false;
+				App->renderer3D->camera_culling = App->renderer3D->main_camera;
 			}
 
 			ImGui::Text("Planes");
