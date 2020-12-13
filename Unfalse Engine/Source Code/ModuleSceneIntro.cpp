@@ -220,7 +220,11 @@ void ModuleSceneIntro::EditTransform()
 
 		transform->global_transform = marcburru;
 
-		transform->local_transform = dynamic_cast<CompTransform*>(transform->gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Inverted()* transform->global_transform;
+		CompTransform* parent_transform = (CompTransform*)SelectedGameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
+		if (parent_transform != nullptr)
+		{
+			transform->local_transform = dynamic_cast<CompTransform*>(transform->gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform * transform->global_transform;
+		}
 
 		transform->local_transform.Decompose(transform->pos, transform->rot, transform->scl);
 		transform->UpdateTrans();

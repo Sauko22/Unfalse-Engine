@@ -123,12 +123,12 @@ void CompTransform::UpdateTrans()
 		local_transform = float4x4::FromTRS(pos, rot, scl);
 		if (parent_transform != nullptr)
 		{
+			local_transform = parent_transform->local_transform * local_transform;
 			global_transform = parent_transform->global_transform * local_transform;
 		}
 	}
 	else
 	{
-		
 		CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 		local_transform = float4x4::FromTRS(pos, rot, scl);
 		if (parent_transform != nullptr)
@@ -248,8 +248,14 @@ void CompMesh::RenderMesh()
 	}
 
 	glPushMatrix();
-	glMultMatrixf(transform->global_transform.Transposed().ptr());
+	
+	CompTransform* parent_transform = (CompTransform*)gameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 
+	if (parent_transform != nullptr)
+	{
+		glMultMatrixf(transform->global_transform.Transposed().ptr());
+	}
+	
 	// Draw textures
 	if (texture != nullptr && texture->newtexgl != 0)
 	{
