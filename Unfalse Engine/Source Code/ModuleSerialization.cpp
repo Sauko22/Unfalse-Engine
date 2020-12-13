@@ -614,6 +614,77 @@ void ModuleSerialization::LoadModel(const char* path)
 	}
 }
 
+void ModuleSerialization::RemoveFile(const char* path, const char* _path, const char* ext)
+{
+	JSON_Value* root_value;
+	JSON_Object* object;
+	JSON_Array* array;
+
+	root_value = json_parse_file(path);
+	object = json_value_get_object(root_value);
+	array = json_object_get_array(object, "GameObject");
+
+	std::string ext_;
+	ext_.append("fbx");
+	std::string _ext;
+	_ext.append("FBX");
+
+	if (ext == ext_ || ext == _ext)
+	{
+		for (int i = 0; i < json_array_get_count(array); i++)
+		{
+			JSON_Object* array_obj = json_array_get_object(array, i);
+
+			JSON_Array* _array;
+			_array = json_object_get_array(array_obj, "Resources");
+
+			for (int j = 0; i < json_array_get_count(_array); j++)
+			{
+				JSON_Object* array_obj = json_array_get_object(_array, j);
+
+				if (json_object_get_string(array_obj, "Mesh_Library_path") != nullptr && App->resource->SearchResource(json_object_get_number(array_obj, "Mesh_ID")) != nullptr)
+				{
+					App->filesys->Remove(json_object_get_string(array_obj, "Mesh_Library_path"));
+				}
+				else
+				{
+					LOG("Resource %s has been already deleted", json_object_get_string(array_obj, "Mesh_Name"));
+				}
+
+				if (json_object_get_string(array_obj, "Tex_Library_path") != nullptr && App->resource->SearchResource(json_object_get_number(array_obj, "Tex_ID")) != nullptr)
+				{
+					App->filesys->Remove(json_object_get_string(array_obj, "Tex_Library_path"));
+				}
+				else
+				{
+					LOG("Resource %s has been already deleted", json_object_get_string(array_obj, "Tex_Name"));
+				}
+			}
+			App->filesys->Remove(json_object_get_string(array_obj, "Library file"));
+		}
+
+		App->filesys->Remove(path);
+	}
+	else
+	{
+		for (int i = 0; i < json_array_get_count(array); i++)
+		{
+			JSON_Object* array_obj = json_array_get_object(array, i);
+
+			if (json_object_get_string(array_obj, "Library file") != nullptr && App->resource->SearchResource(json_object_get_number(array_obj, "ID")) != nullptr)
+			{
+				App->filesys->Remove(json_object_get_string(array_obj, "Library file"));
+			}
+			else
+			{
+				LOG("Resource %s has been already deleted", json_object_get_string(array_obj, "Name"));
+			}
+		}
+	}
+
+	App->filesys->Remove(_path);
+}
+
 
 void ModuleSerialization::Load_values(const char* file, const char* variable_name)
 {
