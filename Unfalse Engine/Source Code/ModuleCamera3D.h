@@ -45,5 +45,6 @@ private:
 	float3 origin;
 	float3 dest;
 	float offsetx;
+	float offsety;
 	bool first_it;
 };

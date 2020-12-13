@@ -26,7 +26,8 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	origin = origin.zero;
 	dest = dest.zero;
-	offsetx = 0.091;
+	offsetx = 0.34;
+	offsety = 0.14;
 	first_it = false;
 }
 
@@ -188,6 +189,7 @@ update_status ModuleCamera3D::Update()
 
 		normalized_x -=  App->renderer3D->img_size.x / App->renderer3D->win_size.x;
 		normalized_x += offsetx;
+		normalized_y += offsety;
 
 		LineSegment picking = _scene_camera->frustum.UnProjectLineSegment(normalized_x, normalized_y);
 
@@ -233,7 +235,7 @@ void ModuleCamera3D::ObjPicked(LineSegment my_ray)
 		if (mesh != nullptr)
 		{
 			CompTransform* transform = (CompTransform*)it->second->GetComponent(Component::compType::TRANSFORM);
-			my_ray.Transform(transform->global_transform.Inverted());
+			my_ray.Transform(transform->local_transform.Inverted());
 
 			for (int i = 0; i < mesh->num_index; i += 3)
 			{

@@ -432,7 +432,12 @@ update_status ModuleUI::Update()
 	TimeWindows();
 	
 	//Resource Manager windows
-	ResourceExplorer();
+	if (ImGui::Begin("Resources", NULL))
+	{
+		ResourceExplorer();
+		
+		ImGui::End();
+	}
 	
 	// Open windows
 	if (showDemo == true) { ImGui::ShowDemoWindow(&showDemo); }
@@ -505,8 +510,6 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 		}
 		ImGui::TreePop();
 	}
-	
-	
 }
 
 
@@ -609,15 +612,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 	{
 		ImGui::End();
 		return;
-	}
-
-	if (ImGui::BeginMenu("Options"))
-	{
-		if (ImGui::MenuItem("Set Defaults")) {}
-		if (ImGui::MenuItem("Load")) {}
-		if (ImGui::MenuItem("Save")) {}
-
-		ImGui::EndMenu();
 	}
 
 	if (ImGui::CollapsingHeader("Application"))
@@ -940,7 +934,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "0.0Mb");
 	}
 
-
 	ImGui::End();
 }
 
@@ -1103,22 +1096,79 @@ void ModuleUI::TimeWindows() {
 
 void ModuleUI::ResourceExplorer()
 {
+	std::vector<ResModel*> resmodel_list;
+	std::vector<ResMesh*> resmesh_list;
+	std::vector<ResTexture*> restext_list;
 
-
-	if (ImGui::Begin("Resource Explorer")) {
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
-		ImGui::BeginChild("Tree", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.15f, ImGui::GetContentRegionAvail().y), false, window_flags);
-		ImGui::Text("Resources");
-		//DrawDirectoryRecursive("Assets", nullptr);
-		ImGui::EndChild();
-
-		ImGui::SameLine();
-		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true);
-		DrawCurrentFolder();
-		ImGui::EndChild();
+	for (std::map<uint, Resource*>::iterator it = App->resource->resources.begin(); it != App->resource->resources.end(); it++)
+	{
+		if (it->second->Type == Resource::ResType::MODEL)
+		{
+			resmodel_list.push_back((ResModel*)it->second);
+		}
+		else if (it->second->Type == Resource::ResType::MESH)
+		{
+			resmesh_list.push_back((ResMesh*)it->second);
+		}
+		else if (it->second->Type == Resource::ResType::TEXTURE)
+		{
+			restext_list.push_back((ResTexture*)it->second);
+		}
+		else
+		{
+			LOG("Error reading resource %s", it->second->UID);
+		}
 	}
-	ImGui::End();
 
+	if (ImGui::CollapsingHeader("Models"))
+	{
+		if (ImGui::TreeNode("Models"))
+		{
+			for (int i = 0; i < resmodel_list.size(); i++)
+			{
+				if (resmodel_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", resmodel_list[i]->name.c_str());
+					ImGui::Text("Times loaded: %i", resmodel_list[i]->referenceCount);
+				}
+			}
+			
+			ImGui::Separator();
+		}
+		ImGui::TreePop();
+	}
+	if (ImGui::CollapsingHeader("Meshes"))
+	{
+		if (ImGui::TreeNode("Meshes"))
+		{
+			for (int i = 0; i < resmesh_list.size(); i++)
+			{
+				if (resmesh_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", resmesh_list[i]->name.c_str());
+					ImGui::Text("Times loaded: %i", resmesh_list[i]->referenceCount);
+				}
+			}
+
+			ImGui::Separator();
+		}
+		ImGui::TreePop();
+	}
+	if (ImGui::CollapsingHeader("Textures"))
+	{
+		if (ImGui::TreeNode("Textures"))
+		{
+			for (int i = 0; i < restext_list.size(); i++)
+			{
+				if (restext_list[i]->referenceCount != 0)
+				{
+					ImGui::Text("Name: %s", restext_list[i]->texname.c_str());
+					ImGui::Text("Times loaded: %i", restext_list[i]->referenceCount);
+				}
+			}
+		}
+		ImGui::TreePop();
+	}
 }
 void  ModuleUI::DrawCurrentFolder()
 {
