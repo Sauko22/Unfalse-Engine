@@ -68,7 +68,7 @@ public:
 
 	void ResourceExplorer();
 	void AssetsExplorer();
-	//const char* GetFileAt(int i);
+	
 
 	bool playing;
 	bool paused;
@@ -99,7 +99,7 @@ public:
 	int j, k;
 
 	//Resource Menu
-	//void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
+	
 	void DrawFolder();
 	void DrawTree(const char* dire, const char* filter_extension);
 	std::string folder;

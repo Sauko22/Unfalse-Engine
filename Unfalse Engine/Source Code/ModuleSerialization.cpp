@@ -57,7 +57,7 @@ void ModuleSerialization::Import_GameObject(ResModel* model, uint id)
 {
 	ImportGameObject(model);
 	SaveGameObject(id);
-	//LoadGameObject();
+	
 }
 
 void ModuleSerialization::ImportGameObject(ResModel* model)
@@ -132,7 +132,7 @@ void ModuleSerialization::ImportGameObject(ResModel* model)
 	{
 		AddString(obj, "Texture_Name", restex->texname.c_str());
 		AddFloat(obj, "Texture ID", restex->UID);
-		//AddString(obj, "Texture_Path", compmesh->tpath.c_str());
+		
 	}
 }
 
@@ -372,7 +372,7 @@ std::string ModuleSerialization::GetModel(const char* path)
 
 	JSON_Object* array_obj = json_array_get_object(array, 0);
 	std::string _path = json_object_get_string(array_obj, "Library file");
-	//modeluid = json_object_get_number(array_obj, "ID");
+	
 
 	return _path;
 }

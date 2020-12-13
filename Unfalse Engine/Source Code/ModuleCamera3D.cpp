@@ -199,11 +199,6 @@ update_status ModuleCamera3D::Update()
 		ObjPicked(picking);
 	}
 
-	// Draw pickup line
-	/*glBegin(GL_LINES);
-	glVertex3fv(origin.ptr());
-	glVertex3fv(dest.ptr());
-	glEnd();*/
 
 	return UPDATE_CONTINUE;
 }

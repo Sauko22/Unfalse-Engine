@@ -8,8 +8,6 @@ int close_sdl_rwops(SDL_RWops* rw);
 
 struct aiFileIO;
 
-//struct BASS_FILEPROCS;
-
 struct PathNode;
 
 typedef unsigned __int64 uint64;

@@ -265,9 +265,7 @@ void CompMesh::RenderMesh()
 	if (texture != nullptr && texture->hastext == true)
 	{
 		glEnable(GL_TEXTURE_2D);
-		/*glEnable(GL_CULL_FACE);
-		glActiveTexture(GL_TEXTURE0);*/
-
+		
 		if (texture->texactive == true)
 		{
 			if (texture->deftexactive == true)
@@ -333,7 +331,7 @@ void CompMesh::RenderMesh()
 	if (normactive == true)
 	{
 		glBegin(GL_LINES);
-		//glColor3f(1.0f, 0.0f, 0.0f);
+		
 
 		for (size_t k = 0; k < num_vertex * 3; k += 3)
 		{

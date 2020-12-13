@@ -43,8 +43,8 @@ public:
 public:
 
 	Light lights[MAX_LIGHTS];
-	//mat3x3 NormalMatrix;
-	mat4x4 /*ModelMatrix, ViewMatrix,*/ ProjectionMatrix;
+	
+	mat4x4 ProjectionMatrix;
 
 	// Draw axis
 	float init[3] = { 0,0,0 };

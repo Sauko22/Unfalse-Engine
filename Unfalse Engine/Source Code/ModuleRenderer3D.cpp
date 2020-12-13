@@ -260,15 +260,13 @@ void ModuleRenderer3D::Draw()
 	// Window 1
 	ImGui::Begin("Scene", NULL);
 	
-	ImGui::SetCursorPos(/*ImGui::GetCursorPos() +*/ ImVec2(img_offset.x, img_offset.y));
+	ImGui::SetCursorPos( ImVec2(img_offset.x, img_offset.y));
 	img_corner = Vec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y) + Vec2(0, img_size.y);
-	img_corner.y = App->window->windowSize.y - img_corner.y; //ImGui 0y is on top so we need to convert 0y on botton
+	img_corner.y = App->window->windowSize.y - img_corner.y; 
 
 	ImGui::Image((ImTextureID)App->renderer3D->renderTexture, ImVec2(img_size.x, img_size.y), ImVec2(0, 1), ImVec2(1, 0));
 
 	 WinSize = ImGui::GetWindowSize();
-	/* WinSize.x+= ImGui::GetWindowContentRegionMin().x;
-	 WinSize.y += ImGui::GetWindowContentRegionMin().y;*/
 	if (WinSize.x != App->window->windowSize.x || WinSize.y != App->window->windowSize.y)
 	{
 		WinResize(Vec2(WinSize.x, WinSize.y));
@@ -373,18 +371,7 @@ void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
 
 void ModuleRenderer3D::DeleteAllGameObjects()
 {
-	//App->scene_intro->GetAllGameObjects();
-
 	App->scene_intro->SelectedGameObject = nullptr;
-
-	/*for (int i = 0; i < App->scene_intro->allgameobject_list.size(); i++)
-	{
-		if (App->scene_intro->allgameobject_list[i] != nullptr)
-		{
-			delete App->scene_intro->allgameobject_list[i];
-			App->scene_intro->allgameobject_list[i] = nullptr;
-		}
-	}*/
 	for (int i = 0; i < App->scene_intro->root->children_list.size(); i++)
 	{
 		std::string scenecamera;

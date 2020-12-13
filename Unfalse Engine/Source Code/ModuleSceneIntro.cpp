@@ -41,12 +41,6 @@ bool ModuleSceneIntro::Start()
 
 	// Load street
 	std::string file_path = "Assets/Models/Street environment_V03.fbx";
-	//std::string file_path = "Assets/Models/Megaman.fbx";
-	//std::string file_path = "Assets/Models/BakerHouse.fbx";
-	/*char* buffer = nullptr;
-	uint fileSize = 0;
-	fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-	App->fbxload->LoadFBX(buffer, fileSize, root);*/
 	std::string path;
 	std::string texname;
 	std::string texname_2;
@@ -213,28 +207,20 @@ void ModuleSceneIntro::EditTransform()
 
 	float4x4 viewMatrix = App->camera->GetViewMatrixM().Transposed();
 	float4x4 projectionMatrix = App->camera->GetProjectionMatrixM().Transposed();
-	float4x4 marcburru = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Transposed();
-	//objectTransform.Transposed();
+	float4x4 TempMatrix = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM))->global_transform.Transposed();
+	
 	ImGuizmo::SetDrawlist();
 	cornerPos = Vec2(App->renderer3D->img_corner.x, App->window->windowSize.y - App->renderer3D->img_corner.y - App->renderer3D->img_size.y);
 	ImGuizmo::SetRect(App->renderer3D->img_corner.x, cornerPos.y, App->renderer3D->img_size.x, App->renderer3D->img_size.y);
-
-	//CompTransform* ty = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
-
-	float4x4 modelPtr;
-	modelPtr = marcburru;
-
-	//tempTransform.Transposed();
-
-	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, marcburru.ptr());
+	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, TempMatrix.ptr());
 
 	if (ImGuizmo::IsUsing())
 	{
 		CompTransform* transform;
 		transform = dynamic_cast<CompTransform*>(SelectedGameObject->GetComponent(Component::compType::TRANSFORM));
-		marcburru.Transpose();
+		TempMatrix.Transpose();
 
-		transform->global_transform = marcburru;
+		transform->global_transform = TempMatrix;
 
 		CompTransform* parent_transform = (CompTransform*)SelectedGameObject->parentGameObject->GetComponent(Component::compType::TRANSFORM);
 		if (parent_transform != nullptr)

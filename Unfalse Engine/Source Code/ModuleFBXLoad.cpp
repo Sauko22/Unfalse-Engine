@@ -29,7 +29,7 @@
 
 ModuleFBXLoad::ModuleFBXLoad(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	/*gameobject = nullptr;*/
+	
 	compmesh = nullptr;
 	comptrans = nullptr;
 	j = 0;
@@ -224,43 +224,9 @@ void ModuleFBXLoad::Import(aiNode* node, GameObject* parent, const aiScene* scen
 		// Texture importer
 		Import_Texture(ourMesh, scene, pgameobject);
 
-		/*std::string path = "";
-		compmesh->mpath = path.append("Library").append("/").append("Meshes").append("/").append(compmesh->name);
-		std::string _path = "";
-		compmesh->tpath = _path.append("Library/Textures/").append(compmesh->texname);*/
-
-		//LOG("Mesh loaded");
-		//LOG("Components: %i", pgameobject->component_list.size());
+		
 	}
 
-	/*"Node ID": 1985990324,
-		"Name" : "BakerHouse",
-		"Parent Node ID" : 0,
-		"Transform" : [
-			1,
-				0,
-				0,
-				0,
-				0,
-				1,
-				0,
-				0,
-				0,
-				0,
-				1,
-				0,
-				0,
-				0,
-				0,
-				1
-		],
-		"Mesh ID": 0,
-				"Material ID" : 0*/
-				//App->serialization->Insert_values(pgameobject, comptrans);
-
-	// GameObject importer
-	//App->serialization->Import_GameObject(comptrans, pgameobject, id);
-	
 	for (int i = 0; i < node->mNumChildren; i++)
 	{
 		Import(node->mChildren[i], pgameobject, scene, id);
@@ -370,7 +336,7 @@ void ModuleFBXLoad::Save_Mesh(std::string name)
 
 	path.append("Library/Meshes/") += std::to_string(compmesh->muid);
 
-	//path.append("Library/Meshes/").append(name);
+	
 
 	App->filesys->Save(path.c_str(), fileBuffer, size);
 }

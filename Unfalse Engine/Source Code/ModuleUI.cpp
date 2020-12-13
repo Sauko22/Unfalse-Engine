@@ -120,15 +120,15 @@ bool ModuleUI::Init()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	//io.ConfigFlags |= ImGuiConfigFlags_Docking;
-
+	
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, context);
 
 	ImGui_ImplOpenGL3_Init();
 
+
+	//Loading Icons
 	fbx = App->fbxload->LoadTextureFromFile("Assets/Icons/model.png", &fbx_, &my_image_width, &my_image_height);
 	file = App->fbxload->LoadTextureFromFile("Assets/Icons/file.png", &file_, &my_image_width, &my_image_height);
 	texture = App->fbxload->LoadTextureFromFile("Assets/Icons/texture.jpg", &texture_, &my_image_width, &my_image_height);
@@ -239,11 +239,7 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Cube"))
 			{
 				std::string file_path = "Assets/Primitives/Cube.fbx";
-				/*char* buffer = nullptr;
-				uint fileSize = 0;
-				cube = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				
 				std::string path;
 				std::string texname;
 				std::string texname_2;
@@ -268,11 +264,7 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Sphere"))
 			{
 				std::string file_path = "Assets/Primitives/Sphere.fbx";
-				/*char* buffer = nullptr;
-				uint fileSize = 0;
-				sphere = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				
 				std::string path;
 				std::string texname;
 				std::string texname_2;
@@ -297,11 +289,7 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Cylinder"))
 			{
 				std::string file_path = "Assets/Primitives/Cylinder.fbx";
-				/*char* buffer = nullptr;
-				uint fileSize = 0;
-				cylinder = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				
 				std::string path;
 				std::string texname;
 				std::string texname_2;
@@ -326,11 +314,7 @@ update_status ModuleUI::Update()
 			if (ImGui::MenuItem("Pyramid"))
 			{
 				std::string file_path = "Assets/Primitives/Pyramid.fbx";
-				/*char* buffer = nullptr;
-				uint fileSize = 0;
-				pyramid = true;
-				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-				App->fbxload->LoadFBX(buffer, fileSize, App->scene_intro->root);*/
+				
 				std::string path;
 				std::string texname;
 				std::string texname_2;
@@ -512,7 +496,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 				}
 
 			}
-			//ImGui::ClearDragDrop();
+			
 		}
 		ImGui::EndDragDropTarget();
 	}
@@ -540,7 +524,7 @@ void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
 {
 	if (obj != nullptr && nextparent != nullptr) {
 
-		//obj->parent->to_delete = true;
+		
 
 		for (int i = 0; i < obj->parentGameObject->children_list.size(); i++)
 		{
@@ -551,20 +535,8 @@ void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
 
 			}
 		}
-		//obj->parentGameObject = nextparent;
-		//dynamic_cast<CompTransform*>(obj->children_list->GetComponent(Component::compType::TRANSFORM))->UpdateTrans();
-		
 		obj->parentGameObject = nextparent;
 		nextparent->children_list.push_back(obj);
-		
-		/*for (int i = 0; i < nextparent->children_list.size(); i++)
-		{
-			obj->parentGameObject = nextparent;
-			nextparent->children_list.push_back(obj);
-			dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform = dynamic_cast<CompTransform*>(nextparent->children_list[i]->GetComponent(Component::compType::TRANSFORM))->local_transform* dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform;
-			dynamic_cast<CompTransform*>(obj->GetComponent(Component::compType::TRANSFORM))->local_transform.Inverse();
-		}*/
-		//nextparent->children_list.push_back(obj);
 	}
 }
 void ModuleUI::DeselectGameObjects(GameObject* gameobject)
@@ -1316,12 +1288,6 @@ void  ModuleUI::DrawFolder()
 		std::string file_path;
 		file_path.append(folder).append("/").append(files[i]);
 
-		//std::string file_path = "Assets/Models/Megaman.fbx";
-		//std::string file_path = "Assets/Models/BakerHouse.fbx";
-		/*char* buffer = nullptr;
-		uint fileSize = 0;
-		fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-		App->fbxload->LoadFBX(buffer, fileSize, root);*/
 		std::string path;
 		std::string texname;
 		std::string texname_2;
@@ -1348,13 +1314,6 @@ void  ModuleUI::DrawFolder()
 
 			std::string file_path;
 			file_path.append(folder).append("/").append(files[i]);
-
-			//std::string file_path = "Assets/Models/Megaman.fbx";
-			//std::string file_path = "Assets/Models/BakerHouse.fbx";
-			/*char* buffer = nullptr;
-			uint fileSize = 0;
-			fileSize = App->filesys->Load(file_path.c_str(), &buffer);
-			App->fbxload->LoadFBX(buffer, fileSize, root);*/
 			
 			if (texname_3 == ext || texname_3 == _ext)
 			{

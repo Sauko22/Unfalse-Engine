@@ -55,14 +55,14 @@ public:
 	void ChangeTexture(char* buffer, uint filesize, GameObject* gameobject, const char* name);
 
 public:
-	//uint Find(const char* file_in_assets) const;
+	
 	uint ImportFile(const char* new_file_in_assets);
 	uint GenerateNewUID();
-	//const Resource* RequestResource(uint uid) const;
+	
 	Resource* RequestResource(uint uid);
 	Resource* SearchResource(uint uid);
 	Resource* RequestTempResource(uint uid);
-	//void ReleaseResource(uint uid);
+	
 	Resource* CreateNewResource(Resource::ResType type, uint id = 1);
 	Resource* CreateNewTempResource(Resource::ResType type, uint id = 1);
 

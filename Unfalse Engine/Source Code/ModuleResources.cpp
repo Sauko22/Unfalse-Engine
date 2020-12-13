@@ -94,7 +94,7 @@ void ModuleResources::GetAllAssets(const char* path)
 			uint id = ImportFile(_meta.c_str());
 			
 			// Create and save meta (save through serialization)
-			//CreateMeta(meta, id);
+			
 			if (id != 0)
 			{
 				if (_type == 1)
@@ -168,16 +168,12 @@ uint ModuleResources::ImportFile(const char* assetsFile)
 		switch (resource->Type)
 		{
 			// This only should be an import in order to make the save() correctly, it shouldn't load anything to the game (create an importer with only taking out Load_Mesh, LoadMesh and LoadTexture)
-		//case Resource::ResType::TEXTURE: App->fbxload->ResImport_Texture((ResTexture*)resource, fileSize, buffer); break;
+		
 		case Resource::ResType::MODEL: App->fbxload->Import_Model((ResModel*)resource, fileSize, buffer); break;
 		}
 
 		// Save resource after import
-		/*switch (resource->Type)
-		{
-			//case Resource::ResType::TEXTURE: App->fbxload->ImportTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, texname_2.c_str()); break;
-		case Resource::ResType::MODEL: App->fbxload->Save_Model(); break;
-		}*/
+		
 		
 		if (App->fbxload->parentid != 0)
 		{
@@ -261,7 +257,7 @@ Resource* ModuleResources::CreateNewResource(Resource::ResType type, uint id)
 		resources[id] = ret;
 		ret->GenLibraryPath(ret);
 	}
-	//LOG("%i", resources.size());
+	
 	return ret;
 }
 
@@ -286,7 +282,7 @@ Resource* ModuleResources::CreateNewTempResource(Resource::ResType type, uint id
 		tempresources[id] = ret;
 		ret->GenLibraryPath(ret);
 	}
-	//LOG("%i", resources.size());
+	
 	return ret;
 }
 
@@ -347,7 +343,7 @@ Resource::~Resource()
 void Resource::GenLibraryPath(Resource* resource)
 {
 	// Create the path of the resource to library
-	// Libraryfile = "Assets/Library/..."
+	
 	std::string librarypath;
 
 	std::string obj = std::to_string(resource->UID);

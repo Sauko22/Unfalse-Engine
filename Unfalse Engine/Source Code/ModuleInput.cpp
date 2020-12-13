@@ -135,16 +135,14 @@ update_status ModuleInput::PreUpdate()
 				LOG("OBJECT NAME: %s", extDir.c_str());
 				name = extDir;
 
-				/*char* buffer = nullptr;
-				uint fileSize = 0;*/
+				
 
 				std::size_t assets = Dir.find("Assets");
 				std::string load_directory = Dir.substr(assets);
 				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
 				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
 
-				//fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
-
+				
 				std::string path;
 				std::string texname;
 				std::string texname_2;

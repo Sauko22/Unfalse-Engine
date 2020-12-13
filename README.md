@@ -8,7 +8,7 @@ https://github.com/Sauko22/Unfalse-Engine
 ## Team
 - Pol Juan Santos: https://github.com/Sauko22
 - Marc Palma Turon: https://github.com/marcpt98
-
+## Assignment 1 - Geometry Viewer
 ## Introduction to Unfalse Engine
 ### Menu
 The menu is divided by four options: File, View, GameObject and Help.
@@ -99,3 +99,4 @@ Shows all the logs from the code.
 - FBX that has a texture linked, will be loaded with his respective texture
 - Models must be in the models folder and textures must be in textures folder
 
+## Assignment 2 - Engine Editor
