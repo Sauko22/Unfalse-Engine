@@ -27,7 +27,6 @@ public:
 	float4x4 GetProjectionMatrixM();
 
 public:
-	
 	vec3 X, Y, Z;
 	vec3 Reference, Position, _Position;
 	float camera_speed;
@@ -38,12 +37,13 @@ public:
 	CompTransform* scene_transform;
 	CompTransform* _scene_transform;
 
-private:
-
-	float4x4 RotMatrix;
-	
+public:
 	float3 origin;
 	float3 dest;
+
+private:
+	float4x4 RotMatrix;
+	
 	float offsetx;
 	float offsety;
 	bool first_it;

@@ -21,12 +21,10 @@ public:
 	void Inspector();
 	void UpdateAABB();
 	void CreateEmptyChild();
-	void CreateEmptyGameObject();
 
 	Component* AddComponent(Component::compType type);
 	Component* AddTempComponent(Component::compType type);
 	Component* GetComponent(Component::compType type);
-	Component* GetTempComponent(Component::compType type);
 
 	GameObject* parentGameObject;
 

@@ -7,7 +7,6 @@
 #include <vector>
 #include "GameObject.h"
 
-
 #define BOUNCER_TIME 200
 #define FPS_INTERVAL 1.0 //seconds.
 
@@ -31,7 +30,6 @@ public:
 
 	void GetAllGameObjects();
 	void AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
-	void AllSceneGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
 	void SaveScene();
 	void LoadScene();
 	GameObject* SearchGameObjectID(uint id);
@@ -46,7 +44,6 @@ public:
 	GameObject* SelectedGameObject;
 	GameObject* camera;
 	std::vector<GameObject*> gameobject_list;
-	std::vector<GameObject*> allgameobject_list;
 
 	ImGuizmo::OPERATION mCurrentGizmoOperation;
 	ImGuizmo::MODE mCurrentGizmoMode;

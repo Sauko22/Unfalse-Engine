@@ -12,7 +12,6 @@
 class ModuleSerialization : public Module
 {
 public:
-
 	ModuleSerialization(Application* app, bool start_enabled = true);
 
 	// Destructor

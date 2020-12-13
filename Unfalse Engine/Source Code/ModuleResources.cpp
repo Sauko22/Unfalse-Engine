@@ -3,22 +3,18 @@
 #include "ModuleResources.h"
 
 #include "Glew\include\glew.h"
-
 #include "SDL\include\SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-#include "Assimp/include/cimport.h"
-#include "Assimp/include/scene.h"
-#include "Assimp/include/postprocess.h"
-#pragma comment (lib, "Assimp/libx86/assimp.lib")
-
 #include "Devil/include/ilut.h"
 #include "Devil/include/ilu.h"
-
 #pragma comment( lib, "Devil/libx86/DevIL.lib" )
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "Imgui/stb_image.h"
 
 #include <algorithm>
 
@@ -29,6 +25,16 @@ ModuleResources::ModuleResources(Application* app, bool start_enabled) : Module(
 
 ModuleResources::~ModuleResources()
 {}
+
+bool ModuleResources::Init()
+{
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+
+	return true;
+}
 
 bool ModuleResources::Start()
 {
@@ -81,20 +87,12 @@ void ModuleResources::GetAllAssets(const char* path)
 
 		meta.append(fileDir).append(extDir).append(".meta");
 		
-		// CREATE ALL RESOURCES AND ADD IT ON LIST
 		if (!App->filesys->Exists(meta.c_str()))
 		{
-			// If it doesn't have a meta means that the go, mesh and texture aren't created on library
-			
-			// MAKE THE IMPORT OF THE MODEL (INSIDE MODEL IMPORT MAKE MESH IMPORT) OR TEXTURE
-			// MAKE THE SAVE OF THE MODEL (INSIDE SAVE OF MESH) AND TEXTURE
-			// CREATE NEW RESOURCE EVERY TIME (create new resource creates a path on assets (meta file) and path on library)
-			
 			// Gameobject id
 			uint id = ImportFile(_meta.c_str());
 			
 			// Create and save meta (save through serialization)
-			
 			if (id != 0)
 			{
 				if (_type == 1)
@@ -118,15 +116,8 @@ void ModuleResources::GetAllAssets(const char* path)
 			// If meta exist, load all resources on resources list
 			std::string model = App->serialization->GetModel(meta.c_str());
 			App->serialization->LoadResource(model.c_str());
-
-			resources;
 		}
 	}
-}
-
-void ModuleResources::CreateMeta(std::string path, uint assetID)
-{
-	
 }
 
 uint ModuleResources::ImportFile(const char* assetsFile)
@@ -167,13 +158,8 @@ uint ModuleResources::ImportFile(const char* assetsFile)
 
 		switch (resource->Type)
 		{
-			// This only should be an import in order to make the save() correctly, it shouldn't load anything to the game (create an importer with only taking out Load_Mesh, LoadMesh and LoadTexture)
-		
-		case Resource::ResType::MODEL: App->fbxload->Import_Model((ResModel*)resource, fileSize, buffer); break;
+			case Resource::ResType::MODEL: App->fbxload->Import_Model((ResModel*)resource, fileSize, buffer); break;
 		}
-
-		// Save resource after import
-		
 		
 		if (App->fbxload->parentid != 0)
 		{
@@ -226,7 +212,6 @@ Resource* ModuleResources::CreateNewResource(const char* assetsPath, Resource::R
 	if (ret != nullptr)
 	{
 		resources[uid] = ret;
-		// Create assets path and library path
 		ret->assetsFile = assetsPath;
 		LOG("%s", ret->assetsFile.c_str());
 		ret->GenLibraryPath(ret);
@@ -235,7 +220,7 @@ Resource* ModuleResources::CreateNewResource(const char* assetsPath, Resource::R
 	return ret;
 }
 
-// This is for meshes (inside models, only needs a library path)
+// This is for internal resources
 Resource* ModuleResources::CreateNewResource(Resource::ResType type, uint id)
 {
 	Resource* ret = nullptr;
@@ -336,14 +321,11 @@ Resource::Resource(uint id, Resource::ResType type)
 }
 
 Resource::~Resource()
-{
-
-}
+{}
 
 void Resource::GenLibraryPath(Resource* resource)
 {
 	// Create the path of the resource to library
-	
 	std::string librarypath;
 
 	std::string obj = std::to_string(resource->UID);
@@ -356,11 +338,6 @@ void Resource::GenLibraryPath(Resource* resource)
 	}
 
 	resource->libraryFile = librarypath;
-}
-
-uint Resource::GetID()
-{
-	return UID;
 }
 
 ResModel::ResModel(uint id) : Resource(id, MODEL)
@@ -378,24 +355,7 @@ ResModel::ResModel(uint id) : Resource(id, MODEL)
 }
 
 ResModel::~ResModel()
-{
-
-}
-
-void ResModel::ImportResource()
-{
-
-}
-
-void ResModel::LoadResource()
-{
-
-}
-
-void ResModel::SaveResource()
-{
-
-}
+{}
 
 ResMesh::ResMesh(uint id) : Resource(id, MESH)
 {
@@ -419,11 +379,6 @@ ResMesh::ResMesh(uint id) : Resource(id, MESH)
 }
 
 ResMesh::~ResMesh()
-{
-
-}
-
-void ResMesh::ImportResource()
 {
 
 }
@@ -547,9 +502,7 @@ ResTexture::ResTexture(uint id) : Resource(id, TEXTURE)
 }
 
 ResTexture::~ResTexture()
-{
-
-}
+{}
 
 void ResTexture::ImportResource(ResTexture* texture, uint& filesize, char*& buffer)
 {
@@ -642,4 +595,38 @@ uint64 ResTexture::SaveResource(char** fileBuffer)
 	}
 
 	return size;
+}
+
+bool ModuleResources::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
+{
+	// Load from file
+	int image_width = 0;
+	int image_height = 0;
+	unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+	if (image_data == NULL)
+		return false;
+
+	// Create a OpenGL texture identifier
+	GLuint image_texture;
+	glGenTextures(1, &image_texture);
+	glBindTexture(GL_TEXTURE_2D, image_texture);
+
+	// Setup filtering parameters for display
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
+
+	// Upload pixels into texture
+#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+	stbi_image_free(image_data);
+
+	*out_texture = image_texture;
+	*out_width = image_width;
+	*out_height = image_height;
+
+	return true;
 }

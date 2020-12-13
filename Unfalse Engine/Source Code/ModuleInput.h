@@ -72,10 +72,6 @@ public:
 	SDL_Event event;
 
 	char* dropped_filedir;
-	char* texturedir;
-
-	std::string name;
-	std::size_t texname;
 
 	bool filedropped;
 };

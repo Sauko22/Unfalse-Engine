@@ -53,6 +53,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	cylinder = false;
 	j = 0;
 	k = 0;
+	l = 0;
 
 	// Fps & ms logs
 	fps_log = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -61,7 +62,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	playing = false;
 	paused = false;
 	bounding = false;
-	empty = false;
+	raycast = false;
 	savescene = false;
 	myscene = 0;
 	folder = ("Assets");
@@ -127,14 +128,12 @@ bool ModuleUI::Init()
 
 	ImGui_ImplOpenGL3_Init();
 
-
 	//Loading Icons
-	fbx = App->fbxload->LoadTextureFromFile("Assets/Icons/model.png", &fbx_, &my_image_width, &my_image_height);
-	file = App->fbxload->LoadTextureFromFile("Assets/Icons/file.png", &file_, &my_image_width, &my_image_height);
-	texture = App->fbxload->LoadTextureFromFile("Assets/Icons/texture.jpg", &texture_, &my_image_width, &my_image_height);
-	folders = App->fbxload->LoadTextureFromFile("Assets/Icons/folder.png", &folde_, &my_image_width, &my_image_height);
+	fbx = App->resource->LoadTextureFromFile("Assets/Icons/model.png", &fbx_, &my_image_width, &my_image_height);
+	file = App->resource->LoadTextureFromFile("Assets/Icons/file.png", &file_, &my_image_width, &my_image_height);
+	texture = App->resource->LoadTextureFromFile("Assets/Icons/texture.jpg", &texture_, &my_image_width, &my_image_height);
+	folders = App->resource->LoadTextureFromFile("Assets/Icons/folder.png", &folde_, &my_image_width, &my_image_height);
 	
-
 	return ret;
 }
 
@@ -154,15 +153,14 @@ update_status ModuleUI::Update()
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	if (showDock) {
+	if (showDock) 
+	{
 
 		showDockSpace(&showDock);
 	}
 	showDockSpace(&showDock);
 
 	App->renderer3D->Draw();
-	
-	
 	
 	// All windows, toolbars and options of ImGui
 	// Toolbar
@@ -173,8 +171,7 @@ update_status ModuleUI::Update()
 
 			if (ImGui::MenuItem("New"))
 			{
-
-				// New file
+				App->renderer3D->DeleteAllGameObjects();
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.972, 0.105, 0.105, 1.f));
@@ -347,16 +344,6 @@ update_status ModuleUI::Update()
 				j++;
 			}
 
-			if (ImGui::MenuItem("GameObject"))
-			{
-				std::string obj = std::to_string(k);
-
-				GameObject* emptyObject = new GameObject(App->scene_intro->root);
-				emptyObject->name.append("emptyObject_").append(obj);
-				(CompTransform*)emptyObject->AddComponent(Component::compType::TRANSFORM);
-				k++;
-			}
-
 			ImGui::EndMenu();
 		}
 		
@@ -468,19 +455,19 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 
 	bool node_open = ImGui::TreeNodeEx(GameObjname, node_flags);
 
-	if (ImGui::IsItemClicked() || empty == true)
+	if (ImGui::IsItemClicked())
 	{
 		DeselectGameObjects(App->scene_intro->root);
 
 		App->scene_intro->SelectedGameObject = gameobject;
 
-		
 		gameobject->objSelected = true;
 		for (int i = 0; i < gameobject->component_list.size(); i++)
 		{
 			gameobject->component_list[i]->gameobject_selected = true;
 		}
 	}
+
 	if (ImGui::BeginDragDropTarget()) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DROP_ID_HIERARCHY_NODES, ImGuiDragDropFlags_SourceNoDisableHover);
 
@@ -494,9 +481,7 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 				{
 					ChangeGameObjectParent(obj, gameobject);
 				}
-
 			}
-			
 		}
 		ImGui::EndDragDropTarget();
 	}
@@ -522,10 +507,8 @@ void ModuleUI::Hierarchy(GameObject* gameobject)
 
 void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
 {
-	if (obj != nullptr && nextparent != nullptr) {
-
-		
-
+	if (obj != nullptr && nextparent != nullptr) 
+	{
 		for (int i = 0; i < obj->parentGameObject->children_list.size(); i++)
 		{
 			if (obj->parentGameObject->children_list[i] == obj)
@@ -539,6 +522,7 @@ void ModuleUI::ChangeGameObjectParent(GameObject* obj, GameObject* nextparent)
 		nextparent->children_list.push_back(obj);
 	}
 }
+
 void ModuleUI::DeselectGameObjects(GameObject* gameobject)
 {
 	gameobject->objSelected = false;
@@ -550,6 +534,16 @@ void ModuleUI::DeselectGameObjects(GameObject* gameobject)
 	{
 		gameobject->component_list[i]->gameobject_selected = false;
 	}
+}
+
+void ModuleUI::CreateEmptyGameObject()
+{
+	std::string obj = std::to_string(k);
+
+	GameObject* emptyObject = new GameObject(App->scene_intro->root);
+	emptyObject->name.append("emptyObject_").append(obj);
+	(CompTransform*)emptyObject->AddComponent(Component::compType::TRANSFORM);
+	k++;
 }
 
 update_status ModuleUI::PostUpdate()
@@ -836,7 +830,6 @@ void ModuleUI::showConfigWin(bool* p_open)
 			SDL_SetWindowFullscreen(App->window->window, 0);
 			LOG("ISNOTFULLDESKTOP");
 		}
-		
 	}
 
 	if (ImGui::CollapsingHeader("Input"))
@@ -1080,12 +1073,14 @@ void ModuleUI::showDockSpace(bool* p_open)
 	ImGui::End();
 }
 
-void ModuleUI::TimeWindows() {
+void ModuleUI::TimeWindows() 
+{
 	ImVec2 buttonSize = { 50.f, 20.f };
 	ImGui::Begin("Time Management", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
 	ImGui::Text("|"); ImGui::SameLine();
 	
-	if (playing == true) {
+	if (playing == true) 
+	{
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
 		if (ImGui::Button("Stop", buttonSize)) 
 		{
@@ -1099,7 +1094,8 @@ void ModuleUI::TimeWindows() {
 			playing = false;
 		}
 	}
-	else {
+	else 
+	{
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
 		if (ImGui::Button("Play", buttonSize)) 
 		{
@@ -1111,40 +1107,71 @@ void ModuleUI::TimeWindows() {
 	}
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
-	if (paused == true) {
-		if (ImGui::Button("Resume", buttonSize)) {
+
+	if (paused == true) 
+	{
+		if (ImGui::Button("Resume", buttonSize)) 
+		{
 			paused = false;
 		}
 	}
-	else {
-		if (ImGui::Button("Pause", buttonSize)) {
+	else 
+	{
+		if (ImGui::Button("Pause", buttonSize)) 
+		{
 			paused = true;
 		}
 	}
 	ImGui::SameLine();
+	
 	if (bounding == false)
+	{
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
+	}
 	else if (bounding == true)
+	{
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+	}
+		
 	if (ImGui::Button("Box", buttonSize))
 	{
 		bounding =! bounding;
 	}
 	ImGui::PopStyleColor();
-	ImVec2 buttonSizes = { 130.f, 20.f };
 	ImGui::SameLine();
-	if (ImGui::Button("Empty GameObject", buttonSizes))
+
+	if (raycast == true)
 	{
-		empty = true;
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
 	}
+	else if (raycast == false)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
+	}
+		
+	if (ImGui::Button("RayC", buttonSize))
+	{
+		raycast = !raycast;
+	}
+	ImGui::PopStyleColor();
+	
+	ImVec2 buttonSizes = { 80.f, 20.f };
+	ImGui::SameLine();
+	if (ImGui::Button("Empty GO", buttonSizes))
+	{
+		CreateEmptyGameObject();
+	}
+
 	ImGui::SameLine();
 	ImGui::Text("||");
 	ImGui::SameLine();
+	
 	ImVec2 buttonSizesu = { 100.f, 20.f };
 	if (ImGui::Button("Save Scene", buttonSizesu))
 	{
 		App->scene_intro->SaveScene();
 	}
+	
 	ImGui::SameLine();
 	if (ImGui::Button("Load Scene", buttonSizesu))
 	{
@@ -1233,12 +1260,14 @@ void ModuleUI::ResourceExplorer()
 
 void ModuleUI::AssetsExplorer()
 {
-	if (ImGui::Begin("Resource Explorer")) {
+	if (ImGui::Begin("Assets Explorer")) 
+	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar;
 		ImGui::BeginChild("Tree", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.15f, ImGui::GetContentRegionAvail().y), false, window_flags);
-		ImGui::Text("Resources");
+		ImGui::Text("Assets");
 		DrawTree("Assets", nullptr);
 		ImGui::EndChild();
+		
 		ImGui::SameLine();
 		ImGuiWindowFlags window_flagsi = ImGuiWindowFlags_AlwaysHorizontalScrollbar;
 		ImGui::BeginChild("Folder", ImVec2(0, ImGui::GetContentRegionAvail().y), true, window_flagsi);
@@ -1311,7 +1340,6 @@ void  ModuleUI::DrawFolder()
 
 		if (ImGui::ImageButton((void*)(intptr_t)buttonimage, { 64, 64 }))
 		{
-
 			std::string file_path;
 			file_path.append(folder).append("/").append(files[i]);
 			
@@ -1335,7 +1363,6 @@ void  ModuleUI::DrawFolder()
 				uint fileSize = 0;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 
-
 				if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
 				{
 					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
@@ -1344,12 +1371,9 @@ void  ModuleUI::DrawFolder()
 					{
 						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
 					}
-
 				}
 			}
 		}
-
-
 
 		if (ImGui::BeginPopupContextItem()) 
 		{
@@ -1377,7 +1401,6 @@ void  ModuleUI::DrawFolder()
 
 		ImGui::PopID();
 		ImGui::SameLine();
-		
 	}
 }
 
@@ -1428,24 +1451,9 @@ void ModuleUI::DrawTree(const char* dire, const char* filter_extension)
 		if (filter_extension && str.substr(str.find_last_of(".") + 1) != filter_extension)
 			ok = false;
 
-
 		if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
 		{
-			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::Button("Delete file"))
-				{
-					/*std::string file_to_delete = directory;
-					file_to_delete.append("/" + str);
-					App->resources->DeleteAsset(file_to_delete.c_str());
-					ImGui::CloseCurrentPopup();
-					ImGui::CloseCurrentPopup();*/
-				}
-				ImGui::EndPopup();
-			}
-
 			ImGui::TreePop();
 		}
 	}
-
-	
 }

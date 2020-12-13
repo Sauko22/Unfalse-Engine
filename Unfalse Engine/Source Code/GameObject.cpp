@@ -87,12 +87,16 @@ void GameObject::update()
 void GameObject::Inspector()
 {
 	ImVec2 buttonSize = { 100.f, 20.f };
-	ImGui::Checkbox("DeleteObj", &Objdelete);
+	std::string name = " Scene Camera";
+
+	if (this->name != name)
+	{
+		ImGui::Checkbox("DeleteObj", &Objdelete);
+	}
 	if(ImGui::Button("Empty Child", buttonSize)) CreateEmptyChild();
-	
 	ImGui::Checkbox("ActiveObj", &ObjrenderActive); ImGui::SameLine();
 	ImGui::Text("%s", name.c_str());
-	if (App->UI->empty == true)CreateEmptyGameObject();
+
 	// Update components
 	for (int i = 0; i < component_list.size(); i++)
 	{
@@ -108,25 +112,9 @@ void GameObject::CreateEmptyChild()
 	std::string name = "Empty_Child";
 	name.append(obj);
 
-	 empty_GameObject = new GameObject(App->scene_intro->SelectedGameObject);
-	 empty_GameObject->name.append("Empty Child");
+	empty_GameObject = new GameObject(App->scene_intro->SelectedGameObject);
+	empty_GameObject->name.append("Empty_Child_") += std::to_string(empty_GameObjects);
 	empty_GameObject->AddComponent(Component::compType ::TRANSFORM);
-
-}
-
-void GameObject::CreateEmptyGameObject()
-{
-	empty_GameObjects++;
-	std::string obj = std::to_string(empty_GameObjects);
-
-	std::string name = "Empty_GameObject";
-	name.append(obj);
-
-	empty_GameObject = new GameObject(App->scene_intro->root);
-	empty_GameObject->name.append("Empty GameObject");
-	empty_GameObject->AddComponent(Component::compType::TRANSFORM);
-	App->UI->empty = false;
-
 }
 
 void GameObject::UpdateAABB()
@@ -138,7 +126,7 @@ void GameObject::UpdateAABB()
 	{
 		App->renderer3D->GenerateAABB(mesh);
 
-		obb = mesh->GetAABB();
+		obb = mesh->bbox;
 		obb.Transform(transform->global_transform);
 
 		aabb.SetNegativeInfinity();
@@ -146,7 +134,6 @@ void GameObject::UpdateAABB()
 
 		mesh->bbox = aabb;
 
-		
 		if(App->UI->bounding)App->renderer3D->GenerateLines(mesh);
 	}
 }
@@ -209,19 +196,6 @@ Component* GameObject::GetComponent(Component::compType type)
 	{
 		if (type == component_list[i]->type)
 			return component_list[i];
-	}
-
-	return ret;
-}
-
-Component* GameObject::GetTempComponent(Component::compType type)
-{
-	Component* ret = nullptr;
-
-	for (int i = 0; i < tempcomponent_list.size(); i++)
-	{
-		if (type == tempcomponent_list[i]->type)
-			return tempcomponent_list[i];
 	}
 
 	return ret;

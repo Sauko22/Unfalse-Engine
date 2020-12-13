@@ -18,8 +18,6 @@ ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, sta
 	mouse_y_motion = 0;
 	dropped_filedir = nullptr;
 	filedropped = false;
-
-	name = "";
 }
 
 // Destructor
@@ -133,16 +131,12 @@ update_status ModuleInput::PreUpdate()
 				std::string filetype = "";
 				App->filesys->SplitFilePath(Dir.c_str(), &fileDir, &extDir, &filetype);
 				LOG("OBJECT NAME: %s", extDir.c_str());
-				name = extDir;
-
-				
 
 				std::size_t assets = Dir.find("Assets");
 				std::string load_directory = Dir.substr(assets);
 				std::string norm_load_directory = App->filesys->NormalizePath(load_directory.c_str());
 				LOG("FILE DIRECTORY %s", norm_load_directory.c_str());
 
-				
 				std::string path;
 				std::string texname;
 				std::string texname_2;

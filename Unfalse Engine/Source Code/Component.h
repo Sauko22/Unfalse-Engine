@@ -67,7 +67,6 @@ public:
 	void update();
 	void inspector();
 	void RenderMesh();
-	AABB GetAABB();
 
 public:
 	uint id_index; // index in VRAM

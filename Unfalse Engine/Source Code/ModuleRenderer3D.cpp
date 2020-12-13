@@ -275,6 +275,16 @@ void ModuleRenderer3D::Draw()
 	// Draw any Meshes loaded into scene
 	UpdateGameObjects(App->scene_intro->root);
 
+	// Draw raycast
+	if (App->UI->raycast == true)
+	{
+		// Draw pickup line
+		glBegin(GL_LINES);
+		glVertex3fv(App->camera->origin.ptr());
+		glVertex3fv(App->camera->dest.ptr());
+		glEnd();
+	}
+
 	// Draw Guizmo
 	App->scene_intro->EditTransform();
 

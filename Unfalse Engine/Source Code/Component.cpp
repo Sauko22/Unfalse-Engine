@@ -57,7 +57,7 @@ void CompTransform::inspector()
 				pos.y = position[1];
 				pos.z = position[2];
 
-				 //Update position
+				//Update position
 				UpdateTrans();
 			}
 
@@ -73,7 +73,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				 //Update rotation
+				//Update rotation
 				UpdateTrans();
 			}
 
@@ -85,7 +85,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				 //Update rotation
+				//Update rotation
 				UpdateTrans();
 			}
 
@@ -97,7 +97,7 @@ void CompTransform::inspector()
 				Quat _newrot = Quat::RotateAxisAngle(axis, newrot * DEGTORAD);
 				rot = rot * _newrot;
 
-				 //Update rotation
+				//Update rotation
 				UpdateTrans();
 			}
 
@@ -108,7 +108,7 @@ void CompTransform::inspector()
 				scl.y = scale[1];
 				scl.z = scale[2];
 
-				 //Update scale
+				//Update scale
 				UpdateTrans();
 			}
 		}
@@ -148,7 +148,6 @@ void CompTransform::UpdateTrans()
 		}
 	}
 }
-
 
 CompMesh::CompMesh(GameObject* gameobject) : Component(compType::MESH, gameobject)
 {
@@ -332,7 +331,6 @@ void CompMesh::RenderMesh()
 	{
 		glBegin(GL_LINES);
 		
-
 		for (size_t k = 0; k < num_vertex * 3; k += 3)
 		{
 			GLfloat v_x = vertex[k];
@@ -349,11 +347,6 @@ void CompMesh::RenderMesh()
 		glEnd();
 	}
 	glPopMatrix();
-}
-
-AABB CompMesh::GetAABB()
-{
-	return bbox;
 }
 
 CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIAL, gameobject)
@@ -478,6 +471,7 @@ void CompCamera::inspector()
 		{
 			static bool culling = false;
 			ImGui::Checkbox("Culling", &culling);
+			
 			if (culling == true)
 			{
 				App->renderer3D->culling = true;

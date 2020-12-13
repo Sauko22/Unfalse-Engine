@@ -6,11 +6,7 @@
 #include <map>
 
 typedef unsigned int GLuint;
-typedef unsigned int ILuint;
 typedef unsigned char ILubyte;
-struct aiNode;
-struct aiScene;
-struct aiMesh;
 typedef unsigned __int64 uint64;
 
 class Resource
@@ -30,7 +26,6 @@ public:
 
 public:
 	void GenLibraryPath(Resource* resource);
-	uint GetID();
 
 public:
 	std::string assetsFile;
@@ -48,14 +43,13 @@ public:
 	// Destructor
 	virtual ~ModuleResources();
 
+	bool Init();
 	bool Start();
 	bool CleanUp();
 	void GetAllAssets(const char* path);
-	void CreateMeta(std::string path, uint assetID);
 	void ChangeTexture(char* buffer, uint filesize, GameObject* gameobject, const char* name);
 
 public:
-	
 	uint ImportFile(const char* new_file_in_assets);
 	uint GenerateNewUID();
 	
@@ -65,6 +59,8 @@ public:
 	
 	Resource* CreateNewResource(Resource::ResType type, uint id = 1);
 	Resource* CreateNewTempResource(Resource::ResType type, uint id = 1);
+
+	bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 
 private:
 	Resource* CreateNewResource(const char* assetsFile, Resource::ResType type);
@@ -80,10 +76,6 @@ class ResModel : public Resource
 public:
 	ResModel(uint uid);
 	virtual ~ResModel();
-
-	void ImportResource();
-	void LoadResource();
-	void SaveResource();
 
 public:
 	std::vector<ResModel*> children_list;
@@ -106,7 +98,6 @@ public:
 	ResMesh(uint uid);
 	virtual ~ResMesh();
 
-	void ImportResource();
 	void LoadResource(ResMesh* resmesh, char* buffer);
 	void LoadResourceScene(GameObject* gameobject);
 	void SaveResource(ResMesh* mesh);
@@ -158,6 +149,3 @@ public:
 	int texture_h;
 	int texture_w;
 };
-
-
-

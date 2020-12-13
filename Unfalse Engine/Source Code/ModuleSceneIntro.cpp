@@ -111,10 +111,8 @@ void ModuleSceneIntro::GetAllGameObjects()
 {
 	// Clear list with every click (gameobjects can be added or deleted)
 	gameobject_list.clear();
-	allgameobject_list.clear();
 
 	AllGameObjects(App->scene_intro->root, gameobject_list);
-	AllSceneGameObjects(App->scene_intro->root, allgameobject_list);
 }
 
 void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects)
@@ -123,25 +121,9 @@ void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameOb
 	{
 		gameObjects.push_back(gameObject);
 
-
 		for (int i = 0; i < gameObject->children_list.size(); i++)
 		{
 			AllGameObjects(gameObject->children_list[i], gameObjects);
-		}
-	}
-}
-
-void ModuleSceneIntro::AllSceneGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects)
-{
-	std::string scenecamera;
-	scenecamera.append(" Scene Camera");
-	if (gameObject->name != scenecamera)
-	{
-		gameObjects.push_back(gameObject);
-
-		for (int i = 0; i < gameObject->children_list.size(); i++)
-		{
-			AllSceneGameObjects(gameObject->children_list[i], gameObjects);
 		}
 	}
 }

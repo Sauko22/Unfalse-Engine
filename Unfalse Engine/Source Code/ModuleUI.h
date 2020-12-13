@@ -19,9 +19,6 @@
 
 #include <vector>
 
-typedef unsigned int GLuint;
-typedef unsigned char GLubyte;
-
 class ModuleUI : public Module
 {
 public:
@@ -46,12 +43,10 @@ public:
 	bool showDock;
 
 	// Primitives
-
 	bool cube;
 	bool pyramid;
 	bool sphere;
 	bool cylinder;
-
 
 	void showAboutWin(bool* p_open = NULL);
 	void showConfigWin(bool* p_open = NULL);
@@ -62,6 +57,7 @@ public:
 
 	void Hierarchy(GameObject* gameobject);
 	void DeselectGameObjects(GameObject* gameobject);
+	void CreateEmptyGameObject();
 
 	void ChangeGameObjectParent(GameObject* obj, GameObject* nextparent);
 	void TimeWindows();
@@ -69,11 +65,10 @@ public:
 	void ResourceExplorer();
 	void AssetsExplorer();
 	
-
 	bool playing;
 	bool paused;
 	bool bounding;
-	bool empty;
+	bool raycast;
 	
 	// Editor menu
 	bool activeInspec;
@@ -82,7 +77,6 @@ public:
 
 	void putLog(const char*);
 	
-
 	std::vector<std::string> items;
 
 	std::vector<float> fps_log;
@@ -96,9 +90,7 @@ public:
 	bool color;
 	bool texture2d;
 	bool vsync;
-	int j, k;
-
-	//Resource Menu
+	int j, k, l;
 	
 	void DrawFolder();
 	void DrawTree(const char* dire, const char* filter_extension);
@@ -106,8 +98,6 @@ public:
 
 	uint myscene;
 	bool savescene;
-
-
 
 	int my_image_width;
 	int my_image_height;
@@ -120,6 +110,4 @@ public:
 	uint file;
 	uint fbx;
 	uint texture;
-
-
 };
