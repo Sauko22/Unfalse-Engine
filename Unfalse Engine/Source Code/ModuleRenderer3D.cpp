@@ -277,8 +277,9 @@ void ModuleRenderer3D::Draw()
 	// Draw any Meshes loaded into scene
 	UpdateGameObjects(App->scene_intro->root);
 
-	
+	// Draw Guizmo
 	App->scene_intro->EditTransform();
+
 	ImGui::End();
 }
 
@@ -288,7 +289,16 @@ void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 	{
 		if (gameobject->Objdelete == true)
 		{
-			DeleteGameObjects(gameobject);
+			std::string name;
+			name.append("GameObject_0");
+			if (gameobject->name != name)
+			{
+				DeleteGameObjects(gameobject);
+			}
+			else
+			{
+				_DeleteGameObjects(gameobject);
+			}
 		}
 
 		if (gameobject->ObjrenderActive == true)
@@ -303,18 +313,45 @@ void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 	}
 }
 
+void ModuleRenderer3D::_DeleteGameObjects(GameObject* gameobject)
+{
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		_DeleteGameObjects(gameobject->children_list[i]);
+	}
+	
+	if (gameobject != nullptr)
+	{
+		if (gameobject->parentGameObject != nullptr)
+		{
+			for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
+			{
+				if (gameobject->parentGameObject->children_list[i] == gameobject)
+				{
+					gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);
+					delete gameobject;
+					gameobject = nullptr;
+				}
+				break;
+			}
+		}
+	}
+
+	App->scene_intro->SelectedGameObject = nullptr;
+}
+
 void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
 {
 	for (int i = 0; i < gameobject->children_list.size(); i++)
 	{
 		DeleteGameObjects(gameobject->children_list[i]);
 	}
-	
+
 	if (gameobject->parentGameObject != nullptr)
 	{
 		for (int i = 0; i < gameobject->parentGameObject->children_list.size(); i++)
 		{
-			
+
 			if (gameobject->parentGameObject->children_list[i] == gameobject)
 			{
 				gameobject->parentGameObject->children_list.erase(gameobject->parentGameObject->children_list.begin() + i);

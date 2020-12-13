@@ -31,6 +31,8 @@ public:
 
 	void GetAllGameObjects();
 	void AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
+	void SaveScene();
+	void LoadScene();
 	GameObject* SearchGameObjectID(uint id);
 
 	// Guizmo
@@ -60,4 +62,8 @@ public:
 
 	//The frame rate regulator
 	Timer fps;
+
+	// Save scene
+	bool savescene;
+	uint sceneuid;
 };

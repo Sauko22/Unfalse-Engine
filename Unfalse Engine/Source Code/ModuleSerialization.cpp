@@ -143,10 +143,79 @@ void ModuleSerialization::SaveGameObject(uint id)
 	std::string _name;
 
 	modeluid = id;
-	_name.append("Library/Models/") += std::to_string(id);
+	if (App->scene_intro->savescene == true)
+	{
+		_name.append("Library/Scenes/") += std::to_string(id);
+	}
+	else
+	{
+		_name.append("Library/Models/") += std::to_string(id);
+	}
 
 	App->filesys->Save(_name.c_str(), serialized_string, size, false);
 	json_free_serialized_string(serialized_string);
+}
+
+void ModuleSerialization::SaveSceneGameObject(GameObject* gameobject, uint id)
+{
+	JSON_Object* obj = AddObject(root_array);
+
+	// GameObject name
+	AddString(obj, "Name", gameobject->name.c_str());
+
+	// GameObject UID
+	AddFloat(obj, "ID", gameobject->guid);
+
+	// Parent name and ID
+	std::string rootnode = "RootNode";
+
+	AddString(obj, "Parent", "root");
+	AddFloat(obj, "Parent ID", 0);
+
+	// Transforms
+	CompTransform* transform = (CompTransform*)gameobject->GetComponent(Component::compType::TRANSFORM);
+
+	JSON_Array* Position = App->serialization->AddArray(obj, "Position");
+	AddFloat3(Position, transform->pos);
+	JSON_Array* Rot = App->serialization->AddArray(obj, "Rotation");
+	AddQuat(Rot, transform->rot);
+	JSON_Array* Scl = App->serialization->AddArray(obj, "Scale");
+	AddFloat3(Scl, transform->scl);
+
+	// Mesh
+	CompMesh* compmesh = (CompMesh*)gameobject->GetComponent(Component::compType::MESH);
+
+	if (compmesh == nullptr)
+	{
+		AddString(obj, "Mesh", "No mesh");
+		AddFloat(obj, "Mesh ID", 0);
+	}
+	else
+	{
+		AddString(obj, "Mesh_Name", compmesh->name.c_str());
+		AddFloat(obj, "Mesh ID", compmesh->muid);
+	}
+
+	// Texture
+	CompMaterial* comptext = (CompMaterial*)gameobject->GetComponent(Component::compType::MATERIAL);
+
+	if (comptext == nullptr)
+	{
+		AddString(obj, "Texture", "No texture");
+		AddFloat(obj, "Texture ID", 0);
+	}
+	else
+	{
+		AddString(obj, "Texture_Name", comptext->texname.c_str());
+		AddFloat(obj, "Texture ID", comptext->tuid);
+	}
+
+	SaveGameObject(id);
+
+	for (int i = 0; i < gameobject->children_list.size(); i++)
+	{
+		SaveSceneGameObject(gameobject->children_list[i], id);
+	}
 }
 
 void ModuleSerialization::CreateMeta(uint id, std::string meta)

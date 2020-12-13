@@ -14,6 +14,7 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	showDemo = false;
 	showAbout = false;
 	showConfig = false;
+	showSceneLoad = false;
 
 	// Editor Menu
 	 activeInspec = true;
@@ -445,6 +446,8 @@ update_status ModuleUI::Update()
 	if (showAbout == true) { showAboutWin(&showAbout); }
 	
 	if (showConfig == true) { showConfigWin(&showConfig); }
+
+	if (showSceneLoad == true) { showSceneLoadWin(&showSceneLoad); }
 
 	return UPDATE_CONTINUE;
 }
@@ -994,6 +997,43 @@ void ModuleUI::showAboutWin(bool* p_open)
 
 	ImGui::End();
 }
+
+void ModuleUI::showSceneLoadWin(bool* p_open)
+{
+	if (!ImGui::Begin("Loading Scene", p_open))
+	{
+		ImGui::End();
+		return;
+	}
+
+	ImGui::Text("Which scene do you want to load?");
+
+	std::vector<std::string> scenes_list;
+	std::vector<std::string> dir;
+
+	// Get path
+	std::string _dir = "";
+	_dir.append("Library/Scenes/");
+
+	// Get files in path
+	App->filesys->DiscoverFiles(_dir.c_str(), scenes_list, dir);
+
+	for (int i = 0; i < scenes_list.size(); i++)
+	{
+		std::string path;
+		path.append("Library/Scenes/").append(scenes_list[i]);
+
+		if (ImGui::Button(scenes_list[i].c_str()))
+		{
+			App->input->filedropped = true;
+			App->serialization->LoadModel(path.c_str());
+			App->input->filedropped = false;
+		}
+	}
+
+	ImGui::End();
+}
+
 void ModuleUI::showDockSpace(bool* p_open)
 {
 	static bool opt_fullscreen_persistant = true;

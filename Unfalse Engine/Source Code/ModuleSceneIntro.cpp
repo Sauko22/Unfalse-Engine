@@ -13,6 +13,8 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	root = nullptr;
 	SelectedGameObject = nullptr;
 	camera = nullptr;
+	savescene = false;
+	sceneuid = 0;
 	mCurrentGizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 	mCurrentGizmoMode = ImGuizmo::MODE::WORLD;
 
@@ -101,6 +103,16 @@ update_status ModuleSceneIntro::Update()
 	App->renderer3D->Draw_Axis();
 	if (ImGuizmo::IsUsing() == false)
 		HandleInput();
+
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	{
+		SaveScene();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	{
+		LoadScene();
+	}
 	
 	return UPDATE_CONTINUE;
 }
@@ -138,6 +150,32 @@ GameObject* ModuleSceneIntro::SearchGameObjectID(uint id)
 	}
 
 	return nullptr;
+}
+
+void ModuleSceneIntro::SaveScene()
+{
+	savescene = true;
+
+	App->serialization->initjson();
+	for (int i = 0; i < root->children_list.size(); i++)
+	{
+		std::string name;
+		name.append(" Scene Camera");
+		if (root->children_list[i]->name != name)
+		{
+			sceneuid = App->resource->GenerateNewUID();
+			App->serialization->parentuid = sceneuid;
+			App->serialization->SaveSceneGameObject(root->children_list[i], sceneuid);
+
+			LOG("Saving GameObject %s", root->children_list[i]->name.c_str());
+		}
+	}
+	savescene = false;
+}
+
+void ModuleSceneIntro::LoadScene()
+{
+	App->UI->showSceneLoad = true;
 }
 
 void ModuleSceneIntro::HandleInput()
