@@ -33,6 +33,7 @@ public:
 	void UpdateGameObjects(GameObject* gameobject);
 	void DeleteGameObjects(GameObject* gameobject);
 	void _DeleteGameObjects(GameObject* gameobject);
+	void DeleteAllGameObjects();
 	void GenerateAABB(CompMesh* compmesh);
 	void GenerateLines(CompMesh* compmesh);
 

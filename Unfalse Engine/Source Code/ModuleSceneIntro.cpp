@@ -63,7 +63,7 @@ bool ModuleSceneIntro::Start()
 	{
 		LOG("%s doesn't have a meta file", path.c_str());
 	}
-	
+
 	return ret;
 }
 
@@ -95,6 +95,11 @@ update_status ModuleSceneIntro::Update()
 		fps_frames = 0;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+	{
+		App->renderer3D->DeleteAllGameObjects();
+	}
+
 	// Create initial plane
 	Plane_Primitive plane;
 	plane.Render();
@@ -111,8 +116,10 @@ void ModuleSceneIntro::GetAllGameObjects()
 {
 	// Clear list with every click (gameobjects can be added or deleted)
 	gameobject_list.clear();
+	allgameobject_list.clear();
 
 	AllGameObjects(App->scene_intro->root, gameobject_list);
+	AllSceneGameObjects(App->scene_intro->root, allgameobject_list);
 }
 
 void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects)
@@ -125,6 +132,21 @@ void ModuleSceneIntro::AllGameObjects(GameObject* gameObject, std::vector<GameOb
 		for (int i = 0; i < gameObject->children_list.size(); i++)
 		{
 			AllGameObjects(gameObject->children_list[i], gameObjects);
+		}
+	}
+}
+
+void ModuleSceneIntro::AllSceneGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects)
+{
+	std::string scenecamera;
+	scenecamera.append(" Scene Camera");
+	if (gameObject->name != scenecamera)
+	{
+		gameObjects.push_back(gameObject);
+
+		for (int i = 0; i < gameObject->children_list.size(); i++)
+		{
+			AllSceneGameObjects(gameObject->children_list[i], gameObjects);
 		}
 	}
 }
@@ -154,6 +176,10 @@ void ModuleSceneIntro::SaveScene()
 		if (root->children_list[i]->name != name)
 		{
 			sceneuid = App->resource->GenerateNewUID();
+			if (App->UI->savescene == true)
+			{
+				sceneuid = App->UI->myscene;
+			}
 			App->serialization->parentuid = sceneuid;
 			App->serialization->SaveSceneGameObject(root->children_list[i], sceneuid);
 

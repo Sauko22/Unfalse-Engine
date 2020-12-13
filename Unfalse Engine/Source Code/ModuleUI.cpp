@@ -61,6 +61,8 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 	paused = false;
 	bounding = false;
 	empty = false;
+	savescene = false;
+	myscene = 0;
 	folder = ("Assets");
 }
 
@@ -71,6 +73,8 @@ bool ModuleUI::Init()
 {
 	LOG("Loading UI");
 	bool ret = true;
+
+	myscene = App->resource->GenerateNewUID();
 
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
@@ -1028,6 +1032,7 @@ void ModuleUI::showSceneLoadWin(bool* p_open)
 		if (ImGui::Button(scenes_list[i].c_str()))
 		{
 			App->input->filedropped = true;
+			App->renderer3D->DeleteAllGameObjects();
 			App->serialization->LoadModel(path.c_str());
 			App->input->filedropped = false;
 		}
@@ -1094,17 +1099,28 @@ void ModuleUI::TimeWindows() {
 	ImVec2 buttonSize = { 50.f, 20.f };
 	ImGui::Begin("Time Management", (bool*)false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse);
 	ImGui::Text("|"); ImGui::SameLine();
+	
 	if (playing == true) {
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(255, 0, 0, 100));
-		if (ImGui::Button("Stop", buttonSize)) {
-			App->scene_intro->LoadScene();
+		if (ImGui::Button("Stop", buttonSize)) 
+		{
+			std::string path;
+			path.append("Library/Scenes/") += std::to_string(myscene);
+			App->input->filedropped = true;
+			App->renderer3D->DeleteAllGameObjects();
+			App->serialization->LoadModel(path.c_str());
+			App->input->filedropped = false;
+
 			playing = false;
 		}
 	}
 	else {
 		ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0, 255, 0, 100));
-		if (ImGui::Button("Play", buttonSize)) {
+		if (ImGui::Button("Play", buttonSize)) 
+		{
+			savescene = true;
 			App->scene_intro->SaveScene();
+			savescene = false;
 			playing = true;
 		}
 	}
@@ -1321,7 +1337,7 @@ void  ModuleUI::DrawCurrentFolder()
 				uint fileSize = 0;
 				fileSize = App->filesys->Load(file_path.c_str(), &buffer);
 
-				if (App->scene_intro->SelectedGameObject != nullptr)
+				if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
 				{
 					App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, file_path.c_str());
 				}

@@ -102,4 +102,6 @@ public:
 	//void DrawDirectoryRecursive(const char* directory, const char* filter_extension);
 	void DrawCurrentFolder();
 	std::string folder;
+	uint myscene;
+	bool savescene;
 };

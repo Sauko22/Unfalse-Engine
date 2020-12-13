@@ -410,13 +410,13 @@ ResMesh::ResMesh(uint id) : Resource(id, MESH)
 	num_index = 0;
 	id_vertex = 0;
 	num_vertex = 0;
-	vertex = nullptr;
+	vertex = 0;
 	id_normals = 0;
 	num_normals = 0;
-	normals = nullptr;
+	normals = 0;
 	id_tex = 0;
 	num_tex = 0;
-	tex = nullptr;
+	tex = 0;
 	num_faces = 0;
 	mesh_path = "";
 	name = "";
@@ -474,25 +474,28 @@ void ResMesh::LoadResourceScene(GameObject* gameobject)
 {
 	CompMesh* compmesh = (CompMesh*)gameobject->GetComponent(Component::compType::MESH);
 
-	//Vertex of the mesh
-	glGenBuffers(1, (GLuint*)&(compmesh->id_vertex));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->id_vertex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->num_vertex * 3, compmesh->vertex, GL_STATIC_DRAW);
+	if (compmesh != nullptr)
+	{
+		//Vertex of the mesh
+		glGenBuffers(1, (GLuint*)&(compmesh->id_vertex));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, compmesh->id_vertex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * compmesh->num_vertex * 3, compmesh->vertex, GL_STATIC_DRAW);
 
-	//Normal faces of the mesh
-	glGenBuffers(1, (GLuint*)&(compmesh->id_normals));
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_normals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_normals * 3, compmesh->normals, GL_STATIC_DRAW);
+		//Normal faces of the mesh
+		glGenBuffers(1, (GLuint*)&(compmesh->id_normals));
+		glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_normals);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_normals * 3, compmesh->normals, GL_STATIC_DRAW);
 
-	//Indices of the mesh
-	glGenBuffers(1, (GLuint*)&(compmesh->id_index));
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_index);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->num_index, compmesh->index, GL_STATIC_DRAW);
+		//Indices of the mesh
+		glGenBuffers(1, (GLuint*)&(compmesh->id_index));
+		glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_index);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(uint) * compmesh->num_index, compmesh->index, GL_STATIC_DRAW);
 
-	//Uvs of the mesh
-	glGenBuffers(1, (GLuint*)&(compmesh->id_tex));
-	glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_tex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_tex * 2, compmesh->tex, GL_STATIC_DRAW);
+		//Uvs of the mesh
+		glGenBuffers(1, (GLuint*)&(compmesh->id_tex));
+		glBindBuffer(GL_ARRAY_BUFFER, compmesh->id_tex);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * compmesh->num_tex * 2, compmesh->tex, GL_STATIC_DRAW);
+	}
 }
 
 void ResMesh::SaveResource(ResMesh* mesh)

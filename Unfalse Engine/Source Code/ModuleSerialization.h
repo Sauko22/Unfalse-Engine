@@ -59,6 +59,7 @@ public:
 	uint parentuid;
 
 	std::vector<GameObject*> gameobject_list;
-	int j;
+	int j, k;
+	uint ruid;
 };
 

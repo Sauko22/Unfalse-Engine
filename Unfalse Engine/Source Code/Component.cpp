@@ -374,7 +374,12 @@ CompMaterial::CompMaterial(GameObject* gameobject) : Component(compType::MATERIA
 }
 
 CompMaterial::~CompMaterial()
-{}
+{
+	if (textgl != 0)
+	{
+		glDeleteTextures(1, &(GLuint)textgl);
+	}
+}
 
 void CompMaterial::update()
 {

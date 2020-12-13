@@ -6,6 +6,8 @@ ModuleSerialization::ModuleSerialization(Application* app, bool start_enabled) :
 {
 	modeluid = 0;
 	j = 0;
+	k = 0;
+	ruid = 0;
 }
 
 ModuleSerialization::~ModuleSerialization()
@@ -163,15 +165,33 @@ void ModuleSerialization::SaveSceneGameObject(GameObject* gameobject, uint id)
 	// GameObject name
 	AddString(obj, "Name", gameobject->name.c_str());
 
-	// GameObject UID
-	AddFloat(obj, "ID", gameobject->guid);
-
+	if (k == 0 && gameobject->parentGameObject == App->scene_intro->root)
+	{
+		AddFloat(obj, "ID", gameobject->guid);
+		ruid = gameobject->guid;
+		k++;
+	}
+	else if (k != 0 && gameobject->parentGameObject == App->scene_intro->root)
+	{
+		AddFloat(obj, "ID", ruid);
+	}
+	else
+	{
+		AddFloat(obj, "ID", gameobject->guid);
+	}
+	
 	// Parent name and ID
-	std::string rootnode = "RootNode";
-
-	AddString(obj, "Parent", "root");
-	AddFloat(obj, "Parent ID", 0);
-
+	if (gameobject->parentGameObject == App->scene_intro->root)
+	{
+		AddString(obj, "Parent", "root");
+		AddFloat(obj, "Parent ID", 0);
+	}
+	else
+	{
+		AddString(obj, "Parent", gameobject->parentGameObject->name.c_str());
+		AddFloat(obj, "Parent ID", gameobject->parentGameObject->guid);
+	}
+	
 	// Transforms
 	CompTransform* transform = (CompTransform*)gameobject->GetComponent(Component::compType::TRANSFORM);
 
@@ -336,6 +356,7 @@ void ModuleSerialization::LoadGameObject(const char* path)
 {
 	std::string modelpath = GetModel(path);
 	LoadModel(modelpath.c_str());
+	gameobject_list.clear();
 	j++;
 }
 
@@ -522,6 +543,20 @@ void ModuleSerialization::LoadModel(const char* path)
 		{
 			compmesh = (CompMesh*)pgameobject->AddComponent(Component::compType::MESH);
 			ResMesh* resmesh = (ResMesh*)App->resource->RequestResource(json_object_get_number(array_obj, "Mesh ID"));
+
+			std::string meshpath;
+			meshpath.append("Library/Meshes/") += std::to_string(resmesh->UID);
+			resmesh->libraryFile = meshpath;
+
+			uint filesize = 0;
+			char* buffer = nullptr;
+			filesize = App->filesys->Load(resmesh->libraryFile.c_str(), &buffer);
+
+			if (filesize > 0)
+			{
+				resmesh->mesh_path = resmesh->libraryFile;
+				resmesh->LoadResource(resmesh, buffer);
+			}
 
 			compmesh->muid = resmesh->UID;
 			compmesh->name = resmesh->name;

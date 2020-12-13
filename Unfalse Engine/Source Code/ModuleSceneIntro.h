@@ -31,6 +31,7 @@ public:
 
 	void GetAllGameObjects();
 	void AllGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
+	void AllSceneGameObjects(GameObject* gameObject, std::vector<GameObject*>& gameObjects);
 	void SaveScene();
 	void LoadScene();
 	GameObject* SearchGameObjectID(uint id);
@@ -45,6 +46,7 @@ public:
 	GameObject* SelectedGameObject;
 	GameObject* camera;
 	std::vector<GameObject*> gameobject_list;
+	std::vector<GameObject*> allgameobject_list;
 
 	ImGuizmo::OPERATION mCurrentGizmoOperation;
 	ImGuizmo::MODE mCurrentGizmoMode;

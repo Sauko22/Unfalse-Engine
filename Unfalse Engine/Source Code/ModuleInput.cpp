@@ -173,7 +173,7 @@ update_status ModuleInput::PreUpdate()
 					uint fileSize = 0;
 					fileSize = App->filesys->Load(norm_load_directory.c_str(), &buffer);
 
-					if (App->scene_intro->SelectedGameObject != nullptr)
+					if (App->scene_intro->SelectedGameObject != nullptr && App->scene_intro->SelectedGameObject->parentGameObject != App->scene_intro->root)
 					{
 						App->resource->ChangeTexture(buffer, fileSize, App->scene_intro->SelectedGameObject, norm_load_directory.c_str());
 					}

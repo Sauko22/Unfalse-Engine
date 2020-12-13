@@ -285,7 +285,7 @@ void ModuleRenderer3D::Draw()
 
 void ModuleRenderer3D::UpdateGameObjects(GameObject* gameobject)
 {
-	if (gameobject != nullptr)
+	if (gameobject != nullptr && gameobject->Objdelete == false)
 	{
 		if (gameobject->Objdelete == true)
 		{
@@ -369,6 +369,48 @@ void ModuleRenderer3D::DeleteGameObjects(GameObject* gameobject)
 		delete gameobject;
 		gameobject = nullptr;
 	}
+}
+
+void ModuleRenderer3D::DeleteAllGameObjects()
+{
+	//App->scene_intro->GetAllGameObjects();
+
+	App->scene_intro->SelectedGameObject = nullptr;
+
+	/*for (int i = 0; i < App->scene_intro->allgameobject_list.size(); i++)
+	{
+		if (App->scene_intro->allgameobject_list[i] != nullptr)
+		{
+			delete App->scene_intro->allgameobject_list[i];
+			App->scene_intro->allgameobject_list[i] = nullptr;
+		}
+	}*/
+	for (int i = 0; i < App->scene_intro->root->children_list.size(); i++)
+	{
+		std::string scenecamera;
+		scenecamera.append(" Scene Camera");
+		if (App->scene_intro->root->children_list[i]->name != scenecamera)
+		{
+			if (App->scene_intro->root->children_list[i] != nullptr)
+			{
+				for (int j = 0; i < App->scene_intro->root->children_list[i]->children_list.size(); j++)
+				{
+					if (App->scene_intro->root->children_list[i]->children_list[j] != nullptr)
+					{
+						delete App->scene_intro->root->children_list[i]->children_list[j];
+						App->scene_intro->root->children_list[i]->children_list[j] = nullptr;
+						App->scene_intro->root->children_list[i]->children_list.erase(App->scene_intro->root->children_list[i]->children_list.begin() + j);
+						j--;
+					}
+				}
+				delete App->scene_intro->root->children_list[i];
+				App->scene_intro->root->children_list[i] = nullptr;
+				App->scene_intro->root->children_list.erase(App->scene_intro->root->children_list.begin() + i);
+				i--;
+			}
+		}
+	}
+	App->serialization->gameobject_list.clear();
 }
 
 void ModuleRenderer3D::WinResize(Vec2 newSize)

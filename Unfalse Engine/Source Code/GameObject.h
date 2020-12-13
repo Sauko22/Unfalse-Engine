@@ -40,10 +40,10 @@ public:
 	uint faces_name;
 	uint texturescoords_name;
 	GLuint actualtexgl;
-	uint guid;
 	GameObject* empty_GameObject;
 	int empty_GameObjects;
 	uint puid;
+	uint guid;
 
 	bool objSelected;
 	bool ObjrenderActive;
