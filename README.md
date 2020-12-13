@@ -8,7 +8,9 @@ https://github.com/Sauko22/Unfalse-Engine
 ## Team
 - Pol Juan Santos: https://github.com/Sauko22
 - Marc Palma Turon: https://github.com/marcpt98
+
 ## Assignment 1 - Geometry Viewer
+
 ## Introduction to Unfalse Engine
 ### Menu
 The menu is divided by four options: File, View, GameObject and Help.
@@ -101,16 +103,20 @@ Shows all the logs from the code.
 
 ## Assignment 2 - Engine Editor
 
+### File Updated
+- New: Delete all the gameObjects leaving room for an empty and new scene.
+
 ### Scene Serialitzacion
 Saves and Load all the objects of the main window as a Scene. For that, we use the buttons found in the Time Management bar.
 
 ### Time Management bar
 - Play/Stop: Allows to change the scene and return to the previous state
-- Box : Activate/Desactivate box colliders
+- Box : Toggle box colliders visibility
 - Empty GameObject: Create a new gameobject in the hierachy
 - Save Scene: Save the current scene
-- Load Scene: Load a scene from the load Menu
-- RayCasting: Raycast is now visible
+- Load Scene: Load a scene of your preference through the load menu
+- RayCasting: Toggle raycast visibility
+
 ### Transformations
 GameObjects position/rotation/scale can be modificated by the inspector and using Gizmos.
 - I: Gizmo Translate
@@ -124,13 +130,13 @@ GameObjects position/rotation/scale can be modificated by the inspector and usin
 ### Camera Component
 - A camera can be created in the menu of GameObjects
 - It has a Culling Option functional with the scene
-- FOV,Planes and transformation can be changed in the inspector
+- FOV, planes and transformation can be changed in the inspector
 
 ### Inspector Updated
 Gameobject can be reparent with other gameobjects by dragging them
 
 ### Assets Explorer
-- The User can navigate through folders and load files in the same window by double clicking the file
+- The User can navigate through folders and load files in the same window by clicking the file
 - The tree shows the order of the folders, but can't load files or delete them
 - Each type of file has a diferent icon
 - The "<-" Button allow to return the previous folder
@@ -139,13 +145,24 @@ Gameobject can be reparent with other gameobjects by dragging them
 ### Resource Explorer
 A windows the shows the loaded resources in the scene and how many times are loaded
 
+### Mouse Picking
+By using raycasting, gameobjects can be selected in the scene.
+
 ## Comments and difficulties
-- 
+- Delete GameObjects doesn't work as expected with the gameobject created at the start of the engine. The rest of the gameobjects created afterwards are deleted properly
+- Scene load return all gameobjects loaded to the initial position instead of keeping the state before the save.
+- If a GameObject_X transformation is modified, the childs transforms of the gameobject using guizmos doesn't work properly. 
+If the parent transform is not modified, guizmos of his childs work correctly. 
+All transforms work correctly with the inspector.
+- Mousepicking is used even if the mouse is not on the scene (you can select gameobjects clicking on the console).
+- Cameras can't be moved with guizmos.
+- If you reparent an object and you move the parent without moving the child first, the child will return to his original transformation in the world.
+
 ## License & Copyright 
 
 [MIT License]
 
-Copyright (c) 2020 by Marc Palma & Pol Juan
+Copyright (c) 2020 by Pol Juan Santos & Marc Palma Turon
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -164,5 +181,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
 
 
