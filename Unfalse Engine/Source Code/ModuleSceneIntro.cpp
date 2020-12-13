@@ -38,6 +38,7 @@ bool ModuleSceneIntro::Start()
 	camera->AddComponent(Component::compType::TRANSFORM);
 	camera->AddComponent(Component::compType::CAMERA);
 	App->renderer3D->main_camera = ((CompCamera*)camera->GetComponent(Component::compType::CAMERA));
+	App->renderer3D->camera_culling = App->renderer3D->main_camera;
 
 	// Load street
 	std::string file_path = "Assets/Models/Street environment_V03.fbx";

@@ -45,6 +45,9 @@ public:
 	void AddFloat3(JSON_Array* obj, float3 value);
 	void AddQuat(JSON_Array* obj, Quat value);
 	void AddFloat(JSON_Object* obj, const char* name, double value);
+
+	// Remove file
+	void RemoveFile(const char* path, const char* _path, const char* ext);
 	
 	// JSON EXAMPLES
 	void Load_values(const char* file, const char* variable_name);

@@ -1351,12 +1351,23 @@ void  ModuleUI::DrawFolder()
 
 
 
-		if (ImGui::BeginPopupContextItem()) {
+		if (ImGui::BeginPopupContextItem()) 
+		{
 			if (ImGui::Button("Delete"))
 			{
-				/*std::string file_to_delete = current_folder + "/" + files[i];
-				App->resource->DeleteAsset(file_to_delete.c_str());
-				ImGui::CloseCurrentPopup();*/
+				std::string file_to_delete = folder + "/" + files[i];
+
+				std::string path;
+				std::string _texname;
+				std::string _texname_2;
+				std::string _texname_3;
+
+				App->filesys->SplitFilePath(file_to_delete.c_str(), &_texname, &_texname_2, &_texname_3);
+				path.append(_texname).append(_texname_2).append(".meta");
+
+				App->serialization->RemoveFile(path.c_str(), file_to_delete.c_str(), texname_3.c_str());
+				//App->resource->DeleteAsset(file_to_delete.c_str());
+				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
 		}

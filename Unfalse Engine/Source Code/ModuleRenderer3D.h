@@ -70,5 +70,6 @@ public:
 	GLuint texchec;
 
 	CompCamera* main_camera;
+	CompCamera* camera_culling;
 	bool culling;
 };
