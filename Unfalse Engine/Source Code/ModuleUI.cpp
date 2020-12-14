@@ -1385,7 +1385,7 @@ void  ModuleUI::DrawFolder()
 				path.append(_texname).append(_texname_2).append(".meta");
 
 				App->serialization->RemoveFile(path.c_str(), file_to_delete.c_str(), texname_3.c_str());
-				//App->resource->DeleteAsset(file_to_delete.c_str());
+				
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -1414,14 +1414,7 @@ void ModuleUI::DrawTree(const char* dire, const char* filter_extension)
 	{
 		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str(), tree_flags))
 		{
-			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::Button("Delete file"))
-				{
-					//gameObject->to_delete = true;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
-			}
+		
 
 			if (ImGui::IsItemClicked()) {
 				folder = dire;
